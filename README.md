@@ -5,7 +5,7 @@ This tool is designed to allow users to see a list of recommended air filters av
 
 Additional attributes in future may include the presence of a prefilter to allow for regular vacuuming and hence maintenance of air delivery rate in dusty environnments, and child safety locks which is relevant to educational settings.
 
-The data is retrieved from a google spreadsheet with a sheet for data for each country 
+The data is retrieved from a google spreadsheet with a sheet for data for each country.  See this as an example https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing
 
 You will need to enable google API for your google sheet.
 
