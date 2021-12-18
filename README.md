@@ -1,7 +1,7 @@
 # Air Filter Recommendation Tool
 Recommendation tool for air filters to help reduce transmission of respitatory viruses
 
-This tool is designed to allow users to see a list of recommended air filters available on the market based on their requirements including the size of the space, number of occupants, and other attributes of the filter including noise levels at different fan settings, wifi connectivity.  
+This tool is designed to allow users to see a list of recommended air filters available on the market based on their requirements including the size of the space, number of occupants, and other attributes of the filter including noise levels at different fan settings, and wifi connectivity.  
 
 Additional attributes in future may include the presence of a prefilter to allow for regular vacuuming and hence maintenance of air delivery rate in dusty environnments, and child safety locks which is relevant to educational settings.
 
