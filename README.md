@@ -1,5 +1,5 @@
 # Air Filter Recommendation Tool
-Recommendation tool for air filters to help reduce transmission of respitatory viruses. It is important to reiterate that air filters are only an additional layer of protection on top of measures to improve natural or mechanical ventilation in indoor settings.
+Recommendation tool for air filters to help reduce transmission of respitatory viruses. It is important to reiterate that air filters are only an additional layer of protection on top of measures to improve natural or mechanical ventilation in indoor settings. See cleanairstars.com/steps to understand where air filters fit in the steps for mitigating transmission.
 
 This tool is designed to allow users to see a list of recommended air filters available on the market based on their requirements including the size of the space, number of occupants, and other attributes of the filter including noise levels at different fan settings, and wifi connectivity.  
 
