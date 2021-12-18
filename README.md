@@ -11,7 +11,7 @@ You will need to enable google API for your google sheet.
 
 Extract the files to the root folder of your domain or sub domain or sub folder.
 
-Edit file config.json in foder data/config
+Edit file config.json in the folder data/config
 Add client_id, client_secret and refresh_token and save
 
 Please make sure there are two folders (/config and /db), if db folder does not exist, create one
