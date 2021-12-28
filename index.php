@@ -192,8 +192,8 @@ if(isset($_POST['submit'])){
                     </div>
                 </div>
                 <div class="col-md-4" id="rms">
-                    <label for="room-size" class="form-label">Room Size = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
-                    <input type="text" class="form-control" id="room-size" name="room-size" placeholder="Room Size">
+                    <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
+                    <input type="text" class="form-control" id="room-size" name="room-size" placeholder="Room Volume (eg 100)">
                     <div class="invalid-feedback">
                         Please enter your room size.
                     </div>
