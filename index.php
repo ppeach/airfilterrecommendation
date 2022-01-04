@@ -16,6 +16,7 @@ $title_wifi = 'Wifi';
 $image      = 'Image';
 $details    = 'Details';
 $buy        = 'Buy';
+$prefilter  = 'Prefilter';
 
 // Set data for Countries dropdown
 $countries  = countries($sheets_id);
@@ -34,11 +35,13 @@ if(isset($_POST['submit'])){
     $room_size = $_POST['room-size'];
     $rms_type = $_POST['m3-or-cu'];
     $no_of_occ = $_POST['no-of-occ'];
+    $prefltr = $_POST['prefilter'];
 
     // Get data from google sheets or json file
     $data = getHepa($country, $sheets_id, $country.'!'.$range);
 
     // Filter data based on user input
+    // Filter by max acceptable noise
     $filter_result = array_filter($data, function($item) use ($max_an){
         if($max_an != 0){
             return ($item['Noise (dBA)'] <= $max_an);
@@ -47,12 +50,18 @@ if(isset($_POST['submit'])){
         }
     });
 
+    // Filter by wifi
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
         if($wifi != 'Not fussed'){
             return ($item['Wifi'] == $wifi);
         } else {
             return true;
         }
+    });
+
+    // Filter by prefilter
+    $filter_result = array_filter($filter_result, function($item) use ($prefltr){
+        return ($item['Prefilter'] === $prefltr);
     });
 
     // Calculate ACH and Total Cost
@@ -216,6 +225,16 @@ if(isset($_POST['submit'])){
                     </div>
                 </div>
                 <div class="col-md-12">
+                    <label for="prefilter" class="form-label">Prefilter Requirement</label>
+                    <select class="form-select" id="prefilter" name="prefilter" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Prefilter Requirement.
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit">Find Your Filters</button>
                 </div>
                 <!-- End HEPA Form -->
@@ -224,7 +243,7 @@ if(isset($_POST['submit'])){
 
         </div>
 
-        <?php if(!empty($hepa_result)) { ?>
+        <?php if(isset($hepa_result)) { ?>
 
         <!-- Result(s) -->       
         <div class="container mt-5 mb-5" id="result-page">
@@ -239,17 +258,20 @@ if(isset($_POST['submit'])){
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Type: '.$rms_type.'.</li>' : ''; ?>
                 <?php echo ($ach == 'lps') ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
+                <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
             </ul>
 
             <div class="d-flex justify-content-center row">
                 <div class="col-md-12">
 
-                <?php foreach ($hepa_result as $key => $value) { 
+                <?php
+                if(!empty($hepa_result)) {
+                    foreach ($hepa_result as $key => $value) { 
                     
-                    $ach_needs = $value['ACH needs'];
-                    $ach_needs_minone = $ach_needs - 1;
+                        $ach_needs = $value['ACH needs'];
+                        $ach_needs_minone = $ach_needs - 1;
 
-                    ?>
+                ?>
 
                     <div class="row p-2 bg-white border rounded mt-2">
                         <div class="col-md-3 mt-1">
@@ -286,6 +308,9 @@ if(isset($_POST['submit'])){
                                     <?php echo (isset($value[$cadr_litre])) ? '<li class="list-group-item flex-fill">CADR (Litre/sec): '.round($value[$cadr_litre]).'</li>' : ''; ?>
                                     <?php echo (isset($value[$noise_dBA])) ? '<li class="list-group-item flex-fill">Noise (dBA): '.$value[$noise_dBA].'</li>' : ''; ?>                                  
                                 </ul>
+                                <ul class="list-group list-group-horizontal-md">
+                                    <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
+                                </ul>
                             </div>
                         </div>
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
@@ -300,6 +325,10 @@ if(isset($_POST['submit'])){
                             </div>
                         </div>
                     </div>
+
+                <?php }} else { ?>
+
+                    <h3>No result found</h3>
 
                 <?php } ?>
 
