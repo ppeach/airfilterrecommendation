@@ -1,14 +1,12 @@
 <?php define('BASEPATH', TRUE);
 require_once('functions.php');
 
-$key = '[your complex key'; // Replace with your generated key
-$sheet_id = '[your sheet ID]';
-$range = 'A1:K1000';
+$key = config('update_key');
 
 if(isset($_GET['key']) && $_GET['key'] === $key) {
-    $update = updateData($sheet_id, $range);
+    $update = updateData();
     if($update) {
-        $message = array('status' => 'success', 'message' => 'Data updated successfully');
+        $message = array('status' => 'success', 'message' => 'Data updated successfully', 'data' => $update);
     } else {
         $message = array('status' => 'error', 'message' => 'Error updating data');
     }
