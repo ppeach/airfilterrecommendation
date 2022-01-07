@@ -1,5 +1,5 @@
-<?php define('BASEPATH', TRUE);
-require_once('functions.php');
+<?php
+require_once('includes/config.php');
 
 $key = config('update_key');
 
