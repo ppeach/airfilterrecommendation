@@ -46,8 +46,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     });
 
     // Calculate ACH and Total Cost
-    $titles = array($cadr_m3, $cadr_cubic, $cadr_litre, $cost);
-    $hepa_result = calculateACH($filter_result, $ach, $titles, $room_size, $rms_type, $no_of_occ);
+    $types = array(
+        'cadrm3'    => $cadr_m3,
+        'cadrcubic' => $cadr_cubic,
+        'cadrlitre' => $cadr_litre,
+        'cost'      => $cost
+    );
+    $achs   = array(
+        'room_size' => $room_size,
+        'room_type' => $rms_type,
+        'no_off_occ'=> $no_of_occ
+    );
+    $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
 
     // Get total result
     $total = count($hepa_result);
