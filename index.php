@@ -16,6 +16,7 @@ $title_wifi = 'Wifi';
 $image      = 'Image';
 $details    = 'Details';
 $buy        = 'Buy';
+$prefilter  = 'Prefilter';
 
 // Set data for Countries dropdown
 $countries  = countries($sheets_id);
@@ -34,11 +35,13 @@ if(isset($_POST['submit'])){
     $room_size = $_POST['room-size'];
     $rms_type = $_POST['m3-or-cu'];
     $no_of_occ = $_POST['no-of-occ'];
+    $prefltr = $_POST['prefilter'];
 
     // Get data from google sheets or json file
     $data = getHepa($country, $sheets_id, $country.'!'.$range);
 
     // Filter data based on user input
+    // Filter by max acceptable noise
     $filter_result = array_filter($data, function($item) use ($max_an){
         if($max_an != 0){
             return ($item['Noise (dBA)'] <= $max_an);
@@ -47,9 +50,19 @@ if(isset($_POST['submit'])){
         }
     });
 
+    // Filter by wifi
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
         if($wifi != 'Not fussed'){
             return ($item['Wifi'] == $wifi);
+        } else {
+            return true;
+        }
+    });
+
+    // Filter by prefilter
+    $filter_result = array_filter($filter_result, function($item) use ($prefltr){
+        if($prefltr != 'Not fussed'){
+            return ($item['Prefilter'] == $prefltr);
         } else {
             return true;
         }
@@ -174,6 +187,22 @@ if(isset($_POST['submit'])){
                         Please select a Wifi Requirement.
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <label for="prefilter" class="form-label">Prefilter Requirement</label>
+					<div>
+					<a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments where the dust can be kept off the main filter and vacuumed regularly, prolonging the life of the main filter" data-bs-html="true">
+					<p>When do I need a prefilter?
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+					</p></a>
+					</div>
+                    <select class="form-select" id="prefilter" name="prefilter" required>
+                        <option value="Not fussed">Not fussed</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Prefilter Requirement.
+                    </div>
+                </div>
                 <div class="col-md-6">
                     <label for="ach" class="form-label">Air Changes per Hour (ACH) or L/person/second (Advanced)</label>
 					<div>
@@ -224,7 +253,7 @@ if(isset($_POST['submit'])){
 
         </div>
 
-        <?php if(!empty($hepa_result)) { ?>
+        <?php if(isset($hepa_result)) { ?>
 
         <!-- Result(s) -->       
         <div class="container mt-5 mb-5" id="result-page">
@@ -239,17 +268,20 @@ if(isset($_POST['submit'])){
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Type: '.$rms_type.'.</li>' : ''; ?>
                 <?php echo ($ach == 'lps') ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
+                <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
             </ul>
 
             <div class="d-flex justify-content-center row">
                 <div class="col-md-12">
 
-                <?php foreach ($hepa_result as $key => $value) { 
+                <?php
+                if(!empty($hepa_result)) {
+                    foreach ($hepa_result as $key => $value) { 
                     
-                    $ach_needs = $value['ACH needs'];
-                    $ach_needs_minone = $ach_needs - 1;
+                        $ach_needs = $value['ACH needs'];
+                        $ach_needs_minone = $ach_needs - 1;
 
-                    ?>
+                ?>
 
                     <div class="row p-2 bg-white border rounded mt-2">
                         <div class="col-md-3 mt-1">
@@ -286,6 +318,9 @@ if(isset($_POST['submit'])){
                                     <?php echo (isset($value[$cadr_litre])) ? '<li class="list-group-item flex-fill">CADR (Litre/sec): '.round($value[$cadr_litre]).'</li>' : ''; ?>
                                     <?php echo (isset($value[$noise_dBA])) ? '<li class="list-group-item flex-fill">Noise (dBA): '.$value[$noise_dBA].'</li>' : ''; ?>                                  
                                 </ul>
+                                <ul class="list-group list-group-horizontal-md">
+                                    <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
+                                </ul>
                             </div>
                         </div>
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
@@ -300,6 +335,10 @@ if(isset($_POST['submit'])){
                             </div>
                         </div>
                     </div>
+
+                <?php }} else { ?>
+
+                    <h3>No result found</h3>
 
                 <?php } ?>
 
