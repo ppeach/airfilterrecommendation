@@ -295,7 +295,7 @@ if(isset($_POST['submit'])){
                                     <?php if($ach == 'ach'){ ?>
                                         <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for 6 air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH for <?php echo $ach_needs; ?> devices</i></li>
-                                        <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices</i></li>' : ''; ?>
+                                        <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
                                         <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for <?php echo trim($ach, '_lps');?>L/p/s</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> L/p/s for <?php echo $ach_needs; ?> devices</i></li>
@@ -329,6 +329,11 @@ if(isset($_POST['submit'])){
                                 <span>&nbsp;<?php echo $value['currency']; ?></span>
                             </div>
                             <h6 class="text-success">Total Upfront Cost</h6>
+			    <div class="d-flex flex-row align-items-center">
+                                <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
+                                <span>&nbsp;<?php echo $value['currency']; ?></span>
+                            </div>
+                            <h6 class="text-success">Total Filter Replacement Cost</h6>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
                                 <?php echo (isset($value[$buy])) ? '<a class="btn btn-primary btn-sm mt-2" href="'.$value[$buy].'" target="_blank">Buy Now</a>' : ''; ?>
