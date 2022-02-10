@@ -16,7 +16,10 @@ $title_wifi = 'Wifi';
 $image      = 'Image';
 $details    = 'Details';
 $buy        = 'Buy';
+$buyfilter  = 'Buy filter';
 $prefilter  = 'Prefilter';
+$notes      = 'Notes';
+$diy        = 'DIY';
 
 // Set data for Countries dropdown
 $countries  = countries(config('sheet_id'));

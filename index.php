@@ -13,6 +13,7 @@ if(isset($_POST['submit'])){
     $rms_type = $_POST['m3-or-cu'];
     $no_of_occ = $_POST['no-of-occ'];
     $prefltr = $_POST['prefilter'];
+    $diy = $_POST['diy'];
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -40,6 +41,15 @@ if(isset($_POST['submit'])){
     $filter_result = array_filter($filter_result, function($item) use ($prefltr){
         if($prefltr != 'Not fussed'){
             return ($item['Prefilter'] == $prefltr);
+        } else {
+            return true;
+        }
+    });
+
+    // Filter by DIY
+    $filter_result = array_filter($filter_result, function($item) use ($diy){
+        if($diy != 'Yes'){
+            return ($item['DIY'] != 'Yes');
         } else {
             return true;
         }
@@ -187,7 +197,7 @@ if(isset($_POST['submit'])){
                         Please select a Wifi Requirement.
                     </div>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="prefilter" class="form-label">Prefilter Requirement</label>
 					<div>
                         <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments where the dust can be kept off the main filter and vacuumed regularly, prolonging the life of the main filter" data-bs-html="true">
@@ -200,6 +210,16 @@ if(isset($_POST['submit'])){
                     </select>
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="diy" class="form-label">Include DIY filters?</label>
+                    <select class="form-select" id="diy" name="diy" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a DIY filters.
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -269,6 +289,7 @@ if(isset($_POST['submit'])){
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
                 <?php echo ($ach == 'lps') ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
                 <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
+                <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
             </ul>
 
             <div class="d-flex justify-content-center row">
@@ -280,6 +301,8 @@ if(isset($_POST['submit'])){
                     
                         $ach_needs = $value['ACH needs'];
                         $ach_needs_minone = $ach_needs - 1;
+                        $filter_Cost = $value['currency_format'].$value[$filterCost];
+                        $link_filter = ($value[$buyfilter] !== '') ? '<a href="'.$value[$buyfilter].'" target="_blank">'.$filter_Cost.'</a>' : $filter_Cost;
 
                 ?>
 
@@ -306,8 +329,8 @@ if(isset($_POST['submit'])){
                             </div>
                             <div class="mt-1 mb-1 spec-1">
                                 <ul class="list-group list-group-horizontal-md">
-                                    <?php echo (isset($value[$cost])) ? '<li class="list-group-item flex-fill">Cost : '.$value['currency_format'].$value[$cost].' '.$value['currency'].' each</li>' : ''; ?>
-                                    <?php echo (isset($value[$filterCost])) ? '<li class="list-group-item flex-fill">Filter cost: '.$value[$filterCost].'</li>' : ''; ?>
+                                    <?php echo (isset($value[$cost])) ? '<li class="list-group-item flex-fill">Cost : '.$value['currency_format'].$value[$cost].' each</li>' : ''; ?>
+                                    <?php echo (isset($value[$filterCost])) ? '<li class="list-group-item flex-fill">Filter cost: '.$link_filter.'</li>' : $filter_Cost; ?>
                                     <?php echo (isset($value[$title_wifi])) ? '<li class="list-group-item flex-fill">Wifi: '.$value[$title_wifi].'</li>' : ''; ?>
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
@@ -321,6 +344,11 @@ if(isset($_POST['submit'])){
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
                                 </ul>
+                                <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
+                                </ul>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
@@ -329,7 +357,7 @@ if(isset($_POST['submit'])){
                                 <span>&nbsp;<?php echo $value['currency']; ?></span>
                             </div>
                             <h6 class="text-success">Total Upfront Cost</h6>
-			    <div class="d-flex flex-row align-items-center">
+			                <div class="d-flex flex-row align-items-center">
                                 <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
                                 <span>&nbsp;<?php echo $value['currency']; ?></span>
                             </div>
