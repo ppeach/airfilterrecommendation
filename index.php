@@ -13,6 +13,7 @@ if(isset($_POST['submit'])){
     $rms_type = $_POST['m3-or-cu'];
     $no_of_occ = $_POST['no-of-occ'];
     $prefltr = $_POST['prefilter'];
+    $diy = $_POST['diy'];
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -40,6 +41,15 @@ if(isset($_POST['submit'])){
     $filter_result = array_filter($filter_result, function($item) use ($prefltr){
         if($prefltr != 'Not fussed'){
             return ($item['Prefilter'] == $prefltr);
+        } else {
+            return true;
+        }
+    });
+
+    // Filter by DIY
+    $filter_result = array_filter($filter_result, function($item) use ($diy){
+        if($diy != 'Yes'){
+            return ($item['DIY'] != 'Yes');
         } else {
             return true;
         }
@@ -126,7 +136,7 @@ if(isset($_POST['submit'])){
         </div>
 		<div>
 			<p>This tool helps recommend how many of the available models of portable air filters at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2</p> 
-			<p>At the moment this database only includes air filters that use HEPA 13 filters and excludes any that have additional electronic cleaning features like ionisation and plasma that have insufficient evidence behind their efficacy and may result in production of undesirable pollutants. If reliable data on the clean air delivery rate for small particles (CADR Smoke) is available, these will considered for inclusion</p>
+			<p>At the moment this database only includes air filters that use HEPA 13 filters and excludes any that have additional electronic cleaning features like ionisation and plasma that have insufficient evidence behind their efficacy and may result in production of undesirable pollutants. If manufacturers of devices using lower efficiency filters can provide reliable data on the clean air delivery rate for small particles (CADR Smoke), these will considered for inclusion</p>
 			<p>We cannot guarantee the accuracy of manufacturer claims on device performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used.</p>
 			<p>Australian data source <a href="https://twitter.com/drpieterpeach">Pieter Peach<a>, US data source <a href="https://twitter.com/marwa_zaatari">Marwa Zaatari</a>, UK data source <a href="https://twitter.com/PlasticFull">Stefan Stojanovic<a></p>
 			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars<a> for updates.</p>
@@ -187,7 +197,7 @@ if(isset($_POST['submit'])){
                         Please select a Wifi Requirement.
                     </div>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="prefilter" class="form-label">Prefilter Requirement</label>
 					<div>
                         <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments where the dust can be kept off the main filter and vacuumed regularly, prolonging the life of the main filter" data-bs-html="true">
@@ -200,6 +210,16 @@ if(isset($_POST['submit'])){
                     </select>
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="diy" class="form-label">Include DIY filters?</label>
+                    <select class="form-select" id="diy" name="diy" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a DIY filters.
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -269,6 +289,7 @@ if(isset($_POST['submit'])){
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
                 <?php echo ($ach == 'lps') ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
                 <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
+                <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
             </ul>
 
             <div class="d-flex justify-content-center row">
@@ -280,6 +301,8 @@ if(isset($_POST['submit'])){
                     
                         $ach_needs = $value['ACH needs'];
                         $ach_needs_minone = $ach_needs - 1;
+                        $filter_Cost = $value['currency_format'].$value[$filterCost];
+                        $link_filter = ($value[$buyfilter] !== '') ? '<a href="'.$value[$buyfilter].'" target="_blank">'.$filter_Cost.'</a>' : $filter_Cost;
 
                 ?>
 
@@ -295,7 +318,7 @@ if(isset($_POST['submit'])){
                                     <?php if($ach == 'ach'){ ?>
                                         <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for 6 air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH for <?php echo $ach_needs; ?> devices</i></li>
-                                        <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices</i></li>' : ''; ?>
+                                        <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
                                         <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for <?php echo trim($ach, '_lps');?>L/p/s</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> L/p/s for <?php echo $ach_needs; ?> devices</i></li>
@@ -306,12 +329,12 @@ if(isset($_POST['submit'])){
                             </div>
                             <div class="mt-1 mb-1 spec-1">
                                 <ul class="list-group list-group-horizontal-md">
-                                    <?php echo (isset($value[$cost])) ? '<li class="list-group-item flex-fill">Cost : '.$value['currency_format'].$value[$cost].' '.$value['currency'].' each</li>' : ''; ?>
-                                    <?php echo (isset($value[$filterCost])) ? '<li class="list-group-item flex-fill">Filter cost: '.$value[$filterCost].'</li>' : ''; ?>
+                                    <?php echo (isset($value[$cost])) ? '<li class="list-group-item flex-fill">Cost : '.$value['currency_format'].$value[$cost].' each</li>' : ''; ?>
+                                    <?php echo (isset($value[$filterCost])) ? '<li class="list-group-item flex-fill">Filter cost: '.$link_filter.'</li>' : $filter_Cost; ?>
                                     <?php echo (isset($value[$title_wifi])) ? '<li class="list-group-item flex-fill">Wifi: '.$value[$title_wifi].'</li>' : ''; ?>
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
-                                    <?php echo (isset($value[$cadr_m3])) ? '<li class="list-group-item flex-fill">CADR (m3/hr): '.$value[$cadr_m3].'</li>' : ''; ?>
+                                    <?php echo (isset($value[$cadr_m3])) ? '<li class="list-group-item flex-fill">CADR (m3/hr): '.round($value[$cadr_m3]).'</li>' : ''; ?>
                                     <?php echo (isset($value[$cadr_cubic])) ? '<li class="list-group-item flex-fill">CADR (Cubic feet/min): '.round($value[$cadr_cubic]).'</li>' : ''; ?>
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
@@ -321,6 +344,11 @@ if(isset($_POST['submit'])){
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
                                 </ul>
+                                <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
+                                </ul>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
@@ -329,6 +357,11 @@ if(isset($_POST['submit'])){
                                 <span>&nbsp;<?php echo $value['currency']; ?></span>
                             </div>
                             <h6 class="text-success">Total Upfront Cost</h6>
+			                <div class="d-flex flex-row align-items-center">
+                                <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
+                                <span>&nbsp;<?php echo $value['currency']; ?></span>
+                            </div>
+                            <h6 class="text-success">Total Filter Replacement Cost</h6>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
                                 <?php echo (isset($value[$buy])) ? '<a class="btn btn-primary btn-sm mt-2" href="'.$value[$buy].'" target="_blank">Buy Now</a>' : ''; ?>
