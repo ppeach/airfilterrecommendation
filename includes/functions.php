@@ -9,8 +9,8 @@ function config($key)
 }
 
 // Get Refresh token from google OAuth
-function generate_token(){
-
+function generate_token()
+{
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/oauth2/v4/token");
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -23,28 +23,45 @@ function generate_token(){
 }
 
 // Check if the token is expired and get new refesh token
-function checkexp(){
-
+function checkexp()
+{
     $fpath = "data/config/token.json";
     if(file_exists($fpath) && filemtime($fpath) + 3600 > time()){
-        
         $data = json_decode(file_get_contents($fpath), true);
-        $token = $data["access_token"];
-
+        if(isset($data["access_token"])){
+            $token = $data["access_token"];
+        } else {
+            $data = generate_token();
+            $token = $data["access_token"];
+        }
     } else {
-
         $data = generate_token();
         $token = $data["access_token"];
-
     }
-    
     return $token;
+}
 
+// Check if there's no error in token
+function checktoken()
+{
+    $fpath = "data/config/token.json";
+    if(file_exists($fpath)){
+        $data = json_decode(file_get_contents($fpath), true);
+
+        if(array_key_exists("error", $data)){
+            $message = array('status' => 'token error', 'message' => $data);
+        } else {
+            $message = array('status' => 'token valid', 'message' => 'token_scope ' . $data["scope"]);
+        }
+    } else {
+        $message = array('status' => 'token error', 'message' => 'Token file not found');
+    }
+    return $message;
 }
 
 // Get data from google sheets
-function getSheets($sheets_id, $token, $list=true, $range=null, $majorDimension=null){
-
+function getSheets($sheets_id, $token, $list=true, $range=null, $majorDimension=null)
+{
     if($list){
         $url = "https://sheets.googleapis.com/v4/spreadsheets/" . $sheets_id;
     } elseif($majorDimension) {
@@ -78,12 +95,11 @@ function getSheets($sheets_id, $token, $list=true, $range=null, $majorDimension=
     } else {
         return $data["sheets"];
     }
-
 }
 
 // Get sheets name from google sheets and set to countries array
-function countries($sheets_id){
-
+function countries($sheets_id)
+{
     // Check if the countries.json is exist, else create it
     $countries_path = 'data/config/countries.json';
     if(file_exists($countries_path)){
@@ -105,8 +121,8 @@ function countries($sheets_id){
 }
 
 // Format dan Clean up data from google sheets
-function CFdata($data){
-
+function CFdata($data)
+{
     // Extract title from data
     $keys = array_values($data[0]);
     $cost = $keys[1];
@@ -142,8 +158,8 @@ function CFdata($data){
 }
 
 // Get data from google sheets by country
-function getHepa($country){
-
+function getHepa($country)
+{
     $sheets_id  = config('sheet_id');
     $range      = config('sheet_range');
     $hepapath   = 'data/db/'.$country.'.json';
@@ -168,8 +184,8 @@ function getHepa($country){
 }
 
 // Calculate ACH and get Total Cost
-function calculateACH($data, $ach, $types=array(), $achs=array()){
-
+function calculateACH($data, $ach, $types=array(), $achs=array())
+{
     // Calculate ACH and Total Cost
     foreach($data as $key => $value){
         if($ach == 'ach'){
@@ -194,6 +210,7 @@ function calculateACH($data, $ach, $types=array(), $achs=array()){
         $data[$key]['ACH -1'] = round($ach_value_min, 1);
         $data[$key]['ACH needs'] = $ach_needs;
         $data[$key]['Total Cost'] = $value[$types['cost']] * $ach_needs;
+        $data[$key]['Total dBA'] = totaldBA($ach_needs, $value[$types['noisedba']]);
     }
 
     // Sort Total Cost (low to High)
@@ -204,9 +221,18 @@ function calculateACH($data, $ach, $types=array(), $achs=array()){
     return $data;
 }
 
-// Function to update data from google sheets
-function updateData(){
+function totaldBA($x, $y)
+{
+    // Equation is 10 * log10(10^(Y/10) * X)
+    // Y = dBA value
+    // X = number of devices
+    $result = 10 * log10(pow(10, ($y/10)) * $x);
+    return round($result, 1);
+}
 
+// Function to update data from google sheets
+function updateData()
+{
     $sheets_id = config('sheet_id');
     $range = config('sheet_range');
     $token = checkexp();
@@ -255,5 +281,4 @@ function updateData(){
     }
 
     return $results;
-
 }

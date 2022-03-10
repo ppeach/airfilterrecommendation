@@ -60,14 +60,24 @@ if(isset($_POST['submit'])){
         'cadrm3'    => $cadr_m3,
         'cadrcubic' => $cadr_cubic,
         'cadrlitre' => $cadr_litre,
-        'cost'      => $cost
+        'cost'      => $cost,
+        'noisedba'  => $noise_dBA,
     );
-    $achs   = array(
+    $achs = array(
         'room_size' => $room_size,
         'room_type' => $rms_type,
         'no_off_occ'=> $no_of_occ
     );
     $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
+
+    // Filter total dBA by max acceptable noise
+    $hepa_result = array_filter($hepa_result, function($item) use ($max_an){
+        if($max_an != 0){
+            return ($item['Total dBA'] <= $max_an);
+        } else {
+            return true;
+        }
+    });
 
     // Get total result
     $total = count($hepa_result);
@@ -303,7 +313,7 @@ if(isset($_POST['submit'])){
                         $ach_needs_minone = $ach_needs - 1;
                         $filter_Cost = $value['currency_format'].$value[$filterCost];
                         $link_filter = ($value[$buyfilter] !== '') ? '<a href="'.$value[$buyfilter].'" target="_blank">'.$filter_Cost.'</a>' : $filter_Cost;
-
+                        $totaldBA = $value['Total dBA'];
                 ?>
 
                     <div class="row p-2 bg-white border rounded mt-2">
@@ -343,6 +353,7 @@ if(isset($_POST['submit'])){
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
+                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.'</li>'; ?>
                                 </ul>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
                                 <ul class="list-group list-group-flush">
@@ -369,7 +380,8 @@ if(isset($_POST['submit'])){
                         </div>
                     </div>
 
-                <?php }} else { ?>
+                    <?php } ?>
+                <?php } else { ?>
 
                     <h3>No result found</h3>
 
