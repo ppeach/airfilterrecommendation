@@ -25,4 +25,4 @@ $diy        = 'DIY';
 $countries  = countries(config('sheet_id'));
 
 // Set data for Max Acceptable Noise
-$maxANoise  = array('30', '40', '45', '50', '55', '60');
+$maxANoise  = array('30', '35', '40', '45', '50', '55', '60');
