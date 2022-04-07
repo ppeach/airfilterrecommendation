@@ -190,11 +190,11 @@ function calculateACH($data, $ach, $types=array(), $achs=array())
     foreach($data as $key => $value){
         if($ach == 'ach'){
             if($achs['room_type'] == 'm3'){
-                $ach_unit = (6 * $achs['room_size'])/$value[$types['cadrm3']];
+                $ach_unit = (5.4 * $achs['room_size'])/$value[$types['cadrm3']];
                 $ach_value = (ceil($ach_unit) * $value[$types['cadrm3']])/$achs['room_size'];
                 $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrm3']])/$achs['room_size'];
             } else {
-                $ach_unit = (6 * $achs['room_size'])/$value[$types['cadrcubic']]/60;
+                $ach_unit = (5.4 * $achs['room_size'])/$value[$types['cadrcubic']]/60;
                 $ach_value = (ceil($ach_unit) * $value[$types['cadrcubic']] * 60)/$achs['room_size'];
                 $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrcubic']] * 60)/$achs['room_size'];
             }
