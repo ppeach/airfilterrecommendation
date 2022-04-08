@@ -12,7 +12,7 @@ function config($key)
 function generate_token()
 {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/oauth2/v4/token");
+    curl_setopt($ch, CURLOPT_URL, OAUTHURL);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, "client_secret=" . config('client_secret') . "&grant_type=refresh_token&refresh_token=" . config('refresh_token') . "&client_id=" . config('client_id'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -62,12 +62,13 @@ function checktoken()
 // Get data from google sheets
 function getSheets($sheets_id, $token, $list=true, $range=null, $majorDimension=null)
 {
+    $range = urlencode($range);
     if($list){
-        $url = "https://sheets.googleapis.com/v4/spreadsheets/" . $sheets_id;
+        $url = SHEETSAPI . $sheets_id;
     } elseif($majorDimension) {
-        $url = "https://sheets.googleapis.com/v4/spreadsheets/" . $sheets_id ."/values/". $range ."?majorDimension=". $majorDimension . "&valueRenderOption=UNFORMATTED_VALUE";
+        $url = SHEETSAPI . $sheets_id ."/values/". $range ."?majorDimension=". $majorDimension . "&valueRenderOption=UNFORMATTED_VALUE";
     } else {
-        $url = "https://sheets.googleapis.com/v4/spreadsheets/" . $sheets_id ."/values/". $range . "?valueRenderOption=UNFORMATTED_VALUE";
+        $url = SHEETSAPI . $sheets_id ."/values/". $range . "?valueRenderOption=UNFORMATTED_VALUE";
     }
 
     $curl = curl_init();
