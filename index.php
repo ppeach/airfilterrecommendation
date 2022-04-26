@@ -12,7 +12,7 @@ if(isset($_POST['submit'])){
     $room_size = $_POST['room-size'];
     $rms_type = $_POST['m3-or-cu'];
     $no_of_occ = $_POST['no-of-occ'];
-    $prefltr = $_POST['prefilter'];
+    //$prefltr = $_POST['prefilter'];
     $diy = $_POST['diy'];
 
     // Get data from google sheets or json file
@@ -38,13 +38,13 @@ if(isset($_POST['submit'])){
     });
 
     // Filter by prefilter
-    $filter_result = array_filter($filter_result, function($item) use ($prefltr){
-        if($prefltr != 'Not fussed'){
-            return ($item['Prefilter'] == $prefltr);
-        } else {
-            return true;
-        }
-    });
+    //$filter_result = array_filter($filter_result, function($item) use ($prefltr){
+    //    if($prefltr != 'Not fussed'){
+    //        return ($item['Prefilter'] == $prefltr);
+    //    } else {
+    //        return true;
+    //    }
+    // });
 
     // Filter by DIY
     $filter_result = array_filter($filter_result, function($item) use ($diy){
@@ -207,7 +207,7 @@ if(isset($_POST['submit'])){
                         Please select a Wifi Requirement.
                     </div>
                 </div>
-                <div class="col-md-6">
+                <!--div class="col-md-6">
                     <label for="prefilter" class="form-label">Prefilter Requirement</label>
 					<div>
                         <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments where the dust can be kept off the main filter and vacuumed regularly, prolonging the life of the main filter" data-bs-html="true">
@@ -221,7 +221,7 @@ if(isset($_POST['submit'])){
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
                     </div>
-                </div>
+                </div-->
                 <div class="col-md-6">
                     <label for="diy" class="form-label">Include DIY filters?</label>
                     <select class="form-select" id="diy" name="diy" required>
@@ -233,21 +233,21 @@ if(isset($_POST['submit'])){
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label for="ach" class="form-label">Air Changes per Hour (ACH) or L/person/second (Advanced)</label>
+                    <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH)</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for large spaces where L/person/second may be a more appropriate target and HVAC engineering advice should be sought." data-bs-html="true">
-                            <p>What is ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second may be a more appropriate an realistic target." data-bs-html="true">
+                            <p>What is L/p/s and ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
                         <!--option selected disabled value="">Choose...</option-->
                         <option value="ach" selected>6 Air Changes per Hour (ACH)</option>
-                        <option value="10_lps">10 L/person/second (Absolute minimum)</option>
+                        <option value="10_lps">10 L/person/second (Minimum, WHO recommendation)</option>
                         <option value="20_lps">20 L/person/second (Ideal, non-vigorous activity)</option>
                         <option value="50_lps">50 L/person/second (Ideal, vigorous activity eg Exercise, Dancing)</option>
                     </select>
                     <div class="invalid-feedback">
-                        Select 6 Air Changes per Hour (ACH) or L/person/second.
+                        Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
                 <div class="col-md-4" id="rms">
