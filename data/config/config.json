@@ -1,8 +1,0 @@
-{
-  "client_id": "[your client ID]",
-  "client_secret": "[your secret key]",
-  "refresh_token": "[your reshresh tokem]",
-  "sheet_id": "[your google sheet ID]",
-  "sheet_range": "A1:K1000",
-  "update_key": "your complex update key"
-}
