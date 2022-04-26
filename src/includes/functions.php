@@ -143,7 +143,7 @@ function CFdata($data)
     $data = array_filter($data, function($item) use ($cost) {
         return ($item['Model'] && $item[$cost] && $item['CADR (m3/hr)'] && $item['Noise (dBA)'] != "");
     });
-
+    
     // Add currency data
     foreach ($data as $key => $value) {
         $data[$key]['Cost'] = $data[$key][$cost];
@@ -154,7 +154,7 @@ function CFdata($data)
     }
 
     sort($data);
-
+    
     return $data;
 }
 
@@ -252,27 +252,26 @@ function updateData()
     $countries = array_column($countries, 'title');
     $countries = array_unique($countries);
     sort($countries);
-
+    
     // Remove all country json files
     $hepafiles = glob('data/db/*.{json}', GLOB_BRACE);
     foreach($hepafiles as $hepafile){
         unlink($hepafile);
     }
-
+    
     // Generate new country json files
     foreach($countries as $country){
         $hepapath = 'data/db/'.$country.'.json';
-
+        
         // Check if there's still a country-name.json file and delete it
         if(file_exists($hepapath)){
             unlink($hepapath);
         }
-
+    
         // Get data from Google Sheets
         $data = getSheets($sheets_id, $token, false, $country.'!'.$range);
         $data = CFdata($data);
         file_put_contents($hepapath, json_encode($data, JSON_UNESCAPED_UNICODE));
-
         $result = array(
             'country' => $country,
             'message' => 'Data updated successfully',
