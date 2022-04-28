@@ -2,18 +2,20 @@
 require_once('includes/config.php');
 
 // If form is submitted
-if(isset($_POST['submit'])){
+if(isset($_GET['submit'])){
+
+    $submitted = true;
 
     // Set data from POST
-    $country = $_POST['country'];
-    $max_an = $_POST['max-an'];
-    $wifi = $_POST['wifi'];
-    $ach  = $_POST['ach'];
-    $room_size = $_POST['room-size'];
-    $rms_type = $_POST['m3-or-cu'];
-    $no_of_occ = $_POST['no-of-occ'];
+    $country = $_GET['country'] ?? $countries[0];
+    $max_an = $_GET['max-an'] ?? 0;
+    $wifi = $_GET['wifi'] ?? 'Not fussed';
+    $ach  = $_GET['ach'] ?? 'ach';
+    $room_size = $_GET['room-size'] ?? 60;
+    $rms_type = $_GET['m3-or-cu'] ?? 'm3';
+    $no_of_occ = $_GET['no-of-occ'] ?? 1;
     //$prefltr = $_POST['prefilter'];
-    $diy = $_POST['diy'];
+    $diy = $_GET['diy'] ?? 'No';
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -154,15 +156,19 @@ if(isset($_POST['submit'])){
 
         <div class="row g-5">
 
-        <form action="" method="post" class="needs-validation" novalidate>
+        <form action="" method="get" class="needs-validation" novalidate>
             <div class="row g-5">
                 <!-- HEPA Form -->
                 <div class="col-md-12">
                     <label for="country" class="form-label">Country</label>
                     <select class="form-select" id="country" name="country" required>
-                        <option selected disabled value="">Choose...</option>
+                        <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
                         <?php foreach ($countries as $key => $value) {
-                        echo '<option value="'.$value.'">'.$value.'</option>';
+                            if ($country == $value) {
+                                echo '<option selected value="'.$value.'">'.$value.'</option>';
+                            } else {
+                                echo '<option value="'.$value.'">'.$value.'</option>';
+                            }
                         } ?>
                     </select>
                     <div class="invalid-feedback">
@@ -185,7 +191,11 @@ if(isset($_POST['submit'])){
                     <select class="form-select" id="max-an" name="max-an" required>
                         <option value="0">No maximum</option>
                         <?php foreach ($maxANoise as $key => $value) {
-                        echo '<option value="'.$value.'">'.$value.' dBA</option>';
+                            if ($max_an == $value) {
+                                echo '<option selected value="'.$value.'">'.$value.' dBA</option>';
+                            } else {
+                                echo '<option value="'.$value.'">'.$value.' dBA</option>';
+                            }
                         } ?>
                     </select>
                     <div class="invalid-feedback">
@@ -200,8 +210,8 @@ if(isset($_POST['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
-                        <option value="Not fussed">Not fussed</option>
-                        <option value="Yes">Yes</option>
+                        <option value="Not fussed" <?php if($wifi == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not fussed</option>
+                        <option value="Yes" <?php if($wifi == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a Wifi Requirement.
@@ -225,8 +235,8 @@ if(isset($_POST['submit'])){
                 <div class="col-md-6">
                     <label for="diy" class="form-label">Include DIY filters?</label>
                     <select class="form-select" id="diy" name="diy" required>
-                        <option value="No">No</option>
-                        <option value="Yes">Yes</option>
+                        <option value="No" <?php if($diy == 'No' || !$submitted) {echo 'selected';} ?> >No</option>
+                        <option value="Yes" <?php if($diy == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a DIY filters.
@@ -241,10 +251,10 @@ if(isset($_POST['submit'])){
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
                         <!--option selected disabled value="">Choose...</option-->
-                        <option value="ach" selected>6 Air Changes per Hour (ACH)</option>
-                        <option value="10_lps">10 L/person/second (Minimum, WHO recommendation)</option>
-                        <option value="20_lps">20 L/person/second (Ideal, non-vigorous activity)</option>
-                        <option value="50_lps">50 L/person/second (Ideal, vigorous activity eg Exercise, Dancing)</option>
+                        <option value="ach" <?php if($ach == 'ach' || !$submitted) {echo 'selected';} ?> >6 Air Changes per Hour (ACH)</option>
+                        <option value="10_lps" <?php if($ach == '10_lps') {echo 'selected';} ?> >10 L/person/second (Minimum, WHO recommendation)</option>
+                        <option value="20_lps" <?php if($ach == '20_lps') {echo 'selected';} ?> >20 L/person/second (Ideal, non-vigorous activity)</option>
+                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Dancing)</option>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
@@ -252,7 +262,18 @@ if(isset($_POST['submit'])){
                 </div>
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
-                    <input type="text" class="form-control" id="room-size" name="room-size" placeholder="Room Volume (eg 100)">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="room-size"
+                        name="room-size"
+                        placeholder="Room Volume (eg 100)"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$room_size.'"';
+                            }
+                        ?>
+                    >
                     <div class="invalid-feedback">
                         Please enter your room size.
                     </div>
@@ -260,8 +281,8 @@ if(isset($_POST['submit'])){
                 <div class="col-md-2" id="rms-type">
                     <label for="m3-or-cu" class="form-label">m3 or cubic feet</label>
                     <select class="form-select" id="m3-or-cu" name="m3-or-cu">
-                        <option value="m3">m3</option>
-                        <option value="cubic">cubic feet</option>
+                        <option value="m3" <?php if($rms_type == 'm3' || !$submitted) {echo 'selected';} ?> >m3</option>
+                        <option value="cubic" <?php if($rms_type == 'cubic') {echo 'selected';} ?> >cubic feet</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select m3 or cubic feet.
@@ -269,7 +290,18 @@ if(isset($_POST['submit'])){
                 </div>
                 <div class="col-md-6" id="noc">
                     <label for="no-of-occ" class="form-label">Number of occupants</label>
-                    <input type="text" class="form-control" id="no-of-occ" name="no-of-occ" placeholder="Number of occupants">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="no-of-occ"
+                        name="no-of-occ"
+                        placeholder="Number of occupants"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$no_of_occ.'"';
+                            }
+                        ?>
+                    >
                     <div class="invalid-feedback">
                     Please enter the number of occupants.
                     </div>
@@ -327,7 +359,7 @@ if(isset($_POST['submit'])){
                                     <ul class="list-group list-group-flush">
                                     <?php if($ach == 'ach'){ ?>
                                         <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for 6 air changes per hr</i></li>
-                                        <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH for <?php echo $ach_needs; ?> devices</i></li>
+                                        <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
                                         <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for <?php echo trim($ach, '_lps');?>L/p/s</i></li>
@@ -368,11 +400,15 @@ if(isset($_POST['submit'])){
                                 <span>&nbsp;<?php echo $value['currency']; ?></span>
                             </div>
                             <h6 class="text-success">Total Upfront Cost</h6>
-			                <div class="d-flex flex-row align-items-center">
-                                <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
-                                <span>&nbsp;<?php echo $value['currency']; ?></span>
-                            </div>
-                            <h6 class="text-success">Total Filter Replacement Cost</h6>
+                            <?php if(!!$value[$filterCost]) { ?>
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
+                                    <span>&nbsp;<?php echo $value['currency']; ?></span>
+                                </div>
+                                <h6 class="text-success">Total Filter Replacement Cost</h6>
+                            <?php } else { ?>
+                                <h6 class="text-danger">Filter cost unknown</h6>
+                            <?php } ?>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
                                 <?php echo (isset($value[$buy])) ? '<a class="btn btn-primary btn-sm mt-2" href="'.$value[$buy].'" target="_blank">Buy Now</a>' : ''; ?>
@@ -407,13 +443,9 @@ if(isset($_POST['submit'])){
     <script src="https://getbootstrap.com/docs/5.1/examples/checkout/form-validation.js"></script>
 
     <script>
-        // Hiding ACH and RMS fields
-        $(document).ready(function() {
-            //$('#rms').hide();
-            //$('#rms-type').hide();
-            $('#noc').hide();
-            $('#ach').change(function() {
-                if ($(this).val() == 'ach') {
+
+        let showHideRoomSizeOccupants = function(mode) {
+            if (mode === 'ach') {
                     $('#rms').show();
                     $('#room-size').prop('required', true);
                     $("#rms").attr('required', '');
@@ -427,8 +459,22 @@ if(isset($_POST['submit'])){
                     $('#noc').show();
                     $('#no-of-occ').prop('required', true);
                 }
+        }
+
+        // Hiding ACH and RMS fields
+        $(document).ready(function() {
+            //$('#rms').hide();
+            //$('#rms-type').hide();
+            $('#noc').hide();
+            $('#ach').change(function() {
+                showHideRoomSizeOccupants($(this).val());
             });
+
+            showHideRoomSizeOccupants($('#ach').val());
         });
+        
+        
+
 		// Popover
 		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 		var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
