@@ -148,7 +148,7 @@ if(isset($_GET['submit'])){
         </div>
 		<div>
 			<p>This tool helps recommend how many of the available models of portable air cleaners at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. <strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned on this site </strong></p> 
-			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimated on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation and plasma and have excluded. </p>
+			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation and plasma and have excluded. </p>
 			<p>We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used.</p>
 			<p>Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing">here</a>. Australian data source <a href="https://twitter.com/drpieterpeach">Pieter Peach<a>, initial US data source <a href="https://twitter.com/marwa_zaatari">Marwa Zaatari</a>, initial UK data source <a href="https://twitter.com/PlasticFull">Stefan Stojanovic<a> </p>
 			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars<a> for updates.</p>
@@ -358,11 +358,11 @@ if(isset($_GET['submit'])){
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
                                     <?php if($ach == 'ach'){ ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for 6 air changes per hr</i></li>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately 6 air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for <?php echo trim($ach, '_lps');?>L/p/s</i></li>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for approximately <?php echo trim($ach, '_lps');?>L/p/s</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> L/p/s for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' L/p/s for '.$ach_needs_minone.' devices</i></li>' : ''; ?>
                                     <?php } ?>
