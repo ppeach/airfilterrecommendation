@@ -259,7 +259,7 @@ if(isset($_GET['submit'])){
                         <option value="ach" <?php if($ach == 'ach' || !$submitted) {echo 'selected';} ?> >6 Air Changes per Hour (ACH)</option>
                         <option value="10_lps" <?php if($ach == '10_lps') {echo 'selected';} ?> >10 L/person/second (Minimum, WHO recommendation)</option>
                         <option value="20_lps" <?php if($ach == '20_lps') {echo 'selected';} ?> >20 L/person/second (Ideal, non-vigorous activity)</option>
-                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Dancing)</option>
+                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Singing)</option>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
