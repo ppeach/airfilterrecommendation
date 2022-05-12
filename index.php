@@ -10,6 +10,7 @@ if(isset($_GET['submit'])){
     $country = $_GET['country'] ?? $countries[0];
     $max_an = $_GET['max-an'] ?? 0;
     $wifi = $_GET['wifi'] ?? 'Not fussed';
+    $schedule = $_GET['schedule'] ?? 'Not fussed';
     $ach  = $_GET['ach'] ?? 'ach';
     $room_size = $_GET['room-size'] ?? 60;
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
@@ -34,6 +35,15 @@ if(isset($_GET['submit'])){
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
         if($wifi != 'Not fussed'){
             return ($item['Wifi'] == $wifi);
+        } else {
+            return true;
+        }
+    });
+
+    // Filter by schedule
+    $filter_result = array_filter($filter_result, function($item) use ($schedule){
+        if($schedule != 'Not fussed'){
+            return ($item['Schedulable'] == $schedule);
         } else {
             return true;
         }
@@ -202,7 +212,7 @@ if(isset($_GET['submit'])){
                         Please select Max Acceptable Noise.
                     </div>
                 </div>
-                <div class="col-md-6">
+                <!--div class="col-md-6">
                     <label for="wifi" class="form-label">Wifi Requirement</label>
 					<div>
                         <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
@@ -212,6 +222,21 @@ if(isset($_GET['submit'])){
                     <select class="form-select" id="wifi" name="wifi" required>
                         <option value="Not fussed" <?php if($wifi == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not fussed</option>
                         <option value="Yes" <?php if($wifi == 'Yes') {echo 'selected';} ?> >Yes</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Wifi Requirement.
+                    </div>
+                </div-->
+		<div class="col-md-6">
+                    <label for="schedule" class="form-label">Scheduling ability</label>
+					<div>
+                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
+                            <p>Do I need to be able to schedule the device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        </a>
+					</div>
+                    <select class="form-select" id="schedule" name="schedule" required>
+                        <option value="Not fussed" <?php if($schedule == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not fussed</option>
+                        <option value="Yes" <?php if($schedule == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a Wifi Requirement.
@@ -331,6 +356,7 @@ if(isset($_GET['submit'])){
             <ul class="list-inline">
                 <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.'.</li>' : ''; ?>
                 <?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?>
+		<?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
                 <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$ach.'.</li>' : ''; ?>
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
