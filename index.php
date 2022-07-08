@@ -131,6 +131,8 @@ if(isset($_GET['submit'])){
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://getbootstrap.com/docs/5.1/examples/checkout/form-validation.css">
+	
+    <link rel="stylesheet" href="includes/share.css">
 
     <style>
         .bd-placeholder-img {
@@ -420,7 +422,7 @@ if(isset($_GET['submit'])){
                                 </ul>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
+                                    <li class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
                                 </ul>
                                 <?php } ?>
                             </div>
