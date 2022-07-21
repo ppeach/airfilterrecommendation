@@ -201,7 +201,7 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="max-an" name="max-an" required>
-                        <option value="0">No maximum</option>
+                        <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
                         <?php foreach ($maxANoise as $key => $value) {
                             if ($max_an == $value) {
                                 echo '<option selected value="'.$value.'">'.$value.' dBA</option>';
