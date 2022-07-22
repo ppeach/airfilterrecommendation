@@ -15,7 +15,7 @@ if(isset($_GET['submit'])){
     $room_size = $_GET['room-size'] ?? 60;
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
     $no_of_occ = $_GET['no-of-occ'] ?? 1;
-    $prefltr = $_POST['prefilter'];
+    $prefltr = $_GET['prefilter'] ?? 'Not fussed';
     $diy = $_GET['diy'] ?? 'No';
 
     // Get data from google sheets or json file
