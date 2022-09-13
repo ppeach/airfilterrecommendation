@@ -418,7 +418,8 @@ if(isset($_GET['submit'])){
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
-                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.'</li>'; ?>
+                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.' <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is total noise dB(A)?" data-bs-content="Total noise level is the noise level of multiple devices added together assuming they are placed together with sound level measured at 1m distance. In reality devices will be spaced around a room and noise level experienced at various points around the room will be less than this." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+			                        </a></li>'; ?>
                                 </ul>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
                                 <ul class="list-group list-group-flush">
