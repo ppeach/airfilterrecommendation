@@ -295,7 +295,7 @@ if(isset($_GET['submit'])){
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
                     <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         id="room-size"
                         name="room-size"
@@ -307,7 +307,7 @@ if(isset($_GET['submit'])){
                         ?>
                     >
                     <div class="invalid-feedback">
-                        Please enter your room size.
+                        Please enter your room volume as a single number (eg 200).
                     </div>
                 </div>
                 <div class="col-md-2" id="rms-type">
