@@ -321,7 +321,7 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-6" id="noc">
-                    <label for="no-of-occ" class="form-label">Number of occupants</label>
+                    <label for="no-of-occ" class="form-label">Rated occupant capacity for the space.</label>
                     <input
                         type="text"
                         class="form-control"
@@ -335,7 +335,7 @@ if(isset($_GET['submit'])){
                         ?>
                     >
                     <div class="invalid-feedback">
-                    Please enter the number of occupants.
+                    Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
                 <div class="col-md-12">
