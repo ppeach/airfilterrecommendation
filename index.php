@@ -190,14 +190,14 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="max-an" class="form-label">Acceptable Noise Level</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. <ul class='list-group list-group-flush'>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. <ul class='list-group list-group-flush'>
                                                     <li class='list-group-item'>30-35dBA Sleep</li>
                                                     <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
                                                     <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
                                                     <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
                                                     <li class='list-group-item'>No Maximum - Acceptable for loud environments </li>
                                                     </ul>" data-bs-html="true">
-                            <p>Noise limit guide <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>Noise limit guide <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="max-an" name="max-an" required>
@@ -217,8 +217,8 @@ if(isset($_GET['submit'])){
                 <!--div class="col-md-6">
                     <label for="wifi" class="form-label">Wifi Requirement</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
-                            <p>Do I need the filter to have Wifi? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
+                            <p>Do I need the filter to have Wifi? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
@@ -232,8 +232,8 @@ if(isset($_GET['submit'])){
 		<div class="col-md-6">
                     <label for="schedule" class="form-label">Scheduling ability</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
-                            <p>Do I need to be able to schedule the device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
+                            <p>Do I need to be able to schedule the device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="schedule" name="schedule" required>
@@ -247,8 +247,8 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="diy" class="form-label">Include DIY devices?</label>
 			<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is a DIY model?" data-bs-content="Do it yourself air filters are alternatives to commercially available devices that, when properly constructed, can be an economical and effective alternative. Clean air delivery rates (CADR) for these devices in a way that can be compared directly to AHAM CADR Smoke tested devices are currently estimated only." data-bs-html="true">
-                            <p>What is a DIY device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is a DIY model?" data-bs-content="Do it yourself air filters are alternatives to commercially available devices that, when properly constructed, can be an economical and effective alternative. Clean air delivery rates (CADR) for these devices in a way that can be compared directly to AHAM CADR Smoke tested devices are currently estimated only." data-bs-html="true">
+                            <p>What is a DIY device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="diy" name="diy" required>
@@ -262,8 +262,8 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH)</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target." data-bs-html="true">
-                            <p>What is L/p/s and ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target." data-bs-html="true">
+                            <p>What is L/p/s and ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
@@ -280,8 +280,8 @@ if(isset($_GET['submit'])){
 		<div class="col-md-6">
                     <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
-                            <p>When do I need a washable/vacuumable prefilter? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
+                            <p>When do I need a washable/vacuumable prefilter? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="prefilter" name="prefilter" required>
