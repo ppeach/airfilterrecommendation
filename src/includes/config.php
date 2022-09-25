@@ -20,6 +20,7 @@ $buyfilter  = 'Buy filter';
 $prefilter  = 'Prefilter';
 $notes      = 'Notes';
 $diy        = 'DIY';
+$title_schedule = 'Schedulable';
 
 // Set data for Countries dropdown
 $countries  = countries(config('sheet_id'));

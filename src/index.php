@@ -10,11 +10,12 @@ if(isset($_GET['submit'])){
     $country = $_GET['country'] ?? $countries[0];
     $max_an = $_GET['max-an'] ?? 0;
     $wifi = $_GET['wifi'] ?? 'Not fussed';
+    $schedule = $_GET['schedule'] ?? 'Not fussed';
     $ach  = $_GET['ach'] ?? 'ach';
     $room_size = $_GET['room-size'] ?? 60;
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
     $no_of_occ = $_GET['no-of-occ'] ?? 1;
-    //$prefltr = $_POST['prefilter'];
+    $prefltr = $_GET['prefilter'] ?? 'Not fussed';
     $diy = $_GET['diy'] ?? 'No';
 
     // Get data from google sheets or json file
@@ -34,6 +35,15 @@ if(isset($_GET['submit'])){
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
         if($wifi != 'Not fussed'){
             return ($item['Wifi'] == $wifi);
+        } else {
+            return true;
+        }
+    });
+
+    // Filter by schedule
+    $filter_result = array_filter($filter_result, function($item) use ($schedule){
+        if($schedule != 'Not fussed'){
+            return ($item['Schedulable'] == $schedule);
         } else {
             return true;
         }
@@ -73,13 +83,13 @@ if(isset($_GET['submit'])){
     $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
 
     // Filter total dBA by max acceptable noise
-    $hepa_result = array_filter($hepa_result, function($item) use ($max_an){
-        if($max_an != 0){
-            return ($item['Total dBA'] <= $max_an);
-        } else {
-            return true;
-        }
-    });
+    //$hepa_result = array_filter($hepa_result, function($item) use ($max_an){
+    //    if($max_an != 0){
+    //        return ($item['Total dBA'] <= $max_an);
+    //    } else {
+    //        return true;
+    //    }
+    //});
 
     // Get total result
     $total = count($hepa_result);
@@ -121,6 +131,8 @@ if(isset($_GET['submit'])){
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://getbootstrap.com/docs/5.1/examples/checkout/form-validation.css">
+	
+    <link rel="stylesheet" href="includes/share.css">
 
     <style>
         .bd-placeholder-img {
@@ -148,7 +160,7 @@ if(isset($_GET['submit'])){
         </div>
 		<div>
 			<p>This tool helps recommend how many of the available models of portable air cleaners at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. <strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned on this site </strong></p> 
-			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimated on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation and plasma and have excluded. </p>
+			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic oxidisation and have excluded. </p>
 			<p>We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used.</p>
 			<p>Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing">here</a>. Australian data source <a href="https://twitter.com/drpieterpeach">Pieter Peach<a>, initial US data source <a href="https://twitter.com/marwa_zaatari">Marwa Zaatari</a>, initial UK data source <a href="https://twitter.com/PlasticFull">Stefan Stojanovic<a> </p>
 			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars<a> for updates.</p>
@@ -178,18 +190,18 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="max-an" class="form-label">Acceptable Noise Level</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. <ul class='list-group list-group-flush'>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. <ul class='list-group list-group-flush'>
                                                     <li class='list-group-item'>30-35dBA Sleep</li>
-                                                    <li class='list-group-item'>40-50dBA Classroom</li>
-                                                    <li class='list-group-item'><50dBA Quiet Restaurant, Office</li>
-                                                    <li class='list-group-item'><60dBA Loud Restaurant, Gym, Childcare</li>
+                                                    <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
+                                                    <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
+                                                    <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
                                                     <li class='list-group-item'>No Maximum - Acceptable for loud environments </li>
                                                     </ul>" data-bs-html="true">
-                            <p>Noise limit guide <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>Noise limit guide <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="max-an" name="max-an" required>
-                        <option value="0">No maximum</option>
+                        <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
                         <?php foreach ($maxANoise as $key => $value) {
                             if ($max_an == $value) {
                                 echo '<option selected value="'.$value.'">'.$value.' dBA</option>';
@@ -202,11 +214,11 @@ if(isset($_GET['submit'])){
                         Please select Max Acceptable Noise.
                     </div>
                 </div>
-                <div class="col-md-6">
+                <!--div class="col-md-6">
                     <label for="wifi" class="form-label">Wifi Requirement</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
-                            <p>Do I need the filter to have Wifi? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
+                            <p>Do I need the filter to have Wifi? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
@@ -216,24 +228,29 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                         Please select a Wifi Requirement.
                     </div>
-                </div>
-                <!--div class="col-md-6">
-                    <label for="prefilter" class="form-label">Prefilter Requirement</label>
+                </div-->
+		<div class="col-md-6">
+                    <label for="schedule" class="form-label">Scheduling ability</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments where the dust can be kept off the main filter and vacuumed regularly, prolonging the life of the main filter" data-bs-html="true">
-                            <p>When do I need a prefilter? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
+                            <p>Do I need to be able to schedule the device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
-                    <select class="form-select" id="prefilter" name="prefilter" required>
-                        <option value="Not fussed">Not fussed</option>
-                        <option value="Yes">Yes</option>
+                    <select class="form-select" id="schedule" name="schedule" required>
+                        <option value="Not fussed" <?php if($schedule == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not fussed</option>
+                        <option value="Yes" <?php if($schedule == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
-                        Please select a Prefilter Requirement.
+                        Please select a Wifi Requirement.
                     </div>
-                </div-->
+                </div>
                 <div class="col-md-6">
-                    <label for="diy" class="form-label">Include DIY filters?</label>
+                    <label for="diy" class="form-label">Include DIY devices?</label>
+			<div>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is a DIY model?" data-bs-content="Do it yourself air filters are alternatives to commercially available devices that, when properly constructed, can be an economical and effective alternative. Clean air delivery rates (CADR) for these devices in a way that can be compared directly to AHAM CADR Smoke tested devices are currently estimated only." data-bs-html="true">
+                            <p>What is a DIY device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        </a>
+					</div>
                     <select class="form-select" id="diy" name="diy" required>
                         <option value="No" <?php if($diy == 'No' || !$submitted) {echo 'selected';} ?> >No</option>
                         <option value="Yes" <?php if($diy == 'Yes') {echo 'selected';} ?> >Yes</option>
@@ -245,8 +262,8 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH)</label>
 					<div>
-                        <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second may be a more appropriate an realistic target." data-bs-html="true">
-                            <p>What is L/p/s and ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target." data-bs-html="true">
+                            <p>What is L/p/s and ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
@@ -254,16 +271,31 @@ if(isset($_GET['submit'])){
                         <option value="ach" <?php if($ach == 'ach' || !$submitted) {echo 'selected';} ?> >6 Air Changes per Hour (ACH)</option>
                         <option value="10_lps" <?php if($ach == '10_lps') {echo 'selected';} ?> >10 L/person/second (Minimum, WHO recommendation)</option>
                         <option value="20_lps" <?php if($ach == '20_lps') {echo 'selected';} ?> >20 L/person/second (Ideal, non-vigorous activity)</option>
-                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Dancing)</option>
+                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Singing)</option>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
+		<div class="col-md-6">
+                    <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
+					<div>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
+                            <p>When do I need a washable/vacuumable prefilter? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                        </a>
+					</div>
+                    <select class="form-select" id="prefilter" name="prefilter" required>
+                        <option value="Not fussed">Not fussed</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Prefilter Requirement.
+                    </div>
+		</div>
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
                     <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         id="room-size"
                         name="room-size"
@@ -275,7 +307,7 @@ if(isset($_GET['submit'])){
                         ?>
                     >
                     <div class="invalid-feedback">
-                        Please enter your room size.
+                        Please enter your room volume as a single number (eg 200).
                     </div>
                 </div>
                 <div class="col-md-2" id="rms-type">
@@ -289,7 +321,7 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-6" id="noc">
-                    <label for="no-of-occ" class="form-label">Number of occupants</label>
+                    <label for="no-of-occ" class="form-label">Rated occupant capacity for the space.</label>
                     <input
                         type="text"
                         class="form-control"
@@ -303,7 +335,7 @@ if(isset($_GET['submit'])){
                         ?>
                     >
                     <div class="invalid-feedback">
-                    Please enter the number of occupants.
+                    Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -326,6 +358,7 @@ if(isset($_GET['submit'])){
             <ul class="list-inline">
                 <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.'.</li>' : ''; ?>
                 <?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?>
+		<?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
                 <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$ach.'.</li>' : ''; ?>
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
                 <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
@@ -358,11 +391,11 @@ if(isset($_GET['submit'])){
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
                                     <?php if($ach == 'ach'){ ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for 6 air changes per hr</i></li>
-                                        <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH for <?php echo $ach_needs; ?> devices</i></li>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately 6 air changes per hr</i></li>
+                                        <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for <?php echo trim($ach, '_lps');?>L/p/s</i></li>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for approximately <?php echo trim($ach, '_lps');?>L/p/s</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> L/p/s for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' L/p/s for '.$ach_needs_minone.' devices</i></li>' : ''; ?>
                                     <?php } ?>
@@ -385,11 +418,12 @@ if(isset($_GET['submit'])){
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
-                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.'</li>'; ?>
+                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.' <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is total noise dB(A)?" data-bs-content="Total noise level is the noise level of multiple devices added together assuming they are placed together with sound level measured at 1m distance. In reality devices will be spaced around a room and noise level experienced at various points around the room will be less than this." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+			                        </a></li>'; ?>
                                 </ul>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
+                                    <li class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
                                 </ul>
                                 <?php } ?>
                             </div>
