@@ -49,7 +49,7 @@ if(isset($_GET['submit'])){
 
     // Filter by schedule
     $filter_result = array_filter($filter_result, function($item) use ($schedule){
-        if($schedule != 'Not fussed'){
+        if($schedule != 'Not necessary'){
             return ($item['Schedulable'] == $schedule);
         } else {
             return true;
