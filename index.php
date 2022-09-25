@@ -83,13 +83,13 @@ if(isset($_GET['submit'])){
     $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
 
     // Filter total dBA by max acceptable noise
-    $hepa_result = array_filter($hepa_result, function($item) use ($max_an){
-        if($max_an != 0){
-            return ($item['Total dBA'] <= $max_an);
-        } else {
-            return true;
-        }
-    });
+    //$hepa_result = array_filter($hepa_result, function($item) use ($max_an){
+    //    if($max_an != 0){
+    //        return ($item['Total dBA'] <= $max_an);
+    //    } else {
+    //        return true;
+    //    }
+    //});
 
     // Get total result
     $total = count($hepa_result);
