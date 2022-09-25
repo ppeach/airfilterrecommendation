@@ -23,9 +23,7 @@ $prefilter  = 'Prefilter';
 $notes      = 'Notes';
 $diy        = 'DIY';
 $title_schedule = 'Schedulable';
-
-// Set data for Countries dropdown
-// $countries  = countries(config('sheet_id'));
+$watts = 'Watts';
 
 // Set data for Max Acceptable Noise
 $maxANoise  = array('30', '35', '40', '45', '50', '55', '60');
