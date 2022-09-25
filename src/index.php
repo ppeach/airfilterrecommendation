@@ -450,12 +450,6 @@ if(isset($_GET['submit'])){
                                         <li class="list-group-item flex-fill">
                                             Power consumption: <?php echo ($ach_needs * $value[$watts]); ?>W <?php if($ach_needs != 1) { echo '('.$value[$watts].' W per unit)'; } ?>
                                             <br />
-                                            <?php echo ($ach_needs* ($value[$watts] / 1000 )); ?> kWh (1 hour)
-                                            &middot;
-                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 8); ?> kWh (8 hours)
-                                            &middot;
-                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 12); ?> kWh (12 hours)
-                                            &middot;
                                             <?php echo ($ach_needs * ($value[$watts] / 1000)  * 24); ?> kWh (24 hours)
                                         </li>
                                     </ul>
@@ -488,7 +482,7 @@ if(isset($_GET['submit'])){
                                     <span>&nbsp;<?php echo $value['currency']; ?></span>
                                 </div>
                                 <h6 class="text-success">Yearly electricity cost (24/7 operation)</h6>
-                                <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
+                                <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].round((($tariff))) ; ?> per kWh</small>
                             <?php } ?>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
