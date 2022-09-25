@@ -1,5 +1,11 @@
 <?php
-require_once('includes/config.php');
+
+if (!file_exists("data/config/config.json")) {
+    header("Location: conf.php");
+    die();
+}
+
+require_once('includes/init.php');
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -16,6 +22,7 @@ if(isset($_GET['submit'])){
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
     $no_of_occ = $_GET['no-of-occ'] ?? 1;
     $prefltr = $_GET['prefilter'] ?? 'Not fussed';
+    $tariff = $_GET['tariff'] ?? '0.22';
     $diy = $_GET['diy'] ?? 'No';
 
     // Get data from google sheets or json file
@@ -163,7 +170,7 @@ if(isset($_GET['submit'])){
 			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic oxidisation and have excluded. </p>
 			<p>We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used.</p>
 			<p>Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing">here</a>. Australian data source <a href="https://twitter.com/drpieterpeach">Pieter Peach<a>, initial US data source <a href="https://twitter.com/marwa_zaatari">Marwa Zaatari</a>, initial UK data source <a href="https://twitter.com/PlasticFull">Stefan Stojanovic<a> </p>
-			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars<a> for updates.</p>
+			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars</a> for updates.</p>
 		</div>
 
         <div class="row g-5">
@@ -171,7 +178,7 @@ if(isset($_GET['submit'])){
         <form action="" method="get" class="needs-validation" novalidate>
             <div class="row g-5">
                 <!-- HEPA Form -->
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <label for="country" class="form-label">Country</label>
                     <select class="form-select" id="country" name="country" required>
                         <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
@@ -186,6 +193,23 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                         Please select a Country.
                     </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="tariff" class="form-label">Electricity Tariff</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="tariff"
+                        id="tariff"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$tariff.'"';
+                            } else {
+                                echo 'value=".22"';
+                            }
+                        ?>
+                    >
+                    <small>Enter your electricity tariff in $ per kWh</small>
                 </div>
                 <div class="col-md-6">
                     <label for="max-an" class="form-label">Acceptable Noise Level</label>
@@ -421,6 +445,21 @@ if(isset($_GET['submit'])){
                                     <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.' <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is total noise dB(A)?" data-bs-content="Total noise level is the noise level of multiple devices added together assuming they are placed together with sound level measured at 1m distance. In reality devices will be spaced around a room and noise level experienced at various points around the room will be less than this." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
 			                        </a></li>'; ?>
                                 </ul>
+                                <?php if(!!$value[$watts]) { ?>
+                                    <ul class="list-group list-group-horizontal-md">
+                                        <li class="list-group-item flex-fill">
+                                            Power consumption: <?php echo ($ach_needs * $value[$watts]); ?>W <?php if($ach_needs != 1) { echo '('.$value[$watts].' W per unit)'; } ?>
+                                            <br />
+                                            <?php echo ($ach_needs* ($value[$watts] / 1000 )); ?> kWh (1 hour)
+                                            &middot;
+                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 8); ?> kWh (8 hours)
+                                            &middot;
+                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 12); ?> kWh (12 hours)
+                                            &middot;
+                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 24); ?> kWh (24 hours)
+                                        </li>
+                                    </ul>
+                                <?php } ?>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
                                 <ul class="list-group list-group-flush">
                                     <li class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
@@ -442,6 +481,14 @@ if(isset($_GET['submit'])){
                                 <h6 class="text-success">Total Filter Replacement Cost</h6>
                             <?php } else { ?>
                                 <h6 class="text-danger">Filter cost unknown</h6>
+                            <?php } ?>
+                            <?php if(!!$value[$watts]) { ?>
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
+                                    <span>&nbsp;<?php echo $value['currency']; ?></span>
+                                </div>
+                                <h6 class="text-success">Yearly electricity cost (24/7 operation)</h6>
+                                <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                             <?php } ?>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>

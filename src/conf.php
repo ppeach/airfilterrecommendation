@@ -12,6 +12,14 @@ if(isset($_POST['submit'])){
         'update_key'      => $_POST['authKey'],
     );
 
+    if (!is_dir('data')) {
+      mkdir('data');
+    }
+
+    if (!is_dir('data/config')) {
+      mkdir('data/config');
+    }
+
     $update = file_put_contents("data/config/config.json", json_encode($data));
 
     if($update) {
@@ -19,9 +27,16 @@ if(isset($_POST['submit'])){
     } else {
         $message = array('status' => 'error', 'message' => 'Error updating Configurations');
     }
+    header('Location: '.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH).'?key='.$_POST['authKey'], true, 302);
+}
+
+if ((!config('update_key')) || (isset($_GET['key']) && $_GET['key'] === config('update_key'))) {
+  $access_permitted = true;
+} else {
+  $access_permitted = false;
 }
 ?>
-<?php if(isset($_GET['key']) && $_GET['key'] === config('update_key')) { ?>
+<?php if($access_permitted) { ?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -88,6 +103,7 @@ if(isset($_POST['submit'])){
             <div class="col-12">
               <label for="sheetID" class="form-label">Sheet ID</label>
               <input type="text" class="form-control" id="sheetID" name="sheetID" placeholder="17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk" value="<?=config('sheet_id');?>" required>
+              <small>You can paste a full Google Sheets URL here and the sheet ID will be extracted</small>
               <div class="invalid-feedback">
                 Sheet ID is required.
               </div>
@@ -157,6 +173,11 @@ if(isset($_POST['submit'])){
           <hr class="my-4">
 
           <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit">Update Configurations</button>
+
+
+          <hr class="my-4">
+
+          <a class="w-100 btn btn-secondary btn-lg" href="./update.php?key=<?=config('update_key');?>">Refresh Database</a>
         </form>
       </div>
     </div>
@@ -176,15 +197,28 @@ if(isset($_POST['submit'])){
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <?php if(isset($message)){ ?>
-    <script>
-        Swal.fire({
-            icon: '<?=$message['status'];?>',
-            text: '<?=$message['message'];?>',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    </script>
+      <script>
+          Swal.fire({
+              icon: '<?=$message['status'];?>',
+              text: '<?=$message['message'];?>',
+              showConfirmButton: false,
+              timer: 1500
+          })
+      </script>
     <?php } ?>
+    <script>
+      document.querySelector('#sheetID').addEventListener('paste', (ev) => {
+        event.preventDefault();
+        let text = (event.clipboardData || window.clipboardData).getData('text');
+
+        if (text.search('https://docs.google.com/spreadsheets/d/') !== -1) {
+          text = text.replace('https://docs.google.com/spreadsheets/d/', '');
+          text = text.split('/')[0];
+        }
+
+        ev.target.value = text;
+      });
+    </script>
   </body>
 </html>
 <?php } else { echo '<h1>Public access is not allowed</h1>'; } ?>
