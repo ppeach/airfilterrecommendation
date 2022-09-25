@@ -1,4 +1,6 @@
-<?php define('BASEPATH', TRUE);
+<?php
+
+define('BASEPATH', TRUE);
 require_once('functions.php');
 
 // Disable error_reporting - Important for production
@@ -23,7 +25,7 @@ $diy        = 'DIY';
 $title_schedule = 'Schedulable';
 
 // Set data for Countries dropdown
-$countries  = countries(config('sheet_id'));
+// $countries  = countries(config('sheet_id'));
 
 // Set data for Max Acceptable Noise
 $maxANoise  = array('30', '35', '40', '45', '50', '55', '60');
@@ -31,3 +33,5 @@ $maxANoise  = array('30', '35', '40', '45', '50', '55', '60');
 // Define constants for OAuth2 authentication and Google Sheets API
 define('OAUTHURL', 'https://www.googleapis.com/oauth2/v4/token');
 define('SHEETSAPI', 'https://sheets.googleapis.com/v4/spreadsheets/');
+
+?>

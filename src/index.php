@@ -1,6 +1,6 @@
 <?php
-require_once('includes/config.php');
 
+require_once('includes/init.php');
 // If form is submitted
 if(isset($_GET['submit'])){
 
