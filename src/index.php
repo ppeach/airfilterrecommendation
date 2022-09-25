@@ -1,6 +1,12 @@
 <?php
 
+if (!file_exists("data/config/config.json")) {
+    header("Location: conf.php");
+    die();
+}
+
 require_once('includes/init.php');
+
 // If form is submitted
 if(isset($_GET['submit'])){
 
