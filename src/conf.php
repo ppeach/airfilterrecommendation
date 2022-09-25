@@ -19,9 +19,16 @@ if(isset($_POST['submit'])){
     } else {
         $message = array('status' => 'error', 'message' => 'Error updating Configurations');
     }
+    header('Location: '.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH).'?key='.$_POST['authKey'], true, 302);
+}
+
+if ((!config('update_key')) || (isset($_GET['key']) && $_GET['key'] === config('update_key'))) {
+  $access_permitted = true;
+} else {
+  $access_permitted = false;
 }
 ?>
-<?php if(isset($_GET['key']) && $_GET['key'] === config('update_key')) { ?>
+<?php if($access_permitted) { ?>
 <!doctype html>
 <html lang="en">
   <head>
