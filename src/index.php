@@ -448,15 +448,15 @@ if(isset($_GET['submit'])){
                                 <?php if(!!$value[$watts]) { ?>
                                     <ul class="list-group list-group-horizontal-md">
                                         <li class="list-group-item flex-fill">
-                                            Power consumption: <?php echo $value[$watts]; ?>W
+                                            Power consumption: <?php echo ($ach_needs * $value[$watts]); ?>W <?php if($ach_needs != 1) { echo '('.$value[$watts].' W per unit)'; } ?>
                                             <br />
-                                            <?php echo ($value[$watts] / 1000 ); ?> kWh (1 hour)
+                                            <?php echo ($ach_needs* ($value[$watts] / 1000 )); ?> kWh (1 hour)
                                             &middot;
-                                            <?php echo (($value[$watts] / 1000)  * 8); ?> kWh (8 hours)
+                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 8); ?> kWh (8 hours)
                                             &middot;
-                                            <?php echo (($value[$watts] / 1000)  * 12); ?> kWh (12 hours)
+                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 12); ?> kWh (12 hours)
                                             &middot;
-                                            <?php echo (($value[$watts] / 1000)  * 24); ?> kWh (24 hours)
+                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 24); ?> kWh (24 hours)
                                         </li>
                                     </ul>
                                 <?php } ?>
@@ -484,7 +484,7 @@ if(isset($_GET['submit'])){
                             <?php } ?>
                             <?php if(!!$value[$watts]) { ?>
                                 <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1"><?php echo $value['currency_format'].((($value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
                                     <span>&nbsp;<?php echo $value['currency']; ?></span>
                                 </div>
                                 <h6 class="text-success">Yearly electricity cost (24/7 operation)</h6>
