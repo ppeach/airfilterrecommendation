@@ -173,6 +173,11 @@ if ((!config('update_key')) || (isset($_GET['key']) && $_GET['key'] === config('
           <hr class="my-4">
 
           <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit">Update Configurations</button>
+
+
+          <hr class="my-4">
+
+          <a class="w-100 btn btn-secondary btn-lg" href="./update.php?key=<?=config('update_key');?>">Refresh Database</a>
         </form>
       </div>
     </div>
