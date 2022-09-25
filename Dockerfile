@@ -1,4 +1,4 @@
-FROM php:8.1.5-apache-buster
+FROM php:8.1-apache-bullseye
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
