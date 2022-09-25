@@ -197,7 +197,7 @@ if(isset($_GET['submit'])){
                 <div class="col-md-3">
                     <label for="tariff" class="form-label">Electricity Tariff</label>
                     <input
-                        type="number"
+                        type="text"
                         class="form-control"
                         name="tariff"
                         id="tariff"
