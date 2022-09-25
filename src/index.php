@@ -301,7 +301,7 @@ if(isset($_GET['submit'])){
                         Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
-		<div class="col-md-6">
+		<!--div class="col-md-6">
                     <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
@@ -315,7 +315,7 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
                     </div>
-		</div>
+		</div-->
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
                     <input
