@@ -95,6 +95,7 @@ if ((!config('update_key')) || (isset($_GET['key']) && $_GET['key'] === config('
             <div class="col-12">
               <label for="sheetID" class="form-label">Sheet ID</label>
               <input type="text" class="form-control" id="sheetID" name="sheetID" placeholder="17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk" value="<?=config('sheet_id');?>" required>
+              <small>You can paste a full Google Sheets URL here and the sheet ID will be extracted</small>
               <div class="invalid-feedback">
                 Sheet ID is required.
               </div>
@@ -183,15 +184,28 @@ if ((!config('update_key')) || (isset($_GET['key']) && $_GET['key'] === config('
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <?php if(isset($message)){ ?>
-    <script>
-        Swal.fire({
-            icon: '<?=$message['status'];?>',
-            text: '<?=$message['message'];?>',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    </script>
+      <script>
+          Swal.fire({
+              icon: '<?=$message['status'];?>',
+              text: '<?=$message['message'];?>',
+              showConfirmButton: false,
+              timer: 1500
+          })
+      </script>
     <?php } ?>
+    <script>
+      document.querySelector('#sheetID').addEventListener('paste', (ev) => {
+        event.preventDefault();
+        let text = (event.clipboardData || window.clipboardData).getData('text');
+
+        if (text.search('https://docs.google.com/spreadsheets/d/') !== -1) {
+          text = text.replace('https://docs.google.com/spreadsheets/d/', '');
+          text = text.split('/')[0];
+        }
+
+        ev.target.value = text;
+      });
+    </script>
   </body>
 </html>
 <?php } else { echo '<h1>Public access is not allowed</h1>'; } ?>
