@@ -252,6 +252,14 @@ function updateData()
     $countries = array_column($countries, 'title');
     $countries = array_unique($countries);
     sort($countries);
+
+    if (!is_dir('data')) {
+        mkdir('data');
+    }
+    
+    if (!is_dir('data/db')) {
+        mkdir('data/db');
+    }
     
     // Remove all country json files
     $hepafiles = glob('data/db/*.{json}', GLOB_BRACE);

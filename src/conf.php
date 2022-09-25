@@ -12,6 +12,14 @@ if(isset($_POST['submit'])){
         'update_key'      => $_POST['authKey'],
     );
 
+    if (!is_dir('data')) {
+      mkdir('data');
+    }
+
+    if (!is_dir('data/config')) {
+      mkdir('data/config');
+    }
+
     $update = file_put_contents("data/config/config.json", json_encode($data));
 
     if($update) {
