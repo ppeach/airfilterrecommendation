@@ -450,39 +450,52 @@ if(isset($_GET['submit'])){
                                         <li class="list-group-item flex-fill">
                                             Power consumption: <?php echo ($ach_needs * $value[$watts]); ?>W <?php if($ach_needs != 1) { echo '('.$value[$watts].' W per unit)'; } ?>
                                             <br />
+                                            <?php echo ($ach_needs* ($value[$watts] / 1000 )); ?> kWh (1 hour)
+                                            &middot;
                                             <?php echo ($ach_needs * ($value[$watts] / 1000)  * 24); ?> kWh (24 hours)
                                         </li>
                                     </ul>
                                 <?php } ?>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
-                                <ul class="list-group list-group-flush">
-                                    <li class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
-                                </ul>
+                                <div class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></div>
                                 <?php } ?>
                             </div>
                         </div>
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                            <div class="d-flex flex-row align-items-center">
-                                <h4 class="mr-1"><?php echo $value['currency_format'].$value['Total Cost']; ?></h4>
-                                <span>&nbsp;<?php echo $value['currency']; ?></span>
-                            </div>
                             <h6 class="text-success">Total Upfront Cost</h6>
+							<div class="d-flex flex-row align-items-center">
+                                <h4 class="mr-1"><?php echo $value['currency_format'].$value['Total Cost']; ?></h4>
+                                <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                            </div>
+							<h6 class="text-success">Total Filter Replacement Cost</h6>
                             <?php if(!!$value[$filterCost]) { ?>
                                 <div class="d-flex flex-row align-items-center">
                                     <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
-                                    <span>&nbsp;<?php echo $value['currency']; ?></span>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                 </div>
-                                <h6 class="text-success">Total Filter Replacement Cost</h6>
                             <?php } else { ?>
                                 <h6 class="text-danger">Filter cost unknown</h6>
                             <?php } ?>
                             <?php if(!!$value[$watts]) { ?>
+								<h6 class="text-success">Yearly electricity cost</h6>
                                 <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1"><?php echo $value['currency_format'].((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
-                                    <span>&nbsp;<?php echo $value['currency']; ?></span>
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                 </div>
-                                <h6 class="text-success">Yearly electricity cost (24/7 operation)</h6>
-                                <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].round((($tariff))) ; ?> per kWh</small>
+                                <h6>(24/7 operation)</h6>
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 195 * $tariff )) ; ?></h4>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                </div>
+                                <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+			                        </a></h6>
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 260 * $tariff )) ; ?></h4>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                </div>
+                                <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+			                        </a></h6>
+                                <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                             <?php } ?>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
