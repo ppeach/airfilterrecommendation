@@ -6,6 +6,8 @@ if (!file_exists("data/config/config.json")) {
 }
 
 require_once('includes/init.php');
+require_once('includes/constants.php');
+
 
 // If form is submitted
 if(isset($_GET['submit'])){
