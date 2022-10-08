@@ -49,7 +49,7 @@ if(isset($_GET['submit'])){
 
     // Filter by schedule
     $filter_result = array_filter($filter_result, function($item) use ($schedule){
-        if($schedule != 'Not fussed'){
+        if($schedule != 'Not necessary'){
             return ($item['Schedulable'] == $schedule);
         } else {
             return true;
@@ -167,7 +167,7 @@ if(isset($_GET['submit'])){
         </div>
 		<div>
 			<p>This tool helps recommend how many of the available models of portable air cleaners at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. <strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned on this site </strong></p> 
-			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic oxidisation and have excluded. </p>
+			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic oxidisation have been excluded or their presence made apparent. </p>
 			<p>We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used.</p>
 			<p>Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing">here</a>. Australian data source <a href="https://twitter.com/drpieterpeach">Pieter Peach<a>, initial US data source <a href="https://twitter.com/marwa_zaatari">Marwa Zaatari</a>, initial UK data source <a href="https://twitter.com/PlasticFull">Stefan Stojanovic<a> </p>
 			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars</a> for updates.</p>
@@ -301,7 +301,7 @@ if(isset($_GET['submit'])){
                         Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
-		<div class="col-md-6">
+		<!--div class="col-md-6">
                     <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
@@ -315,7 +315,7 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
                     </div>
-		</div>
+		</div-->
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
                     <input
@@ -452,42 +452,49 @@ if(isset($_GET['submit'])){
                                             <br />
                                             <?php echo ($ach_needs* ($value[$watts] / 1000 )); ?> kWh (1 hour)
                                             &middot;
-                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 8); ?> kWh (8 hours)
-                                            &middot;
-                                            <?php echo ($ach_needs * ($value[$watts] / 1000)  * 12); ?> kWh (12 hours)
-                                            &middot;
                                             <?php echo ($ach_needs * ($value[$watts] / 1000)  * 24); ?> kWh (24 hours)
                                         </li>
                                     </ul>
                                 <?php } ?>
                                 <?php if(isset($value[$notes]) && $value[$notes] != ''){ ?>
-                                <ul class="list-group list-group-flush">
-                                    <li class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></li>
-                                </ul>
+                                <div class="alert alert-info"><strong>Notes:</strong> <cite><?php echo $value[$notes];?></cite></div>
                                 <?php } ?>
                             </div>
                         </div>
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                            <div class="d-flex flex-row align-items-center">
-                                <h4 class="mr-1"><?php echo $value['currency_format'].$value['Total Cost']; ?></h4>
-                                <span>&nbsp;<?php echo $value['currency']; ?></span>
-                            </div>
                             <h6 class="text-success">Total Upfront Cost</h6>
+							<div class="d-flex flex-row align-items-center">
+                                <h4 class="mr-1"><?php echo $value['currency_format'].$value['Total Cost']; ?></h4>
+                                <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                            </div>
+							<h6 class="text-success">Total Filter Replacement Cost</h6>
                             <?php if(!!$value[$filterCost]) { ?>
                                 <div class="d-flex flex-row align-items-center">
                                     <h4 class="mr-1"><?php echo $value['currency_format'].($value[$filterCost] * $ach_needs) ; ?></h4>
-                                    <span>&nbsp;<?php echo $value['currency']; ?></span>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                 </div>
-                                <h6 class="text-success">Total Filter Replacement Cost</h6>
                             <?php } else { ?>
                                 <h6 class="text-danger">Filter cost unknown</h6>
                             <?php } ?>
                             <?php if(!!$value[$watts]) { ?>
+								<h6 class="text-success">Yearly electricity cost</h6>
                                 <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1"><?php echo $value['currency_format'].((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
-                                    <span>&nbsp;<?php echo $value['currency']; ?></span>
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                 </div>
-                                <h6 class="text-success">Yearly electricity cost (24/7 operation)</h6>
+                                <h6>(24/7 operation)</h6>
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 195 * $tariff )) ; ?></h4>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                </div>
+                                <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+			                        </a></h6>
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 260 * $tariff )) ; ?></h4>
+                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                </div>
+                                <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+			                        </a></h6>
                                 <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                             <?php } ?>
                             <div class="d-flex flex-column mt-4">
