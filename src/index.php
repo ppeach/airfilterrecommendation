@@ -178,7 +178,7 @@ if(isset($_GET['submit'])){
         <form action="" method="get" class="needs-validation" novalidate>
             <div class="row g-5">
                 <!-- HEPA Form -->
-                <div class="col-md-9">
+                <div class="col-md-12">
                     <label for="country" class="form-label">Country</label>
                     <select class="form-select" id="country" name="country" required>
                         <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
@@ -193,23 +193,6 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                         Please select a Country.
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <label for="tariff" class="form-label">Electricity Tariff</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        name="tariff"
-                        id="tariff"
-                        <?php
-                            if($submitted) {
-                                echo 'value="'.$tariff.'"';
-                            } else {
-                                echo 'value=".22"';
-                            }
-                        ?>
-                    >
-                    <small>Enter your electricity tariff in $ per kWh</small>
                 </div>
                 <div class="col-md-6">
                     <label for="max-an" class="form-label">Acceptable Noise Level</label>
@@ -261,7 +244,7 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="schedule" name="schedule" required>
-                        <option value="Not fussed" <?php if($schedule == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not fussed</option>
+                        <option value="Not fussed" <?php if($schedule == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
                         <option value="Yes" <?php if($schedule == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
@@ -361,6 +344,23 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                     Please enter the rated occupant capacity for the space.
                     </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="tariff" class="form-label">Electricity Tariff</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="tariff"
+                        id="tariff"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$tariff.'"';
+                            } else {
+                                echo 'value="0.22"';
+                            }
+                        ?>
+                    >
+                    <small>Enter your electricity tariff per kWh (eg 0.22)</small>
                 </div>
                 <div class="col-md-12">
                     <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit">Find Your Filters</button>
