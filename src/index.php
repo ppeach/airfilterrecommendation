@@ -229,7 +229,7 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
-                        <option value="Not fussed" <?php if($wifi == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not fussed</option>
+                        <option value="Not fussed" <?php if($wifi == 'Not necessary' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
                         <option value="Yes" <?php if($wifi == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
@@ -244,11 +244,11 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="schedule" name="schedule" required>
-                        <option value="Not fussed" <?php if($schedule == 'Not fussed' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
+                        <option value="Not necessary" <?php if($schedule == 'Not necessary' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
                         <option value="Yes" <?php if($schedule == 'Yes') {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
-                        Please select a Wifi Requirement.
+                        Please select a scheduling requirement.
                     </div>
                 </div>
                 <div class="col-md-6">
