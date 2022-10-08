@@ -1,5 +1,5 @@
 <?php
-
+require('includes/constants.php');
 require_once('config.php');
 
 // Set data for Countries dropdown

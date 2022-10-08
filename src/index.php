@@ -6,7 +6,6 @@ if (!file_exists("data/config/config.json")) {
 }
 
 require_once('includes/init.php');
-require_once('includes/constants.php');
 
 
 // If form is submitted
@@ -19,7 +18,7 @@ if(isset($_GET['submit'])){
     $max_an = $_GET['max-an'] ?? 0;
     $wifi = $_GET['wifi'] ?? $VALUE_NO;
     $schedule = $_GET['schedule'] ?? $VALUE_NO;
-    $ach  = $_GET['ach'] ?? 'ach';
+    $ach  = $_GET['ach'] ?? $VALUE_ACH_6;
     $room_size = $_GET['room-size'] ?? 60;
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
     $no_of_occ = $_GET['no-of-occ'] ?? 1;
@@ -42,6 +41,7 @@ if(isset($_GET['submit'])){
 
     // Filter by wifi
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
+        global $VALUE_NO;
         if($wifi != $VALUE_NO){
             return (strtolower($item['Wifi']) == strtolower($wifi));
         } else {
@@ -51,6 +51,7 @@ if(isset($_GET['submit'])){
 
     // Filter by schedule
     $filter_result = array_filter($filter_result, function($item) use ($schedule){
+        global $VALUE_NO;
         if($schedule != $VALUE_NO){
             return (strtolower($item['Schedulable']) == strtolower($schedule));
         } else {
@@ -69,6 +70,7 @@ if(isset($_GET['submit'])){
 
     // Filter by DIY
     $filter_result = array_filter($filter_result, function($item) use ($diy){
+        global $VALUE_YES;
         if($diy != $VALUE_YES){
             return (strtolower($item['DIY']) != strtolower($VALUE_YES));
         } else {
@@ -278,8 +280,15 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
-                        <!--option selected disabled value="">Choose...</option-->
+                        <option disabled>Choose...</option>
+                        <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_2 ?></option>
+                        <option value="<?= $VALUE_ACH_3 ?>" <?php if($ach == $VALUE_ACH_3 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_3 ?></option>
                         <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_6 ?></option>
+                        <option value="<?= $VALUE_ACH_9 ?>" <?php if($ach == $VALUE_ACH_9 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_9 ?></option>
+                        <option value="<?= $VALUE_ACH_12 ?>" <?php if($ach == $VALUE_ACH_12 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_12 ?></option>
+                        <option value="<?= $VALUE_ACH_15 ?>" <?php if($ach == $VALUE_ACH_15 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_15 ?></option>
+                        <option value="<?= $VALUE_ACH_20 ?>" <?php if($ach == $VALUE_ACH_20 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_20 ?></option>
+                        <option disabled>---</option>
                         <option value="<?= $VALUE_LPS_10 ?>" <?php if($ach == $VALUE_LPS_10) {echo 'selected';} ?> ><?= $DISPLAY_LPS_10 ?></option>
                         <option value="<?= $VALUE_LPS_20 ?>" <?php if($ach == $VALUE_LPS_20) {echo 'selected';} ?> ><?= $DISPLAY_LPS_20 ?></option>
                         <option value="<?= $VALUE_LPS_50 ?>" <?php if($ach == $VALUE_LPS_50) {echo 'selected';} ?> ><?= $DISPLAY_LPS_50 ?></option>
@@ -328,8 +337,8 @@ if(isset($_GET['submit'])){
                 <div class="col-md-2" id="rms-type">
                     <label for="m3-or-cu" class="form-label">m3 or cubic feet</label>
                     <select class="form-select" id="m3-or-cu" name="m3-or-cu">
-                        <option value="m3" <?php if($rms_type == 'm3' || !$submitted) {echo 'selected';} ?> >m3</option>
-                        <option value="cubic" <?php if($rms_type == 'cubic') {echo 'selected';} ?> >cubic feet</option>
+                        <option value="<?= $VALUE_CUBIC_METRE ?>" <?php if($rms_type == $VALUE_CUBIC_METRE || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_CUBIC_METRE ?></option>
+                        <option value="<?= $VALUE_CUBIC_FOOT ?>" <?php if($rms_type == $VALUE_CUBIC_FOOT) {echo 'selected';} ?> ><?= $DISPLAY_CUBIC_FOOT ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select m3 or cubic feet.
@@ -392,9 +401,9 @@ if(isset($_GET['submit'])){
                 <?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?>
 		<?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
                 <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$ach.'.</li>' : ''; ?>
-                <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
-                <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
-                <?php echo ($ach == 'lps') ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
+                <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
+                <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
+                <?php echo (!in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
                 <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
                 <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
             </ul>
@@ -422,8 +431,8 @@ if(isset($_GET['submit'])){
                             <div class="d-flex flex-row">
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
-                                    <?php if($ach == 'ach'){ ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately 6 air changes per hr</i></li>
+                                    <?php if(in_array($ach, $VALUES_ACH)){ ?>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
