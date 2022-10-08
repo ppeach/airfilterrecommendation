@@ -1,6 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
-require_once('includes/constants.php');
+require('constants.php');
 
 // Get config key
 function config($key)
@@ -189,20 +188,22 @@ function getHepa($country)
 // Calculate ACH and get Total Cost
 function calculateACH($data, $ach, $types=array(), $achs=array())
 {
+    global $VALUES_ACH, $VALUE_CUBIC_METRE;
     // Calculate ACH and Total Cost
     foreach($data as $key => $value){
-        if($ach == $VALUE_ACH_6){
+        if(in_array($ach, $VALUES_ACH)){
+            $ach_proxy = intval(preg_replace('~\D~', '', $ach)) - 0.6;
             if($achs['room_type'] == $VALUE_CUBIC_METRE){
-                $ach_unit = (5.4 * $achs['room_size'])/$value[$types['cadrm3']];
+                $ach_unit = ($ach_proxy * $achs['room_size'])/$value[$types['cadrm3']];
                 $ach_value = (ceil($ach_unit) * $value[$types['cadrm3']])/$achs['room_size'];
                 $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrm3']])/$achs['room_size'];
             } else {
-                $ach_unit = (5.4 * $achs['room_size'])/$value[$types['cadrcubic']]/60;
+                $ach_unit = ($ach_proxy * $achs['room_size'])/$value[$types['cadrcubic']]/60;
                 $ach_value = (ceil($ach_unit) * $value[$types['cadrcubic']] * 60)/$achs['room_size'];
                 $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrcubic']] * 60)/$achs['room_size'];
             }
         } else {
-            $lps = (int)trim($ach, '_lps');
+            $lps = intval(preg_replace('~\D~', '', $ach));
             $ach_unit = ($lps * $achs['no_off_occ'])/$value[$types['cadrlitre']];
             $ach_value = (ceil($ach_unit) * $value[$types['cadrlitre']])/$achs['no_off_occ'];
             $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrlitre']])/$achs['no_off_occ'];
