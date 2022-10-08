@@ -17,13 +17,13 @@ if(isset($_GET['submit'])){
     // Set data from POST
     $country = $_GET['country'] ?? $countries[0];
     $max_an = $_GET['max-an'] ?? 0;
-    $wifi = $_GET['wifi'] ?? 'Not fussed';
-    $schedule = $_GET['schedule'] ?? 'Not fussed';
+    $wifi = $_GET['wifi'] ?? $VALUE_NO;
+    $schedule = $_GET['schedule'] ?? $VALUE_NO;
     $ach  = $_GET['ach'] ?? 'ach';
     $room_size = $_GET['room-size'] ?? 60;
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
     $no_of_occ = $_GET['no-of-occ'] ?? 1;
-    $prefltr = $_GET['prefilter'] ?? 'Not fussed';
+    $prefltr = $_GET['prefilter'] ?? $VALUE_NO;
     $tariff = $_GET['tariff'] ?? '0.22';
     $diy = $_GET['diy'] ?? 'No';
 
@@ -42,8 +42,8 @@ if(isset($_GET['submit'])){
 
     // Filter by wifi
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
-        if($wifi != 'Not fussed'){
-            return ($item['Wifi'] == $wifi);
+        if($wifi != $VALUE_NO){
+            return (strtolower($item['Wifi']) == strtolower($wifi));
         } else {
             return true;
         }
@@ -51,8 +51,8 @@ if(isset($_GET['submit'])){
 
     // Filter by schedule
     $filter_result = array_filter($filter_result, function($item) use ($schedule){
-        if($schedule != 'Not necessary'){
-            return ($item['Schedulable'] == $schedule);
+        if($schedule != $VALUE_NO){
+            return (strtolower($item['Schedulable']) == strtolower($schedule));
         } else {
             return true;
         }
@@ -60,8 +60,8 @@ if(isset($_GET['submit'])){
 
     // Filter by prefilter
     //$filter_result = array_filter($filter_result, function($item) use ($prefltr){
-    //    if($prefltr != 'Not fussed'){
-    //        return ($item['Prefilter'] == $prefltr);
+    //    if($prefltr != $VALUE_NO){
+    //        return (strtolower($item['Prefilter']) == strtolower($prefltr));
     //    } else {
     //        return true;
     //    }
@@ -69,8 +69,8 @@ if(isset($_GET['submit'])){
 
     // Filter by DIY
     $filter_result = array_filter($filter_result, function($item) use ($diy){
-        if($diy != 'Yes'){
-            return ($item['DIY'] != 'Yes');
+        if($diy != $VALUE_YES){
+            return (strtolower($item['DIY']) != strtolower($VALUE_YES));
         } else {
             return true;
         }
@@ -223,7 +223,8 @@ if(isset($_GET['submit'])){
                         Please select Max Acceptable Noise.
                     </div>
                 </div>
-                <!--div class="col-md-6">
+                <?php /*
+                <div class="col-md-6">
                     <label for="wifi" class="form-label">Wifi Requirement</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
@@ -231,13 +232,14 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
-                        <option value="Not fussed" <?php if($wifi == 'Not necessary' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
-                        <option value="Yes" <?php if($wifi == 'Yes') {echo 'selected';} ?> >Yes</option>
+                        <option value="<?= $VALUE_NO ?>" <?php if($wifi == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_WIFI_NO ?></option>
+                        <option value="Yes" <?php if($wifi == $VALUE_YES) {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a Wifi Requirement.
                     </div>
-                </div-->
+                </div>
+                */ ?>
 		<div class="col-md-6">
                     <label for="schedule" class="form-label">Scheduling ability</label>
 					<div>
@@ -246,8 +248,8 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="schedule" name="schedule" required>
-                        <option value="Not necessary" <?php if($schedule == 'Not necessary' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
-                        <option value="Yes" <?php if($schedule == 'Yes') {echo 'selected';} ?> >Yes</option>
+                        <option value="<?= $VALUE_NO ?>" <?php if($schedule == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_SCHEDULE_NO ?></option>
+                        <option value="<?= $VALUE_YES ?>" <?php if($schedule == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_SCHEDULE_YES ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a scheduling requirement.
@@ -261,8 +263,8 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="diy" name="diy" required>
-                        <option value="No" <?php if($diy == 'No' || !$submitted) {echo 'selected';} ?> >No</option>
-                        <option value="Yes" <?php if($diy == 'Yes') {echo 'selected';} ?> >Yes</option>
+                        <option value="<?= $VALUE_NO ?>" <?php if($diy == $VALUE_NO || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_DIY_NO ?></option>
+                        <option value="<?= $VALUE_YES ?>" <?php if($diy == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_DIY_YES ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a DIY filters.
@@ -277,16 +279,18 @@ if(isset($_GET['submit'])){
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
                         <!--option selected disabled value="">Choose...</option-->
-                        <option value="ach" <?php if($ach == 'ach' || !$submitted) {echo 'selected';} ?> >6 Air Changes per Hour (ACH)</option>
-                        <option value="10_lps" <?php if($ach == '10_lps') {echo 'selected';} ?> >10 L/person/second (Minimum, WHO recommendation)</option>
-                        <option value="20_lps" <?php if($ach == '20_lps') {echo 'selected';} ?> >20 L/person/second (Ideal, non-vigorous activity)</option>
-                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Singing)</option>
+                        <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_6 ?></option>
+                        <option value="<?= $VALUE_LPS_10 ?>" <?php if($ach == $VALUE_LPS_10) {echo 'selected';} ?> ><?= $DISPLAY_LPS_10 ?></option>
+                        <option value="<?= $VALUE_LPS_20 ?>" <?php if($ach == $VALUE_LPS_20) {echo 'selected';} ?> ><?= $DISPLAY_LPS_20 ?></option>
+                        <option value="<?= $VALUE_LPS_50 ?>" <?php if($ach == $VALUE_LPS_50) {echo 'selected';} ?> ><?= $DISPLAY_LPS_50 ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
-		<!--div class="col-md-6">
+                <?php
+                /*
+		<div class="col-md-6">
                     <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
@@ -294,13 +298,15 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="prefilter" name="prefilter" required>
-                        <option value="Not fussed">Not fussed</option>
-                        <option value="Yes">Yes</option>
+                        <option value="<?= $VALUE_NO ?>"><?= $DISPLAY_PREFILTER_NO ?>/option>
+                        <option value="<?= $VALUE_YES ?>"><?= $DISPLAY_PREFILTER_YES ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
                     </div>
-		</div-->
+		</div>
+        */
+        ?>
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
                     <input

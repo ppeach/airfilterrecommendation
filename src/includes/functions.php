@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once('includes/constants.php');
+
 // Get config key
 function config($key)
 {
@@ -189,8 +191,8 @@ function calculateACH($data, $ach, $types=array(), $achs=array())
 {
     // Calculate ACH and Total Cost
     foreach($data as $key => $value){
-        if($ach == 'ach'){
-            if($achs['room_type'] == 'm3'){
+        if($ach == $VALUE_ACH_6){
+            if($achs['room_type'] == $VALUE_CUBIC_METRE){
                 $ach_unit = (5.4 * $achs['room_size'])/$value[$types['cadrm3']];
                 $ach_value = (ceil($ach_unit) * $value[$types['cadrm3']])/$achs['room_size'];
                 $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrm3']])/$achs['room_size'];
