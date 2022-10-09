@@ -115,6 +115,7 @@ if(isset($_GET['submit'])){
 <!doctype html>
 <html lang="en">
 <head>
+    <script src="https://kit.fontawesome.com/53b8e4bb73.js" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Air Filter Recommendation Tool</title>
@@ -146,6 +147,9 @@ if(isset($_GET['submit'])){
     <link rel="stylesheet" href="includes/share.css">
 
     <style>
+        .fa-solid.fa-circle-info {
+            color: blue;
+        }
         .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
