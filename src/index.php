@@ -280,18 +280,45 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
-                        <option disabled>Choose...</option>
-                        <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_2 ?></option>
-                        <option value="<?= $VALUE_ACH_3 ?>" <?php if($ach == $VALUE_ACH_3 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_3 ?></option>
-                        <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_6 ?></option>
-                        <option value="<?= $VALUE_ACH_9 ?>" <?php if($ach == $VALUE_ACH_9 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_9 ?></option>
-                        <option value="<?= $VALUE_ACH_12 ?>" <?php if($ach == $VALUE_ACH_12 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_12 ?></option>
-                        <option value="<?= $VALUE_ACH_15 ?>" <?php if($ach == $VALUE_ACH_15 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_15 ?></option>
-                        <option value="<?= $VALUE_ACH_20 ?>" <?php if($ach == $VALUE_ACH_20 || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_ACH_20 ?></option>
-                        <option disabled>---</option>
-                        <option value="<?= $VALUE_LPS_10 ?>" <?php if($ach == $VALUE_LPS_10) {echo 'selected';} ?> ><?= $DISPLAY_LPS_10 ?></option>
-                        <option value="<?= $VALUE_LPS_20 ?>" <?php if($ach == $VALUE_LPS_20) {echo 'selected';} ?> ><?= $DISPLAY_LPS_20 ?></option>
-                        <option value="<?= $VALUE_LPS_50 ?>" <?php if($ach == $VALUE_LPS_50) {echo 'selected';} ?> ><?= $DISPLAY_LPS_50 ?></option>
+                        <option disabled>
+                            <!-- disabled header for readability -->
+                            Choose...
+                        </option>
+                        <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_2 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_3 ?>" <?php if($ach == $VALUE_ACH_3) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_3 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> data-mode="ach">
+                            <!-- serves as default if page not submitted yet -->
+                            <?= $DISPLAY_ACH_6 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_9 ?>" <?php if($ach == $VALUE_ACH_9) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_9 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_12 ?>" <?php if($ach == $VALUE_ACH_12) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_12 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_15 ?>" <?php if($ach == $VALUE_ACH_15) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_15 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_20 ?>" <?php if($ach == $VALUE_ACH_20) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_20 ?>
+                        </option>
+                        <option disabled>
+                            <!-- just a separator between ACH amd LPS for readability -->
+                            ---
+                        </option>
+                        <option value="<?= $VALUE_LPS_10 ?>" <?php if($ach == $VALUE_LPS_10) {echo 'selected';} ?> data-mode="lps">
+                            <?= $DISPLAY_LPS_10 ?>
+                        </option>
+                        <option value="<?= $VALUE_LPS_20 ?>" <?php if($ach == $VALUE_LPS_20) {echo 'selected';} ?> data-mode="lps">
+                            <?= $DISPLAY_LPS_20 ?>
+                        </option>
+                        <option value="<?= $VALUE_LPS_50 ?>" <?php if($ach == $VALUE_LPS_50) {echo 'selected';} ?> data-mode="lps">
+                            <?= $DISPLAY_LPS_50 ?>
+                        </option>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
@@ -380,7 +407,7 @@ if(isset($_GET['submit'])){
                     <small>Enter your electricity tariff per kWh (eg 0.22)</small>
                 </div>
                 <div class="col-md-12">
-                    <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit">Find Your Filters</button>
+                    <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit" value="submit">Find Your Filters</button>
                 </div>
                 <!-- End HEPA Form -->
             </div>
@@ -549,7 +576,7 @@ if(isset($_GET['submit'])){
 
     <script>
 
-        let showHideRoomSizeOccupants = function(mode) {
+        const showHideRoomSizeOccupants = function(mode) {
             if (mode === 'ach') {
                     $('#rms').show();
                     $('#room-size').prop('required', true);
@@ -566,25 +593,44 @@ if(isset($_GET['submit'])){
                 }
         }
 
-        // Hiding ACH and RMS fields
-        $(document).ready(function() {
-            //$('#rms').hide();
-            //$('#rms-type').hide();
-            $('#noc').hide();
-            $('#ach').change(function() {
-                showHideRoomSizeOccupants($(this).val());
+        const ready = function (fn) {
+            // wrapper that takes a function to execute once page loaded
+            // replacement for $(document).ready() without needing jQuery
+            if (typeof fn !== 'function') {
+                throw new Error('Argument passed to ready should be a function');
+            }
+
+            if (document.readyState != 'loading') {
+                fn();
+            } else if (document.addEventListener) {
+                document.addEventListener('DOMContentLoaded', fn, {
+                once: true // A boolean value indicating that the listener should be invoked at most once after being added. If true, the listener would be automatically removed when invoked.
+                });
+            } else {
+                document.attachEvent('onreadystatechange', function() {
+                if (document.readyState != 'loading')
+                    fn();
+                });
+            }
+        }
+
+        ready(function() {
+            const achSelector = window.document.querySelector('#ach');
+
+            achSelector.addEventListener('change', function(event) {
+                showHideRoomSizeOccupants(event.target.options[event.target.selectedIndex].dataset.mode);
             });
 
-            showHideRoomSizeOccupants($('#ach').val());
+            showHideRoomSizeOccupants(achSelector.options[achSelector.selectedIndex].dataset.mode);
         });
         
         
 
 		// Popover
-		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-		var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-		return new bootstrap.Popover(popoverTriggerEl)
-		})
+		const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+		    return new bootstrap.Popover(popoverTriggerEl)
+		});
 
         // Scroll to result page
         <?php echo (isset($scroll)) ? $scroll : null; ?>
