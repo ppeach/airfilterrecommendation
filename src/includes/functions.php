@@ -186,7 +186,7 @@ function getHepa($country)
 }
 
 // Calculate ACH and get Total Cost
-function calculateACH($data, $ach, $types=array(), $achs=array())
+function calculateACH($data, $ach, $max_units, $types=array(), $achs=array())
 {
     global $VALUES_ACH, $VALUE_CUBIC_METRE;
     // Calculate ACH and Total Cost
@@ -215,6 +215,10 @@ function calculateACH($data, $ach, $types=array(), $achs=array())
         $data[$key]['ACH needs'] = $ach_needs;
         $data[$key]['Total Cost'] = $value[$types['cost']] * $ach_needs;
         $data[$key]['Total dBA'] = totaldBA($ach_needs, $value[$types['noisedba']]);
+
+        if ($ach_needs > $max_units) {
+            unset($data[$key]);
+        }
     }
 
     // Sort Total Cost (low to High)

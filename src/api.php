@@ -57,7 +57,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         'room_type' => $rms_type,
         'no_off_occ'=> $no_of_occ
     );
-    $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
+    $hepa_result = calculateACH($filter_result, $ach, 999999, $types, $achs);
 
     // Get total result
     $total = count($hepa_result);

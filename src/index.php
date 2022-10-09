@@ -25,6 +25,7 @@ if(isset($_GET['submit'])){
     $prefltr = $_GET['prefilter'] ?? $VALUE_NO;
     $tariff = $_GET['tariff'] ?? '0.22';
     $diy = $_GET['diy'] ?? 'No';
+    $max_units =  $_GET['max_units'] ?? 5;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -91,7 +92,7 @@ if(isset($_GET['submit'])){
         'room_type' => $rms_type,
         'no_off_occ'=> $no_of_occ
     );
-    $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
+    $hepa_result = calculateACH($filter_result, $ach, $max_units, $types, $achs);
 
     // Filter total dBA by max acceptable noise
     //$hepa_result = array_filter($hepa_result, function($item) use ($max_an){
@@ -416,6 +417,35 @@ if(isset($_GET['submit'])){
                                 echo 'value="'.$tariff.'"';
                             } else {
                                 echo 'value="0.22"';
+                            }
+                        ?>
+                    >
+                </div>
+                <div class="col-md-3">
+                    <label
+                        for="max-units"
+                        class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Maximum Units"
+                        data-bs-content="Enter the desired maximum number of units to use to treat the room.<br />
+                        This will prevent undesirable suggestions, such as using 15 low-speed units
+                        where there is space for only 5 high-speed units."
+                        data-bs-html="true"
+                    >
+                        Maximum units Allowed
+                        <i class="fa-solid fa-circle-info"></i>
+                    </label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="max_units"
+                        id="max-units"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$max_units.'"';
+                            } else {
+                                echo 'value="5"';
                             }
                         ?>
                     >
