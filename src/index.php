@@ -393,8 +393,19 @@ if(isset($_GET['submit'])){
                     Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="tariff" class="form-label">Electricity Tariff</label>
+                <div class="col-md-3">
+                    <label
+                        for="tariff"
+                        class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Electricity Tariff"
+                        data-bs-content="Enter your per-kWh electricity tariff (eg 0.22) and an estimated annual electricity running cost will be calculated in your results"
+                        data-bs-html="true"
+                    >
+                        Electricity Tariff
+                        <i class="fa-solid fa-circle-info"></i>
+                    </label>
                     <input
                         type="text"
                         class="form-control"
@@ -408,7 +419,6 @@ if(isset($_GET['submit'])){
                             }
                         ?>
                     >
-                    <small>Enter your electricity tariff per kWh (eg 0.22)</small>
                 </div>
                 <div class="col-md-12">
                     <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit" value="submit">Find Your Filters</button>
