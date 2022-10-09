@@ -205,7 +205,7 @@ if(isset($_GET['submit'])){
 
         <div class="row g-5">
 
-        <form action="" method="get" class="needs-validation" novalidate>
+        <form action="." method="get" class="needs-validation" novalidate>
             <div class="row g-5">
                 <!-- HEPA Form -->
                 <div class="col-md-12">
