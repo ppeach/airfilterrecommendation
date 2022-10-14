@@ -228,7 +228,7 @@ if(isset($_GET['submit'])){
                     <label for="max-an" class="form-label">Acceptable Noise Level</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. <ul class='list-group list-group-flush'>
-                                                    <li class='list-group-item'>30-35dBA Sleep</li>
+                                                    <li class='list-group-item'>30-40dBA Sleep</li>
                                                     <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
                                                     <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
                                                     <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
@@ -313,8 +313,8 @@ if(isset($_GET['submit'])){
                         <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2) {echo 'selected';} ?> data-mode="ach">
                             <?= $DISPLAY_ACH_2 ?>
                         </option>
-                        <option value="<?= $VALUE_ACH_3 ?>" <?php if($ach == $VALUE_ACH_3) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_3 ?>
+                        <option value="<?= $VALUE_ACH_4 ?>" <?php if($ach == $VALUE_ACH_3) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_4 ?>
                         </option>
                         <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> data-mode="ach">
                             <!-- serves as default if page not submitted yet -->
@@ -325,12 +325,6 @@ if(isset($_GET['submit'])){
                         </option>
                         <option value="<?= $VALUE_ACH_12 ?>" <?php if($ach == $VALUE_ACH_12) {echo 'selected';} ?> data-mode="ach">
                             <?= $DISPLAY_ACH_12 ?>
-                        </option>
-                        <option value="<?= $VALUE_ACH_15 ?>" <?php if($ach == $VALUE_ACH_15) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_15 ?>
-                        </option>
-                        <option value="<?= $VALUE_ACH_20 ?>" <?php if($ach == $VALUE_ACH_20) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_20 ?>
                         </option>
                         <option disabled>
                             <!-- just a separator between ACH amd LPS for readability -->
