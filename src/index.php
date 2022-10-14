@@ -7,6 +7,7 @@ if (!file_exists("data/config/config.json")) {
 
 require_once('includes/init.php');
 
+
 // If form is submitted
 if(isset($_GET['submit'])){
 
@@ -15,15 +16,16 @@ if(isset($_GET['submit'])){
     // Set data from POST
     $country = $_GET['country'] ?? $countries[0];
     $max_an = $_GET['max-an'] ?? 0;
-    $wifi = $_GET['wifi'] ?? 'Not fussed';
-    $schedule = $_GET['schedule'] ?? 'Not fussed';
-    $ach  = $_GET['ach'] ?? 'ach';
+    $wifi = $_GET['wifi'] ?? $VALUE_NO;
+    $schedule = $_GET['schedule'] ?? $VALUE_NO;
+    $ach  = $_GET['ach'] ?? $VALUE_ACH_6;
     $room_size = $_GET['room-size'] ?? 60;
     $rms_type = $_GET['m3-or-cu'] ?? 'm3';
     $no_of_occ = $_GET['no-of-occ'] ?? 1;
-    $prefltr = $_GET['prefilter'] ?? 'Not fussed';
+    $prefltr = $_GET['prefilter'] ?? $VALUE_NO;
     $tariff = $_GET['tariff'] ?? '0.22';
     $diy = $_GET['diy'] ?? 'No';
+    $max_units =  $_GET['max_units'] ?? 5;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -40,8 +42,9 @@ if(isset($_GET['submit'])){
 
     // Filter by wifi
     $filter_result = array_filter($filter_result, function($item) use ($wifi){
-        if($wifi != 'Not fussed'){
-            return ($item['Wifi'] == $wifi);
+        global $VALUE_NO;
+        if($wifi != $VALUE_NO){
+            return (strtolower($item['Wifi']) == strtolower($wifi));
         } else {
             return true;
         }
@@ -49,8 +52,9 @@ if(isset($_GET['submit'])){
 
     // Filter by schedule
     $filter_result = array_filter($filter_result, function($item) use ($schedule){
-        if($schedule != 'Not necessary'){
-            return ($item['Schedulable'] == $schedule);
+        global $VALUE_NO;
+        if($schedule != $VALUE_NO){
+            return (strtolower($item['Schedulable']) == strtolower($schedule));
         } else {
             return true;
         }
@@ -58,8 +62,8 @@ if(isset($_GET['submit'])){
 
     // Filter by prefilter
     //$filter_result = array_filter($filter_result, function($item) use ($prefltr){
-    //    if($prefltr != 'Not fussed'){
-    //        return ($item['Prefilter'] == $prefltr);
+    //    if($prefltr != $VALUE_NO){
+    //        return (strtolower($item['Prefilter']) == strtolower($prefltr));
     //    } else {
     //        return true;
     //    }
@@ -67,8 +71,9 @@ if(isset($_GET['submit'])){
 
     // Filter by DIY
     $filter_result = array_filter($filter_result, function($item) use ($diy){
-        if($diy != 'Yes'){
-            return ($item['DIY'] != 'Yes');
+        global $VALUE_YES;
+        if($diy != $VALUE_YES){
+            return (strtolower($item['DIY']) != strtolower($VALUE_YES));
         } else {
             return true;
         }
@@ -87,7 +92,7 @@ if(isset($_GET['submit'])){
         'room_type' => $rms_type,
         'no_off_occ'=> $no_of_occ
     );
-    $hepa_result = calculateACH($filter_result, $ach, $types, $achs);
+    $hepa_result = calculateACH($filter_result, $ach, $max_units, $types, $achs);
 
     // Filter total dBA by max acceptable noise
     //$hepa_result = array_filter($hepa_result, function($item) use ($max_an){
@@ -111,6 +116,7 @@ if(isset($_GET['submit'])){
 <!doctype html>
 <html lang="en">
 <head>
+    <script src="https://kit.fontawesome.com/53b8e4bb73.js" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Air Filter Recommendation Tool</title>
@@ -142,6 +148,9 @@ if(isset($_GET['submit'])){
     <link rel="stylesheet" href="includes/share.css">
 
     <style>
+        .fa-solid.fa-circle-info {
+            color: blue;
+        }
         .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -163,19 +172,40 @@ if(isset($_GET['submit'])){
     <div class="container">
     <main>
         <div class="py-5 text-center">
-        <h2>Air Filter Recommendation tool</h2>
+            <h2>Air Filter Recommendation tool</h2>
         </div>
 		<div>
-			<p>This tool helps recommend how many of the available models of portable air cleaners at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. <strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned on this site </strong></p> 
-			<p>The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic oxidisation have been excluded or their presence made apparent. </p>
-			<p>We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used.</p>
-			<p>Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing">here</a>. Australian data source <a href="https://twitter.com/drpieterpeach">Pieter Peach<a>, initial US data source <a href="https://twitter.com/marwa_zaatari">Marwa Zaatari</a>, initial UK data source <a href="https://twitter.com/PlasticFull">Stefan Stojanovic<a> </p>
-			<p>Please contact <a href="https://twitter.com/drpieterpeach">Pieter Peach<a> with any feedback and follow <a href="https://twitter.com/cleanairstars">Cleanairstars</a> for updates.</p>
+			<p>
+                This tool helps recommend how many of the available models of portable air cleaners at different fan speeds will be required to
+                meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces.
+                <strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned on this site </strong>
+            </p> 
+			<p>
+                The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate
+                (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these
+                have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic
+                oxidisation have been excluded or their presence made apparent.
+            </p>
+			<p>
+                We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual 
+                filter costs which rely on characteristics on the filter and environment in which the filter is used.
+            </p>
+			<p>
+                Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing" target="_blank">here</a>.
+                Australian data source <a href="https://twitter.com/drpieterpeach" target="_blank">Pieter Peach</a>,
+                initial US data source <a href="https://twitter.com/marwa_zaatari" target="_blank">Marwa Zaatari</a>,
+                initial UK data source <a href="https://twitter.com/PlasticFull" target="_blank">Stefan Stojanovic</a>
+            </p>
+			<p>
+                Please contact <a href="https://twitter.com/drpieterpeach" target="_blank">Pieter Peach</a> with any feedback and follow
+                <a href="https://twitter.com/cleanairstars" target="_blank">Cleanairstars</a> for updates.
+            </p>
+            <p>&nbsp;</p>
 		</div>
 
         <div class="row g-5">
 
-        <form action="" method="get" class="needs-validation" novalidate>
+        <form action="." method="get" class="needs-validation" novalidate>
             <div class="row g-5">
                 <!-- HEPA Form -->
                 <div class="col-md-12">
@@ -221,7 +251,8 @@ if(isset($_GET['submit'])){
                         Please select Max Acceptable Noise.
                     </div>
                 </div>
-                <!--div class="col-md-6">
+                <?php /*
+                <div class="col-md-6">
                     <label for="wifi" class="form-label">Wifi Requirement</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
@@ -229,13 +260,14 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
-                        <option value="Not fussed" <?php if($wifi == 'Not necessary' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
-                        <option value="Yes" <?php if($wifi == 'Yes') {echo 'selected';} ?> >Yes</option>
+                        <option value="<?= $VALUE_NO ?>" <?php if($wifi == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_WIFI_NO ?></option>
+                        <option value="Yes" <?php if($wifi == $VALUE_YES) {echo 'selected';} ?> >Yes</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a Wifi Requirement.
                     </div>
-                </div-->
+                </div>
+                */ ?>
 		<div class="col-md-6">
                     <label for="schedule" class="form-label">Scheduling ability</label>
 					<div>
@@ -244,8 +276,8 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="schedule" name="schedule" required>
-                        <option value="Not necessary" <?php if($schedule == 'Not necessary' || !$submitted) {echo 'selected';} ?>>Not necessary</option>
-                        <option value="Yes" <?php if($schedule == 'Yes') {echo 'selected';} ?> >Yes</option>
+                        <option value="<?= $VALUE_NO ?>" <?php if($schedule == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_SCHEDULE_NO ?></option>
+                        <option value="<?= $VALUE_YES ?>" <?php if($schedule == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_SCHEDULE_YES ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a scheduling requirement.
@@ -259,8 +291,8 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="diy" name="diy" required>
-                        <option value="No" <?php if($diy == 'No' || !$submitted) {echo 'selected';} ?> >No</option>
-                        <option value="Yes" <?php if($diy == 'Yes') {echo 'selected';} ?> >Yes</option>
+                        <option value="<?= $VALUE_NO ?>" <?php if($diy == $VALUE_NO || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_DIY_NO ?></option>
+                        <option value="<?= $VALUE_YES ?>" <?php if($diy == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_DIY_YES ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a DIY filters.
@@ -274,17 +306,53 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
-                        <!--option selected disabled value="">Choose...</option-->
-                        <option value="ach" <?php if($ach == 'ach' || !$submitted) {echo 'selected';} ?> >6 Air Changes per Hour (ACH)</option>
-                        <option value="10_lps" <?php if($ach == '10_lps') {echo 'selected';} ?> >10 L/person/second (Minimum, WHO recommendation)</option>
-                        <option value="20_lps" <?php if($ach == '20_lps') {echo 'selected';} ?> >20 L/person/second (Ideal, non-vigorous activity)</option>
-                        <option value="50_lps" <?php if($ach == '50_lps') {echo 'selected';} ?> >50 L/person/second (Ideal, vigorous activity eg Exercise, Singing)</option>
+                        <option disabled>
+                            <!-- disabled header for readability -->
+                            Choose...
+                        </option>
+                        <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_2 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_3 ?>" <?php if($ach == $VALUE_ACH_3) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_3 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> data-mode="ach">
+                            <!-- serves as default if page not submitted yet -->
+                            <?= $DISPLAY_ACH_6 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_9 ?>" <?php if($ach == $VALUE_ACH_9) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_9 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_12 ?>" <?php if($ach == $VALUE_ACH_12) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_12 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_15 ?>" <?php if($ach == $VALUE_ACH_15) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_15 ?>
+                        </option>
+                        <option value="<?= $VALUE_ACH_20 ?>" <?php if($ach == $VALUE_ACH_20) {echo 'selected';} ?> data-mode="ach">
+                            <?= $DISPLAY_ACH_20 ?>
+                        </option>
+                        <option disabled>
+                            <!-- just a separator between ACH amd LPS for readability -->
+                            ---
+                        </option>
+                        <option value="<?= $VALUE_LPS_10 ?>" <?php if($ach == $VALUE_LPS_10) {echo 'selected';} ?> data-mode="lps">
+                            <?= $DISPLAY_LPS_10 ?>
+                        </option>
+                        <option value="<?= $VALUE_LPS_20 ?>" <?php if($ach == $VALUE_LPS_20) {echo 'selected';} ?> data-mode="lps">
+                            <?= $DISPLAY_LPS_20 ?>
+                        </option>
+                        <option value="<?= $VALUE_LPS_50 ?>" <?php if($ach == $VALUE_LPS_50) {echo 'selected';} ?> data-mode="lps">
+                            <?= $DISPLAY_LPS_50 ?>
+                        </option>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
-		<!--div class="col-md-6">
+                <?php
+                /*
+		<div class="col-md-6">
                     <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
@@ -292,13 +360,15 @@ if(isset($_GET['submit'])){
                         </a>
 					</div>
                     <select class="form-select" id="prefilter" name="prefilter" required>
-                        <option value="Not fussed">Not fussed</option>
-                        <option value="Yes">Yes</option>
+                        <option value="<?= $VALUE_NO ?>"><?= $DISPLAY_PREFILTER_NO ?>/option>
+                        <option value="<?= $VALUE_YES ?>"><?= $DISPLAY_PREFILTER_YES ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
                     </div>
-		</div-->
+		</div>
+        */
+        ?>
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
                     <input
@@ -320,8 +390,8 @@ if(isset($_GET['submit'])){
                 <div class="col-md-2" id="rms-type">
                     <label for="m3-or-cu" class="form-label">m3 or cubic feet</label>
                     <select class="form-select" id="m3-or-cu" name="m3-or-cu">
-                        <option value="m3" <?php if($rms_type == 'm3' || !$submitted) {echo 'selected';} ?> >m3</option>
-                        <option value="cubic" <?php if($rms_type == 'cubic') {echo 'selected';} ?> >cubic feet</option>
+                        <option value="<?= $VALUE_CUBIC_METRE ?>" <?php if($rms_type == $VALUE_CUBIC_METRE || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_CUBIC_METRE ?></option>
+                        <option value="<?= $VALUE_CUBIC_FOOT ?>" <?php if($rms_type == $VALUE_CUBIC_FOOT) {echo 'selected';} ?> ><?= $DISPLAY_CUBIC_FOOT ?></option>
                     </select>
                     <div class="invalid-feedback">
                         Please select m3 or cubic feet.
@@ -345,8 +415,19 @@ if(isset($_GET['submit'])){
                     Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="tariff" class="form-label">Electricity Tariff</label>
+                <div class="col-md-3">
+                    <label
+                        for="tariff"
+                        class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Electricity Tariff"
+                        data-bs-content="Enter your per-kWh electricity tariff (eg 0.22) and an estimated annual electricity running cost will be calculated in your results"
+                        data-bs-html="true"
+                    >
+                        Electricity Tariff
+                        <i class="fa-solid fa-circle-info"></i>
+                    </label>
                     <input
                         type="text"
                         class="form-control"
@@ -360,10 +441,38 @@ if(isset($_GET['submit'])){
                             }
                         ?>
                     >
-                    <small>Enter your electricity tariff per kWh (eg 0.22)</small>
+                </div>
+                <div class="col-md-3">
+                    <label
+                        for="max-units"
+                        class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Maximum Units"
+                        data-bs-content="Enter the desired maximum number of units to use to treat the room.<br />
+                        This will prevent undesirable suggestions, such as using 15 low-speed units
+                        where there is space for only 5 high-speed units."
+                        data-bs-html="true"
+                    >
+                        Maximum units Allowed
+                        <i class="fa-solid fa-circle-info"></i>
+                    </label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="max_units"
+                        id="max-units"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$max_units.'"';
+                            } else {
+                                echo 'value="5"';
+                            }
+                        ?>
+                    >
                 </div>
                 <div class="col-md-12">
-                    <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit">Find Your Filters</button>
+                    <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit" value="submit">Find Your Filters</button>
                 </div>
                 <!-- End HEPA Form -->
             </div>
@@ -384,9 +493,9 @@ if(isset($_GET['submit'])){
                 <?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?>
 		<?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
                 <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$ach.'.</li>' : ''; ?>
-                <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
-                <?php echo ($ach == 'ach') ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
-                <?php echo ($ach == 'lps') ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
+                <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
+                <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
+                <?php echo (!in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
                 <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
                 <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
             </ul>
@@ -414,8 +523,8 @@ if(isset($_GET['submit'])){
                             <div class="d-flex flex-row">
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
-                                    <?php if($ach == 'ach'){ ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately 6 air changes per hr</i></li>
+                                    <?php if(in_array($ach, $VALUES_ACH)){ ?>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
@@ -532,7 +641,7 @@ if(isset($_GET['submit'])){
 
     <script>
 
-        let showHideRoomSizeOccupants = function(mode) {
+        const showHideRoomSizeOccupants = function(mode) {
             if (mode === 'ach') {
                     $('#rms').show();
                     $('#room-size').prop('required', true);
@@ -549,25 +658,44 @@ if(isset($_GET['submit'])){
                 }
         }
 
-        // Hiding ACH and RMS fields
-        $(document).ready(function() {
-            //$('#rms').hide();
-            //$('#rms-type').hide();
-            $('#noc').hide();
-            $('#ach').change(function() {
-                showHideRoomSizeOccupants($(this).val());
+        const ready = function (fn) {
+            // wrapper that takes a function to execute once page loaded
+            // replacement for $(document).ready() without needing jQuery
+            if (typeof fn !== 'function') {
+                throw new Error('Argument passed to ready should be a function');
+            }
+
+            if (document.readyState != 'loading') {
+                fn();
+            } else if (document.addEventListener) {
+                document.addEventListener('DOMContentLoaded', fn, {
+                once: true // A boolean value indicating that the listener should be invoked at most once after being added. If true, the listener would be automatically removed when invoked.
+                });
+            } else {
+                document.attachEvent('onreadystatechange', function() {
+                if (document.readyState != 'loading')
+                    fn();
+                });
+            }
+        }
+
+        ready(function() {
+            const achSelector = window.document.querySelector('#ach');
+
+            achSelector.addEventListener('change', function(event) {
+                showHideRoomSizeOccupants(event.target.options[event.target.selectedIndex].dataset.mode);
             });
 
-            showHideRoomSizeOccupants($('#ach').val());
+            showHideRoomSizeOccupants(achSelector.options[achSelector.selectedIndex].dataset.mode);
         });
         
         
 
 		// Popover
-		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-		var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-		return new bootstrap.Popover(popoverTriggerEl)
-		})
+		const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+		    return new bootstrap.Popover(popoverTriggerEl)
+		});
 
         // Scroll to result page
         <?php echo (isset($scroll)) ? $scroll : null; ?>
