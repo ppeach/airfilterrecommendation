@@ -363,13 +363,13 @@ if(isset($_GET['submit'])){
         */
         ?>
                 <div class="col-md-4" id="rms">
-                    <label for="room-size" class="form-label">Room Volume = Width (m or feet) x Length (m or feet) x Height (m or feet)</label>
+                    <label for="room-size" class="form-label">Room Volume (Width x Length x Height) in m or feet</label>
                     <input
                         type="number"
                         class="form-control"
                         id="room-size"
                         name="room-size"
-                        placeholder="Room Volume (eg 100)"
+                        placeholder="Cubic room Volume (eg 100)"
                         <?php
                             if($submitted) {
                                 echo 'value="'.$room_size.'"';
@@ -482,14 +482,14 @@ if(isset($_GET['submit'])){
                 <span class="badge bg-primary rounded-pill"><?php echo $total; ?></span>
             </h4>
             <ul class="list-inline">
-                <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.'.</li>' : ''; ?>
-                <?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?>
+                <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.' dBA.</li>' : ''; ?>
+                <!--?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?-->
 		<?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
                 <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$ach.'.</li>' : ''; ?>
                 <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
                 <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
                 <?php echo (!in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
-                <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
+                <!--?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?-->
                 <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
             </ul>
 
