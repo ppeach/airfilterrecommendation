@@ -187,8 +187,7 @@ if(isset($_GET['submit'])){
                 oxidisation have been excluded or their presence made apparent.
             </p>
 			<p>
-                We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual 
-                filter costs which rely on characteristics on the filter and environment in which the filter is used.
+                We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used. Improving indoor air quality with better ventilation and filtration helps reduce the risk of transmission, but cannot eliminate risk completely. The use of well-fitted masks, distancing, and limiting exposure time in poorly ventilated environments are an important component of risk reduction.
             </p>
 			<p>
                 Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing" target="_blank">here</a>.
