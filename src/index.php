@@ -517,7 +517,7 @@ if(isset($_GET['submit'])){
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
                                     <?php if(in_array($ach, $VALUES_ACH)){ ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> units at above fan setting required for approximately <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
+                                        <li class="list-group-item"><i><strong><?php echo $ach_needs; ?> units at above fan setting </strong> required for approximately <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
                                     <?php } else { ?>
