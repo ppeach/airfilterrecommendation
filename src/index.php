@@ -174,35 +174,37 @@ if(isset($_GET['submit'])){
         <div class="py-5 text-center">
             <h2>Air Filter Recommendation tool</h2>
         </div>
-		<div>
-			<p>
-                This tool helps recommend how many of the available models of portable air cleaners at different fan speeds will be required to
-                meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. 
-			</p>
-			<p>Choosing the right combination of devices depends on the amount of noise that would be comfortably tolerated in the room given the existing ambient noise level of the room and the available space in the room to fit single or multiple devices. For example, in quiet rooms where additional noise is less tolerable, multiple devices operating at quieter, low speeds may be preferable (if space available) to a single device running at a louder, high speed.
-            </p> 
-			<p>
+	<div>
+	   <p>
+                This tool helps recommend <strong><i>how many</i></strong> of a particular model of portable air cleaner <strong><i>at what fan speed</strong></i> will be required to meet current recommendations for <strong><i>total airflow</strong></i> for a given room size or occupancy to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. 
+	   </p>
+	   <p>
+	      	<strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned</strong>
+	   </p>
+	   <p>
+		Choosing the right combination of devices depends on the amount of noise that would be comfortably tolerated in the room given the existing ambient noise level of the room and the available space in the room to fit single or multiple devices. For example, in quiet rooms where additional noise is less tolerable, multiple devices operating at quieter, low speeds may be preferable (if space available) to a single device running at a louder, high speed. Additionally, multiple devices spaced around a room will likely result in better distribution of filtration.
+           </p> 
+	   <p>
                 The database includes air cleaners using HEPA 13 filters, but if reliable data or estimates on the clean air delivery rate
                 (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these
                 have been included. Devices that have additional electronic cleaning features such as ionisation, plasma, and photocatalytic
                 oxidisation have been excluded or their presence made apparent.
-            </p>
-			<p>
+           </p>
+	   <p>
                 We cannot guarantee the accuracy of manufacturer claims on device features or performance, nor provide reliable estimates of annual filter costs which rely on characteristics on the filter and environment in which the filter is used. Improving indoor air quality with better ventilation and filtration helps reduce the risk of transmission, but cannot eliminate risk completely. The use of well-fitted masks, distancing, and limiting exposure time in poorly ventilated environments are an important component of risk reduction.
-            </p>
-			<p>
-				<strong>This is a non-profit public service that receives no commission for sales of any goods or services mentioned</strong>
-			</p>
-			<p>
-                Dataset <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing" target="_blank">here</a>.
+           </p>
+	   <p>
+                Dataset is available <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing" target="_blank">here</a>.
 				Github repository <a href="https://github.com/ppeach/airfilterrecommendation" target="_blank">here</a>.
-                Australian data source <a href="https://twitter.com/drpieterpeach" target="_blank">Pieter Peach</a>,
+                Australian data source <a rel="me" href="https://mastodon.social/@pieterpeach">Pieter Peach</a>,
                 initial US data source <a href="https://twitter.com/marwa_zaatari" target="_blank">Marwa Zaatari</a>,
                 initial UK data source <a href="https://twitter.com/PlasticFull" target="_blank">Stefan Stojanovic</a>
             </p>
-			<p>
-                Please contact <a href="https://twitter.com/drpieterpeach" target="_blank">Pieter Peach</a> with any feedback and follow
-                <a href="https://twitter.com/cleanairstars" target="_blank">Cleanairstars</a> for updates.
+	    <p>
+                Direct link to the application is <a href="https://filters.cleanairstars.com" target="_blank">filters.cleanairstars.com</a>
+            </p>
+	    <p>
+                Please contact and follow <a rel="me" href="https://mas.to/@cleanairstars" target="_blank">Cleanairstars</a> for feedback and updates.
             </p>
             <p>&nbsp;</p>
 		</div>
