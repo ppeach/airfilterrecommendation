@@ -7,6 +7,20 @@ if (!file_exists("data/config/config.json")) {
 
 require_once('includes/init.php');
 
+// Set default variables value
+$submitted = false;
+$country = $countries[0];
+$max_an = 0;
+$wifi = $VALUE_NO;
+$schedule = $VALUE_NO;
+$ach = $VALUE_ACH_6;
+$room_size = 60;
+$rms_type = 'm3';
+$no_of_occ = 1;
+$prefltr = $VALUE_NO;
+$tariff = '0.22';
+$diy = 'No';
+$max_units = 5;
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -14,18 +28,18 @@ if(isset($_GET['submit'])){
     $submitted = true;
 
     // Set data from POST
-    $country = $_GET['country'] ?? $countries[0];
-    $max_an = $_GET['max-an'] ?? 0;
-    $wifi = $_GET['wifi'] ?? $VALUE_NO;
-    $schedule = $_GET['schedule'] ?? $VALUE_NO;
-    $ach  = $_GET['ach'] ?? $VALUE_ACH_6;
-    $room_size = $_GET['room-size'] ?? 60;
-    $rms_type = $_GET['m3-or-cu'] ?? 'm3';
-    $no_of_occ = $_GET['no-of-occ'] ?? 1;
-    $prefltr = $_GET['prefilter'] ?? $VALUE_NO;
-    $tariff = $_GET['tariff'] ?? '0.22';
-    $diy = $_GET['diy'] ?? 'No';
-    $max_units =  $_GET['max_units'] ?? 5;
+    $country = $_GET['country'] ?? $country;
+    $max_an = $_GET['max-an'] ?? $max_an;
+    $wifi = $_GET['wifi'] ?? $wifi;
+    $schedule = $_GET['schedule'] ?? $schedule;
+    $ach  = $_GET['ach'] ?? $ach;
+    $room_size = $_GET['room-size'] ?? $room_size;
+    $rms_type = $_GET['m3-or-cu'] ?? $rms_type;
+    $no_of_occ = $_GET['no-of-occ'] ?? $no_of_occ;
+    $prefltr = $_GET['prefilter'] ?? $prefltr;
+    $tariff = $_GET['tariff'] ?? $tariff;
+    $diy = $_GET['diy'] ?? $diy;
+    $max_units =  $_GET['max_units'] ?? $max_units;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -317,7 +331,7 @@ if(isset($_GET['submit'])){
                         <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2) {echo 'selected';} ?> data-mode="ach">
                             <?= $DISPLAY_ACH_2 ?>
                         </option>
-                        <option value="<?= $VALUE_ACH_4 ?>" <?php if($ach == $VALUE_ACH_3) {echo 'selected';} ?> data-mode="ach">
+                        <option value="<?= $VALUE_ACH_4 ?>" <?php if($ach == $VALUE_ACH_4) {echo 'selected';} ?> data-mode="ach">
                             <?= $DISPLAY_ACH_4 ?>
                         </option>
                         <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> data-mode="ach">
