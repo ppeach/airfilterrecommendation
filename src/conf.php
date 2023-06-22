@@ -110,10 +110,10 @@ if ((!config('update_key')) || (isset($_GET['key']) && $_GET['key'] === config('
             </div>
 
             <div class="col-12">
-              <label for="sheetRange" class="form-label">Sheet Range</label>
-              <input type="text" class="form-control" id="sheetRange" name="sheetRange" placeholder="A1:L1000" value="<?=config('sheet_range');?>" required>
+              <label for="sheetRange" class="form-label">Sheet Range (Optional)</label>
+              <input type="text" class="form-control" id="sheetRange" name="sheetRange" placeholder="A1:L1000" value="<?=config('sheet_range');?>">
               <div class="invalid-feedback">
-                Sheet Range is required.
+                Sheet Range is optional.
               </div>
             </div>
 

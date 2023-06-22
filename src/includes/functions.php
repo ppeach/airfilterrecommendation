@@ -61,11 +61,11 @@ function checktoken()
 }
 
 // Get data from google sheets
-function getSheets($sheets_id, $token, $list=true, $range=null, $majorDimension=null)
+function getSheets($sheets_id, $token, $countries=true, $range=null, $majorDimension=null)
 {
-    $range = urlencode($range);
-    if($list){
-        $url = SHEETSAPI . $sheets_id;
+    $range = ($range != null) ? urlencode($range) : $range;
+    if($countries){
+        $url = SHEETSAPI . $sheets_id . "?fields=sheets.properties(title)";
     } elseif($majorDimension) {
         $url = SHEETSAPI . $sheets_id ."/values/". $range ."?majorDimension=". $majorDimension . "&valueRenderOption=UNFORMATTED_VALUE";
     } else {
@@ -163,7 +163,6 @@ function CFdata($data)
 function getHepa($country)
 {
     $sheets_id  = config('sheet_id');
-    $range      = config('sheet_range');
     $hepapath   = 'data/db/'.$country.'.json';
 
     // Check if the country-name.json is exist, else create it
@@ -175,7 +174,7 @@ function getHepa($country)
         }
         $token = checkexp();
         // Get data from Google Sheets
-        $data = getSheets($sheets_id, $token, false, $range);
+        $data = getSheets($sheets_id, $token, false, $country);
 
         $data = CFdata($data);
 
@@ -242,7 +241,6 @@ function totaldBA($x, $y)
 function updateData()
 {
     $sheets_id = config('sheet_id');
-    $range = config('sheet_range');
     $token = checkexp();
 
     // Update countries.json
@@ -284,7 +282,7 @@ function updateData()
         }
     
         // Get data from Google Sheets
-        $data = getSheets($sheets_id, $token, false, $country.'!'.$range);
+        $data = getSheets($sheets_id, $token, false, $country);
         $data = CFdata($data);
         file_put_contents($hepapath, json_encode($data, JSON_UNESCAPED_UNICODE));
         $result = array(
