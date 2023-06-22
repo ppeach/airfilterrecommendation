@@ -18,7 +18,7 @@ $VALUE_LPS_50 = "lps_50";
 
 # Air changes per hour selectors
 $VALUE_ACH_2 = "ach_2";
-$VALUE_ACH_3 = "ach_4";
+$VALUE_ACH_4 = "ach_4";
 $VALUE_ACH_6 = "ach_6";
 $VALUE_ACH_9 = "ach_9";
 $VALUE_ACH_12 = "ach_12";
