@@ -7,6 +7,20 @@ if (!file_exists("data/config/config.json")) {
 
 require_once('includes/init.php');
 
+// Set default variables value
+$submitted = false;
+$country = $countries[0];
+$max_an = 0;
+$wifi = $VALUE_NO;
+$schedule = $VALUE_NO;
+$ach = $VALUE_ACH_6;
+$room_size = 60;
+$rms_type = 'm3';
+$no_of_occ = 1;
+$prefltr = $VALUE_NO;
+$tariff = '0.22';
+$diy = 'No';
+$max_units = 5;
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -14,18 +28,18 @@ if(isset($_GET['submit'])){
     $submitted = true;
 
     // Set data from POST
-    $country = $_GET['country'] ?? $countries[0];
-    $max_an = $_GET['max-an'] ?? 0;
-    $wifi = $_GET['wifi'] ?? $VALUE_NO;
-    $schedule = $_GET['schedule'] ?? $VALUE_NO;
-    $ach  = $_GET['ach'] ?? $VALUE_ACH_6;
-    $room_size = $_GET['room-size'] ?? 60;
-    $rms_type = $_GET['m3-or-cu'] ?? 'm3';
-    $no_of_occ = $_GET['no-of-occ'] ?? 1;
-    $prefltr = $_GET['prefilter'] ?? $VALUE_NO;
-    $tariff = $_GET['tariff'] ?? '0.22';
-    $diy = $_GET['diy'] ?? 'No';
-    $max_units =  $_GET['max_units'] ?? 5;
+    $country = $_GET['country'] ?? $country;
+    $max_an = $_GET['max-an'] ?? $max_an;
+    $wifi = $_GET['wifi'] ?? $wifi;
+    $schedule = $_GET['schedule'] ?? $schedule;
+    $ach  = $_GET['ach'] ?? $ach;
+    $room_size = $_GET['room-size'] ?? $room_size;
+    $rms_type = $_GET['m3-or-cu'] ?? $rms_type;
+    $no_of_occ = $_GET['no-of-occ'] ?? $no_of_occ;
+    $prefltr = $_GET['prefilter'] ?? $prefltr;
+    $tariff = $_GET['tariff'] ?? $tariff;
+    $diy = $_GET['diy'] ?? $diy;
+    $max_units =  $_GET['max_units'] ?? $max_units;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -317,7 +331,7 @@ if(isset($_GET['submit'])){
                         <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2) {echo 'selected';} ?> data-mode="ach">
                             <?= $DISPLAY_ACH_2 ?>
                         </option>
-                        <option value="<?= $VALUE_ACH_4 ?>" <?php if($ach == $VALUE_ACH_3) {echo 'selected';} ?> data-mode="ach">
+                        <option value="<?= $VALUE_ACH_4 ?>" <?php if($ach == $VALUE_ACH_4) {echo 'selected';} ?> data-mode="ach">
                             <?= $DISPLAY_ACH_4 ?>
                         </option>
                         <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> data-mode="ach">
@@ -518,8 +532,19 @@ if(isset($_GET['submit'])){
                 ?>
 
                     <div class="row p-2 bg-white border rounded mt-2">
-                        <div class="col-md-3 mt-1">
-                            <img class="img-fluid img-responsive rounded product-image" src="<?php echo $value[$image]; ?>" alt="<?php echo $value[$model]; ?>">
+                        <div class="col-md-3 mt-2">
+                            <div class="d-flex position-relative">
+                            <?php if(!empty($value['EnergyStar']) || !empty($value['AHAM'])){ ?>
+                                <div class="d-flex position-absolute" style="height:30px;z-index:2">
+                                <?php if($value['EnergyStar'] == 'Yes'){ ?>
+                                    <img class="img-fluid" src="https://www.ahamdir.com/wp-content/uploads/2019/04/energy_star.png" alt="Energystar Verified">
+                                <?php }; if($value['AHAM'] == 'Yes'){ ?>
+                                    <img class="img-fluid" src="https://www.ahamdir.com/wp-content/uploads/2019/02/Aham_verifide.jpg" alt="AHAM verfied">
+                                <?php } ?>
+                                </div>
+                            <?php } ?>
+                                <img class="img-fluid rounded mx-auto d-block position-relative mt-4" style="max-height:200px;" src="<?php echo $value[$image]; ?>" alt="<?php echo $value[$model]; ?>">
+                            </div>
                         </div>
                         <div class="col-md-6 mt-1">
                             <h5><?php echo $value[$model]; ?></h5>
@@ -535,10 +560,11 @@ if(isset($_GET['submit'])){
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> L/p/s for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' L/p/s for '.$ach_needs_minone.' devices</i></li>' : ''; ?>
                                     <?php } ?>
+                                        <li class="list-group-item"><a href="#details-<?php echo $key; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="details-<?php echo $key; ?>"><i>See more details</i></a></li>
                                     </ul>
                                 </small>
                             </div>
-                            <div class="mt-1 mb-1 spec-1">
+                            <div class="mt-1 mb-1 spec-1 collapse" id="details-<?php echo $key; ?>">
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$cost])) ? '<li class="list-group-item flex-fill">Cost : '.$value['currency_format'].$value[$cost].' each</li>' : ''; ?>
                                     <?php echo (isset($value[$filterCost])) ? '<li class="list-group-item flex-fill">Filter cost: '.$link_filter.'</li>' : $filter_Cost; ?>
@@ -589,25 +615,28 @@ if(isset($_GET['submit'])){
                                 <h6 class="text-danger">Filter cost unknown</h6>
                             <?php } ?>
                             <?php if(!!$value[$watts]) { ?>
-								<h6 class="text-success">Yearly electricity cost</h6>
-                                <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
-                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                <a href="#electricity-<?php echo $key; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="electricity-<?php echo $key; ?>"><small><i>See electricity costs</i></small></a>
+								<div class="card card-body mt-3 collapse" id="electricity-<?php echo $key; ?>">
+                                    <h6 class="text-success">Yearly electricity cost</h6>
+                                    <div class="d-flex flex-row align-items-center">
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
+                                        <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                    </div>
+                                    <h6>(24/7 operation)</h6>
+                                    <div class="d-flex flex-row align-items-center">
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 195 * $tariff )) ; ?></h4>
+                                        <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                    </div>
+                                    <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+                                        </a></h6>
+                                    <div class="d-flex flex-row align-items-center">
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 260 * $tariff )) ; ?></h4>
+                                        <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
+                                    </div>
+                                    <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+                                        </a></h6>
+                                    <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                                 </div>
-                                <h6>(24/7 operation)</h6>
-                                <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 195 * $tariff )) ; ?></h4>
-                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
-                                </div>
-                                <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
-			                        </a></h6>
-                                <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 260 * $tariff )) ; ?></h4>
-                                    <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
-                                </div>
-                                <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
-			                        </a></h6>
-                                <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                             <?php } ?>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
@@ -692,8 +721,6 @@ if(isset($_GET['submit'])){
             showHideRoomSizeOccupants(achSelector.options[achSelector.selectedIndex].dataset.mode);
         });
         
-        
-
 		// Popover
 		const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 		const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
