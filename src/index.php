@@ -533,7 +533,7 @@ if(isset($_GET['submit'])){
 
                     <div class="row p-2 bg-white border rounded mt-2">
                         <div class="col-md-3 mt-2">
-                            <div class="d-flex position-relative h-100">
+                            <div class="d-flex position-relative">
                             <?php if(!empty($value['EnergyStar']) || !empty($value['AHAM'])){ ?>
                                 <div class="d-flex position-absolute" style="height:30px;z-index:2">
                                 <?php if($value['EnergyStar'] == 'Yes'){ ?>
@@ -543,7 +543,7 @@ if(isset($_GET['submit'])){
                                 <?php } ?>
                                 </div>
                             <?php } ?>
-                                <img class="img-fluid rounded mx-auto d-block position-relative mt-4" style="height: 200px !important;" src="<?php echo $value[$image]; ?>" alt="<?php echo $value[$model]; ?>">
+                                <img class="img-fluid rounded mx-auto d-block position-relative mt-4" style="max-height:200px;" src="<?php echo $value[$image]; ?>" alt="<?php echo $value[$model]; ?>">
                             </div>
                         </div>
                         <div class="col-md-6 mt-1">
