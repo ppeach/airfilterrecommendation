@@ -1,8 +1,4 @@
 <?php
-require('includes/constants.php');
-require_once('config.php');
-
-// Set data for Countries dropdown
-$countries  = countries(config('sheet_id'));
-
+require(__DIR__.'/constants.php');
+require_once(__DIR__.'/config.php');
 ?>

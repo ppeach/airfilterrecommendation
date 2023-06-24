@@ -7,6 +7,9 @@ if (!file_exists("data/config/config.json")) {
 
 require_once('includes/init.php');
 
+// Set data for Countries dropdown
+$countries  = countries(config('sheet_id'));
+
 // Set default variables value
 $submitted = false;
 $country = $countries[0];
