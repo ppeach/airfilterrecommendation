@@ -14,7 +14,8 @@ function config($key, $type=null)
 }
 
 // Verify jwt token from google OAuth
-function verify_jwtToken($token) {
+function verify_jwtToken($token)
+{
 
     $curl = curl_init();
 
@@ -40,7 +41,8 @@ function verify_jwtToken($token) {
 }
 
 // Get refresh token from google OAuth
-function get_refreshToken($code){
+function get_refreshToken($code)
+{
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
@@ -140,7 +142,8 @@ function checktoken()
 }
 
 // Manage config.json
-function manage_config($key, $value){
+function manage_config($key, $value)
+{
     $config = __DIR__."/../data/config/config.json";
     $data = json_decode(file_get_contents($config), true);
     $data[$key] = $value;
@@ -275,12 +278,12 @@ function getHepa($country)
 // Calculate ACH and get Total Cost
 function calculateACH($data, $ach, $max_units, $types=array(), $achs=array())
 {
-    global $VALUES_ACH, $VALUE_CUBIC_METRE;
+    global $ACH_OPTIONS, $MEASUREMENT_OPTIONS;
     // Calculate ACH and Total Cost
     foreach($data as $key => $value){
-        if(in_array($ach, $VALUES_ACH)){
+        if(array_key_exists($ach, $ACH_OPTIONS)){
             $ach_proxy = intval(preg_replace('~\D~', '', $ach)) - 0.6;
-            if($achs['room_type'] == $VALUE_CUBIC_METRE){
+            if($achs['room_type'] == $MEASUREMENT_OPTIONS['m3']){
                 $ach_unit = ($ach_proxy * $achs['room_size'])/$value[$types['cadrm3']];
                 $ach_value = (ceil($ach_unit) * $value[$types['cadrm3']])/$achs['room_size'];
                 $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrm3']])/$achs['room_size'];

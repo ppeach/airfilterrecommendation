@@ -16,7 +16,7 @@ $country = $countries[0];
 $max_an = 0;
 $wifi = $VALUE_NO;
 $schedule = $VALUE_NO;
-$ach = $VALUE_ACH_6;
+$ach = 6;
 $room_size = 60;
 $rms_type = 'm3';
 $no_of_occ = 1;
@@ -24,6 +24,7 @@ $prefltr = $VALUE_NO;
 $tariff = '0.22';
 $diy = 'No';
 $max_units = 5;
+$frs = 6;
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -43,6 +44,7 @@ if(isset($_GET['submit'])){
     $tariff = $_GET['tariff'] ?? $tariff;
     $diy = $_GET['diy'] ?? $diy;
     $max_units =  $_GET['max_units'] ?? $max_units;
+    $frs =  $_GET['filter-rs'] ?? $frs;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -133,7 +135,6 @@ if(isset($_GET['submit'])){
 <!doctype html>
 <html lang="en">
 <head>
-    <script src="https://kit.fontawesome.com/53b8e4bb73.js" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Air Filter Recommendation Tool</title>
@@ -257,7 +258,7 @@ if(isset($_GET['submit'])){
                                                     <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
                                                     <li class='list-group-item'>>60dBA - Acceptable for loud environments </li>
                                                     </ul>" data-bs-html="true">
-                            <p>Noise limit guide <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>Noise limit guide <?=$SVG_INFO;?></p>
                         </a>
 					</div>
                     <select class="form-select" id="max-an" name="max-an" required>
@@ -279,7 +280,7 @@ if(isset($_GET['submit'])){
                     <label for="wifi" class="form-label">Wifi Requirement</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
-                            <p>Do I need the filter to have Wifi? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>Do I need the filter to have Wifi? <?=$SVG_INFO;?></p>
                         </a>
 					</div>
                     <select class="form-select" id="wifi" name="wifi" required>
@@ -291,11 +292,11 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 */ ?>
-		<div class="col-md-6">
+		        <div class="col-md-6">
                     <label for="schedule" class="form-label">Scheduling ability</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
-                            <p>Do I need to be able to schedule the device? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>Do I need to be able to schedule the device? <?=$SVG_INFO;?></p>
                         </a>
 					</div>
                     <select class="form-select" id="schedule" name="schedule" required>
@@ -309,7 +310,7 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="diy" class="form-label">Include DIY devices?</label>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is a DIY device?" data-bs-content="Do it yourself air filters are alternatives to commercially available devices that, when properly constructed, can be an economical and effective alternative. Clean air delivery rates (CADR) for these devices in a way that can be compared directly to AHAM CADR Smoke tested devices are currently estimated only." data-bs-html="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+                            <?=$SVG_INFO;?>
                         </a>
                     <select class="form-select" id="diy" name="diy" required>
                         <option value="<?= $VALUE_NO ?>" <?php if($diy == $VALUE_NO || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_DIY_NO ?></option>
@@ -323,7 +324,7 @@ if(isset($_GET['submit'])){
                     <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH)</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target." data-bs-html="true">
-                            <p>What is L/p/s and ACH? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>What is L/p/s and ACH? <?=$SVG_INFO;?></p>
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
@@ -331,35 +332,16 @@ if(isset($_GET['submit'])){
                             <!-- disabled header for readability -->
                             Choose...
                         </option>
-                        <option value="<?= $VALUE_ACH_2 ?>" <?php if($ach == $VALUE_ACH_2) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_2 ?>
-                        </option>
-                        <option value="<?= $VALUE_ACH_4 ?>" <?php if($ach == $VALUE_ACH_4) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_4 ?>
-                        </option>
-                        <option value="<?= $VALUE_ACH_6 ?>" <?php if($ach == $VALUE_ACH_6 || !$submitted) {echo 'selected';} ?> data-mode="ach">
-                            <!-- serves as default if page not submitted yet -->
-                            <?= $DISPLAY_ACH_6 ?>
-                        </option>
-                        <option value="<?= $VALUE_ACH_9 ?>" <?php if($ach == $VALUE_ACH_9) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_9 ?>
-                        </option>
-                        <option value="<?= $VALUE_ACH_12 ?>" <?php if($ach == $VALUE_ACH_12) {echo 'selected';} ?> data-mode="ach">
-                            <?= $DISPLAY_ACH_12 ?>
-                        </option>
+                        <?php foreach($ACH_OPTIONS as $key => $value) { ?>
+                        <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
+                        <?php } ?>
                         <option disabled>
                             <!-- just a separator between ACH amd LPS for readability -->
                             ---
                         </option>
-                        <option value="<?= $VALUE_LPS_10 ?>" <?php if($ach == $VALUE_LPS_10) {echo 'selected';} ?> data-mode="lps">
-                            <?= $DISPLAY_LPS_10 ?>
-                        </option>
-                        <option value="<?= $VALUE_LPS_20 ?>" <?php if($ach == $VALUE_LPS_20) {echo 'selected';} ?> data-mode="lps">
-                            <?= $DISPLAY_LPS_20 ?>
-                        </option>
-                        <option value="<?= $VALUE_LPS_50 ?>" <?php if($ach == $VALUE_LPS_50) {echo 'selected';} ?> data-mode="lps">
-                            <?= $DISPLAY_LPS_50 ?>
-                        </option>
+                        <?php foreach($LPS_OPTIONS as $key => $value) { ?>
+                        <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
+                        <?php } ?>
                     </select>
                     <div class="invalid-feedback">
                         Select L/person/second or 6 Air Changes per Hour (ACH)
@@ -367,11 +349,11 @@ if(isset($_GET['submit'])){
                 </div>
                 <?php
                 /*
-		<div class="col-md-6">
+		        <div class="col-md-6">
                     <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
-                            <p>When do I need a washable/vacuumable prefilter? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
+                            <p>When do I need a washable/vacuumable prefilter? <?=$SVG_INFO;?></p>
                         </a>
 					</div>
                     <select class="form-select" id="prefilter" name="prefilter" required>
@@ -381,16 +363,16 @@ if(isset($_GET['submit'])){
                     <div class="invalid-feedback">
                         Please select a Prefilter Requirement.
                     </div>
-		</div>
-        */
-        ?>
+		        </div>
+                */
+                ?>
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume (Width x Length x Height) in m or feet</label>
-			<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Consider using a standard ceiling height" data-bs-content="For spaces with very high ceilings it may be appropriate to use a standard ceiling height of 2.5m or 9ft" data-bs-html="true">
-                            <p>High ceilings? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg></p>
-                        </a>
-			</div>
+			    <div>
+                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Consider using a standard ceiling height" data-bs-content="For spaces with very high ceilings it may be appropriate to use a standard ceiling height of 2.5m or 9ft" data-bs-html="true">
+                        <p>High ceilings? <?=$SVG_INFO;?></p>
+                    </a>
+			    </div>
                     <input
                         type="number"
                         class="form-control"
@@ -410,8 +392,9 @@ if(isset($_GET['submit'])){
                 <div class="col-md-2" id="rms-type">
                     <label for="m3-or-cu" class="form-label">m3 or cubic feet</label>
                     <select class="form-select" id="m3-or-cu" name="m3-or-cu">
-                        <option value="<?= $VALUE_CUBIC_METRE ?>" <?php if($rms_type == $VALUE_CUBIC_METRE || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_CUBIC_METRE ?></option>
-                        <option value="<?= $VALUE_CUBIC_FOOT ?>" <?php if($rms_type == $VALUE_CUBIC_FOOT) {echo 'selected';} ?> ><?= $DISPLAY_CUBIC_FOOT ?></option>
+                        <?php foreach($MEASUREMENT_OPTIONS as $key => $value) { ?>
+                        <option value="<?= $key ?>" <?php if($key == $rms_type) {echo 'selected';} ?> ><?= $value ?></option>
+                        <?php } ?>
                     </select>
                     <div class="invalid-feedback">
                         Please select m3 or cubic feet.
@@ -500,7 +483,8 @@ if(isset($_GET['submit'])){
 
         </div>
 
-        <?php if(isset($hepa_result)) { ?>
+        <?php if(isset($hepa_result)) {
+            (array_key_exists($ach, $ACH_OPTIONS)) ? $type_ach = 'ACH_'.$ach : $type_ach = 'LPS_'.$ach; ?>
 
         <!-- Result(s) -->       
         <div class="container mt-5 mb-5" id="result-page">
@@ -511,11 +495,11 @@ if(isset($_GET['submit'])){
             <ul class="list-inline">
                 <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.' dBA.</li>' : ''; ?>
                 <!--?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?-->
-		<?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
-                <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$ach.'.</li>' : ''; ?>
-                <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
-                <?php echo (in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
-                <?php echo (!in_array($ach, $VALUES_ACH)) ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
+		        <?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
+                <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$type_ach.'.</li>' : ''; ?>
+                <?php echo (array_key_exists($ach, $ACH_OPTIONS)) ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
+                <?php echo (array_key_exists($ach, $ACH_OPTIONS)) ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
+                <?php echo (!array_key_exists($ach, $ACH_OPTIONS)) ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
                 <!--?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?-->
                 <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
             </ul>
@@ -554,7 +538,7 @@ if(isset($_GET['submit'])){
                             <div class="d-flex flex-row">
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
-                                    <?php if(in_array($ach, $VALUES_ACH)){ ?>
+                                    <?php if(array_key_exists($ach, $ACH_OPTIONS)){ ?>
                                         <li class="list-group-item"><i><strong><?php echo $ach_needs; ?> units at above fan setting </strong> required for approximately <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?>
@@ -583,8 +567,7 @@ if(isset($_GET['submit'])){
                                 </ul>
                                 <ul class="list-group list-group-horizontal-md">
                                     <?php echo (isset($value[$prefilter])) ? '<li class="list-group-item flex-fill">Prefilter: '.$value[$prefilter].'</li>' : ''; ?>
-                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.' <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is total noise dB(A)?" data-bs-content="Total noise level is the noise level of multiple devices added together assuming they are placed together with sound level measured at 1m distance. In reality devices will be spaced around a room and noise level experienced at various points around the room will be less than this." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
-			                        </a></li>'; ?>
+                                    <?php echo '<li class="list-group-item flex-fill">Total Noise (dBA): '.$totaldBA.' <a href="#" data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is total noise dB(A)?" data-bs-content="Total noise level is the noise level of multiple devices added together assuming they are placed together with sound level measured at 1m distance. In reality devices will be spaced around a room and noise level experienced at various points around the room will be less than this." data-bs-html="true">'.$SVG_INFO.'</a></li>'; ?>
                                 </ul>
                                 <?php if(!!$value[$watts]) { ?>
                                     <ul class="list-group list-group-horizontal-md">
@@ -630,13 +613,13 @@ if(isset($_GET['submit'])){
                                         <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 195 * $tariff )) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
-                                    <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+                                    <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><?=$SVG_INFO;?>
                                         </a></h6>
                                     <div class="d-flex flex-row align-items-center">
                                         <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 260 * $tariff )) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
-                                    <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle-fill" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path></svg>
+                                    <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true">
                                         </a></h6>
                                     <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                                 </div>
@@ -668,14 +651,18 @@ if(isset($_GET['submit'])){
     </footer>
     </div>
 
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap JS -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
     <script src="https://getbootstrap.com/docs/5.1/examples/checkout/form-validation.js"></script>
 
-    <script>
+    <!-- Fontawesome JS -->
+    <script src="https://kit.fontawesome.com/53b8e4bb73.js" crossorigin="anonymous"></script>
 
+    <script>
         const showHideRoomSizeOccupants = function(mode) {
             if (mode === 'ach') {
                     $('#rms').show();
