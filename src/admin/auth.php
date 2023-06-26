@@ -8,8 +8,8 @@ if(isset($_POST['credential'])) {
   $data = verify_jwtToken($_POST['credential']);
   $data = json_decode($data, true);
 
-  // if($data['aud'] == CLIENT_ID && $data['email_verified'] == true && $data['email'] == ADMIN_EMAIL) {
-  if($data['aud'] == CLIENT_ID && $data['email_verified'] == true) {
+  if($data['aud'] == CLIENT_ID && $data['email_verified'] == true && $data['email'] == ADMIN_EMAIL) {
+  // if($data['aud'] == CLIENT_ID && $data['email_verified'] == true) {
     $_SESSION['user_email'] = $data['email'];
     $_SESSION['user_name'] = $data['name'];
     $_SESSION['user_picture'] = $data['picture'];
