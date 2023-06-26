@@ -2,41 +2,120 @@
 require('constants.php');
 
 // Get config key
-function config($key)
+function config($key, $type=null)
 {
-    $file = file_get_contents("data/config/config.json");
+    $cpath = __DIR__."/../data/config";
+    $file = file_get_contents($cpath."/config.json");
+    if($type == 'token'){
+        $file = file_get_contents($cpath."/refresh_token.json");
+    }
     $deco = json_decode($file, true);
     return $deco[$key];
 }
 
-// Get Refresh token from google OAuth
-function generate_token()
+// Verify jwt token from google OAuth
+function verify_jwtToken($token) {
+
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://oauth2.googleapis.com/tokeninfo',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => 'id_token='.$token,
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/x-www-form-urlencoded'
+        ),
+    ));
+
+    $response = curl_exec($curl);
+
+    curl_close($curl);
+    return $response;
+}
+
+// Get refresh token from google OAuth
+function get_refreshToken($code){
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://oauth2.googleapis.com/token',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => 'client_id='.CLIENT_ID.'&client_secret='.CLIENT_SECRET.'&code='.$code.'&grant_type=authorization_code&redirect_uri='.urlencode(REDIRECT_URL.'/auth.php'),
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/x-www-form-urlencoded'
+        ),
+    ));
+
+    $response = curl_exec($curl);
+
+    curl_close($curl);
+
+    $data = json_decode($response, true);
+    file_put_contents(__DIR__."/../data/config/refresh_token.json", $response);
+
+    return $data;
+}
+
+function checkRefreshToken()
+{
+    $fpath = __DIR__."/../data/config/refresh_token.json";
+    if(file_exists($fpath)){
+        $data = json_decode(file_get_contents($fpath), true);
+
+        if(array_key_exists("error", $data)){
+            $message = array('status' => 'error', 'message' => $data);
+        } else {
+            $message = array(
+                'status' => 'ok',
+                'refresh_token' => $data['refresh_token'],
+                'scope' => $data['scope']);
+        }
+    } else {
+        $message = array('status' => 'error', 'message' => 'Refresh Token file not found');
+    }
+    return $message;
+}
+
+// Get access token from google OAuth
+function generate_accessToken()
 {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, OAUTHURL);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "client_secret=" . config('client_secret') . "&grant_type=refresh_token&refresh_token=" . config('refresh_token') . "&client_id=" . config('client_id'));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "client_secret=" . CLIENT_SECRET . "&grant_type=refresh_token&refresh_token=" . config('refresh_token', 'token') . "&client_id=" . CLIENT_ID);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
-    file_put_contents("data/config/token.json", $result);
+    file_put_contents(__DIR__."/../data/config/access_token.json", $result);
     return json_decode($result, true);
 }
 
 // Check if the token is expired and get new refesh token
-function checkexp()
+function check_accessTokenExp()
 {
-    $fpath = "data/config/token.json";
+    $fpath = __DIR__."/../data/config/access_token.json";
     if(file_exists($fpath) && filemtime($fpath) + 3600 > time()){
         $data = json_decode(file_get_contents($fpath), true);
         if(isset($data["access_token"])){
             $token = $data["access_token"];
         } else {
-            $data = generate_token();
+            $data = generate_accessToken();
             $token = $data["access_token"];
         }
     } else {
-        $data = generate_token();
+        $data = generate_accessToken();
         $token = $data["access_token"];
     }
     return $token;
@@ -45,7 +124,7 @@ function checkexp()
 // Check if there's no error in token
 function checktoken()
 {
-    $fpath = "data/config/token.json";
+    $fpath = __DIR__."/../data/config/access_token.json";
     if(file_exists($fpath)){
         $data = json_decode(file_get_contents($fpath), true);
 
@@ -60,12 +139,21 @@ function checktoken()
     return $message;
 }
 
+// Manage config.json
+function manage_config($key, $value){
+    $config = __DIR__."/../data/config/config.json";
+    $data = json_decode(file_get_contents($config), true);
+    $data[$key] = $value;
+    file_put_contents($config, json_encode($data));
+    return $data;
+}
+
 // Get data from google sheets
 function getSheets($sheets_id, $token, $countries=true, $range=null, $majorDimension=null)
 {
     $range = ($range != null) ? urlencode($range) : $range;
     if($countries){
-        $url = SHEETSAPI . $sheets_id . "?fields=sheets.properties(title)";
+        $url = SHEETSAPI . $sheets_id . "?fields=sheets.properties(title,gridProperties)";
     } elseif($majorDimension) {
         $url = SHEETSAPI . $sheets_id ."/values/". $range ."?majorDimension=". $majorDimension . "&valueRenderOption=UNFORMATTED_VALUE";
     } else {
@@ -103,11 +191,11 @@ function getSheets($sheets_id, $token, $countries=true, $range=null, $majorDimen
 function countries($sheets_id)
 {
     // Check if the countries.json is exist, else create it
-    $countries_path = 'data/config/countries.json';
+    $countries_path = __DIR__.'/../data/config/countries.json';
     if(file_exists($countries_path)){
         $dcountries = json_decode(file_get_contents($countries_path), true);
     } else {
-        $token = checkexp();
+        $token = check_accessTokenExp();
         // Get data from Google Sheets
         $dcountries = getSheets($sheets_id, $token);
         file_put_contents($countries_path, json_encode($dcountries));
@@ -163,7 +251,7 @@ function CFdata($data)
 function getHepa($country)
 {
     $sheets_id  = config('sheet_id');
-    $hepapath   = 'data/db/'.$country.'.json';
+    $hepapath   = __DIR__.'/../data/db/'.$country.'.json';
 
     // Check if the country-name.json is exist, else create it
     if(file_exists($hepapath) && json_decode(file_get_contents($hepapath), true) != null){
@@ -172,7 +260,7 @@ function getHepa($country)
         if(file_exists($hepapath)){
             unlink($hepapath);
         }
-        $token = checkexp();
+        $token = check_accessTokenExp();
         // Get data from Google Sheets
         $data = getSheets($sheets_id, $token, false, $country);
 
@@ -241,10 +329,10 @@ function totaldBA($x, $y)
 function updateData()
 {
     $sheets_id = config('sheet_id');
-    $token = checkexp();
+    $token = check_accessTokenExp();
 
     // Update countries.json
-    $countries_path = 'data/config/countries.json';
+    $countries_path = __DIR__.'/../data/config/countries.json';
     if(file_exists($countries_path)){
         unlink($countries_path);
     }
@@ -258,23 +346,23 @@ function updateData()
     $countries = array_unique($countries);
     sort($countries);
 
-    if (!is_dir('data')) {
-        mkdir('data');
+    if (!is_dir(__DIR__.'/../data')) {
+        mkdir(__DIR__.'/../data');
     }
     
-    if (!is_dir('data/db')) {
-        mkdir('data/db');
+    if (!is_dir(__DIR__.'/../data/db')) {
+        mkdir(__DIR__.'/../data/db');
     }
     
     // Remove all country json files
-    $hepafiles = glob('data/db/*.{json}', GLOB_BRACE);
+    $hepafiles = glob(__DIR__.'/../data/db/*.{json}', GLOB_BRACE);
     foreach($hepafiles as $hepafile){
         unlink($hepafile);
     }
     
     // Generate new country json files
     foreach($countries as $country){
-        $hepapath = 'data/db/'.$country.'.json';
+        $hepapath = __DIR__.'/../data/db/'.$country.'.json';
         
         // Check if there's still a country-name.json file and delete it
         if(file_exists($hepapath)){
