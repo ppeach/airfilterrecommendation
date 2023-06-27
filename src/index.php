@@ -25,6 +25,7 @@ $tariff = '0.22';
 $diy = 'No';
 $max_units = 5;
 $frs = 12;
+$lifetime = 4;
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -45,6 +46,7 @@ if(isset($_GET['submit'])){
     $diy = $_GET['diy'] ?? $diy;
     $max_units =  $_GET['max_units'] ?? $max_units;
     $frs =  $_GET['filter-rs'] ?? $frs;
+    $lifetime =  $_GET['lifetime'] ?? $lifetime;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -389,11 +391,7 @@ if(isset($_GET['submit'])){
                         id="room-size"
                         name="room-size"
                         placeholder="Cubic room Volume (eg 100)"
-                        <?php
-                            if($submitted) {
-                                echo 'value="'.$room_size.'"';
-                            }
-                        ?>
+                        <?= ($submitted) ? 'value="'.$room_size.'"': ''; ?>
                     >
                     <div class="invalid-feedback">
                         Please enter your room volume as a single number (eg 200).
@@ -418,11 +416,7 @@ if(isset($_GET['submit'])){
                         id="no-of-occ"
                         name="no-of-occ"
                         placeholder="Number of occupants"
-                        <?php
-                            if($submitted) {
-                                echo 'value="'.$no_of_occ.'"';
-                            }
-                        ?>
+                        <?= ($submitted) ? 'value="'.$no_of_occ.'"': ''; ?>
                     >
                     <div class="invalid-feedback">
                     Please enter the rated occupant capacity for the space.
@@ -448,16 +442,10 @@ if(isset($_GET['submit'])){
                         class="form-control"
                         name="max_units"
                         id="max-units"
-                        <?php
-                            if($submitted) {
-                                echo 'value="'.$max_units.'"';
-                            } else {
-                                echo 'value="5"';
-                            }
-                        ?>
+                        <?= ($submitted) ? 'value="'.$max_units.'"' : 'value="5"'; ?>
                     >
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label
                         for="tariff"
                         class="form-label"
@@ -475,16 +463,10 @@ if(isset($_GET['submit'])){
                         class="form-control"
                         name="tariff"
                         id="tariff"
-                        <?php
-                            if($submitted) {
-                                echo 'value="'.$tariff.'"';
-                            } else {
-                                echo 'value="0.22"';
-                            }
-                        ?>
+                        <?= ($submitted) ? 'value="'.$tariff.'"' : 'value="0.22"'; ?>
                     >
                 </div>
-                <div class="col-md-6" id="frs">
+                <div class="col-md-4" id="frs">
                     <label for="filter-rs" class="form-label">Filter replacement schedule</label>
                     <select class="form-select" id="filter-rs" name="filter-rs">
                         <?php foreach($FRS_OPTIONS as $key => $value) { ?>
@@ -493,6 +475,17 @@ if(isset($_GET['submit'])){
                     </select>
                     <div class="invalid-feedback">
                         Please select filter replacement schedule.
+                    </div>
+                </div>
+                <div class="col-md-4" id="frs">
+                    <label for="lifetime" class="form-label">Assumed filter lifetime</label>
+                    <select class="form-select" id="lifetime" name="lifetime">
+                        <?php foreach($AFL_OPTIONS as $key => $value) { ?>
+                        <option value="<?= $key ?>" <?php if($key == $lifetime) {echo 'selected';} ?> ><?= $value ?></option>
+                        <?php } ?>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select Assumed filter lifetime.
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -519,7 +512,7 @@ if(isset($_GET['submit'])){
                             <option value="upc">Upfront Cost</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary btn-sm ms-2" id="sort-results">Sort Ascending</button>
+                    <!-- <button class="btn btn-primary btn-sm ms-2" id="sort-results">Sort Ascending</button> -->
                 </div>
             </h4>
             <ul class="list-inline">
@@ -546,10 +539,14 @@ if(isset($_GET['submit'])){
                         $filter_Cost = $value['currency_format'].$value[$filterCost];
                         $link_filter = ($value[$buyfilter] !== '') ? '<a href="'.$value[$buyfilter].'" target="_blank">'.$filter_Cost.'</a>' : $filter_Cost;
                         $totaldBA = $value['Total dBA'];
-                        $tco = round(calculateYTC($value['Total Cost'], calculateFRC($ach_needs, $value['Filter cost'], $frs)/4, calculateEC($tariff, $value['Watts'], $ach_needs)));
+                        $filter_replacement_cost = calculateFRC($value['Filter cost'], $ach_needs, $frs, $lifetime);
+                        $energyCost = calculateEC($tariff, $value['Watts'], $ach_needs);
+                        $tco_normal = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['normal'] * $lifetime) / $lifetime);
+                        $tco_school = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['school'] * $lifetime) / $lifetime);
+                        $tco_office = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['office'] * $lifetime) / $lifetime);
                 ?>
 
-                    <div class="row p-2 bg-white border rounded mt-2 product-item" data-tco="<?=$tco;?>" data-upc="<?=$value['Total Cost'];?>">
+                    <div class="row p-2 bg-white border rounded mt-2 product-item" data-tco="<?=$tco_normal;?>" data-upc="<?=$value['Total Cost'];?>">
                         <div class="col-md-3 mt-2">
                             <div class="d-flex position-relative">
                             <?php if(!empty($value['EnergyStar']) || !empty($value['AHAM'])){ ?>
@@ -634,12 +631,16 @@ if(isset($_GET['submit'])){
 
                             <h6 class="text-success">Total Cost of Ownership</h6>
                             <div class="d-flex flex-row align-items-center">
-                                <h5 class="mr-1"><?=$value['currency_format'].$tco;?>
-                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly total cost of ownership for 24/7 operation" data-bs-content="24 hrs per day, 7 days per week, 365 days per year" data-bs-html="true"><?=$SVG_INFO;?>
+                                <h5 class="mr-1"><?=$value['currency_format'].$tco_normal;?>
+                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for 24/7 operation" data-bs-content="24 hrs per day, 7 days per week, 365 days per year" data-bs-html="true"><?=$SVG_INFO;?>
                                     </a>
                                 </h5>&nbsp;
-                                <h5 class="mr-1"><?=$value['currency_format'].round(calculateYTC($value['Total Cost'], calculateFRC($ach_needs, $value['Filter cost'], $frs)/4, calculateEC($tariff, $value['Watts'], $ach_needs, 'office')));?>
-                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly total cost of ownership for Office" data-bs-content="8 hrs per day, 52 weeks per year or 260 work days per year" data-bs-html="true"><?=$SVG_INFO;?>
+                                <h5 class="mr-1"><?=$value['currency_format'].$tco_school;?>
+                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for School" data-bs-content="8 hrs per day, 5 days per week and 39 weeks per year (1560 hrs per year)" data-bs-html="true"><?=$SVG_INFO;?>
+                                    </a>
+                                </h5>&nbsp;
+                                <h5 class="mr-1"><?=$value['currency_format'].$tco_office;?>
+                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for Office" data-bs-content="8 hrs per day, 52 weeks per year or 260 work days per year" data-bs-html="true"><?=$SVG_INFO;?>
                                     </a>
                                 </h5>
                             </div>
@@ -649,18 +650,18 @@ if(isset($_GET['submit'])){
 								<div class="card card-body mt-3 collapse" id="electricity-<?php echo $key; ?>">
                                     <h6 class="text-success">Yearly electricity cost</h6>
                                     <div class="d-flex flex-row align-items-center">
-                                        <h4 class="mr-1"><?php echo $value['currency_format'].round(calculateEC($tariff, $value['Watts'], $ach_needs)) ; ?></h4>
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round($energyCost['normal']) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
                                     <h6>(24/7 operation)</h6>
                                     <div class="d-flex flex-row align-items-center">
-                                        <h4 class="mr-1"><?php echo $value['currency_format'].round(calculateEC($tariff, $value['Watts'], $ach_needs, 'school')) ; ?></h4>
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round($energyCost['school']) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
                                     <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><?=$SVG_INFO;?>
                                         </a></h6>
                                     <div class="d-flex flex-row align-items-center">
-                                        <h4 class="mr-1"><?php echo $value['currency_format'].round(calculateEC($tariff, $value['Watts'], $ach_needs, 'office')) ; ?></h4>
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round($energyCost['office']) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
                                     <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true">
@@ -762,29 +763,50 @@ if(isset($_GET['submit'])){
         <?php echo (isset($scroll)) ? $scroll : null; ?>
 
         // Sort result by selected options
-        const sortResult = document.getElementById('sort-results');
+        // const sortResult = document.getElementById('sort-results');
         const product = document.querySelectorAll('.product-item');
         const sortOptions = document.getElementById('sort-options');
         let switching = true;
-        sortResult.addEventListener('click', function() {
-            if(switching){
-                Array.from(product).sort(function(a, b){
-                    return +b.dataset[sortOptions.value] - +a.dataset[sortOptions.value];
-                })
-                .forEach(el => el.parentNode.appendChild(el));
-                console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
-                switching = false;
-                sortResult.innerHTML = "Sort Descending";
-            } else {
-                Array.from(product).sort(function(a, b){
-                    return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
-                })
-                .forEach(el => el.parentNode.appendChild(el));
-                console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
-                switching = true;
-                sortResult.innerHTML = "Sort &nbsp;Ascending";
-            }
-        });
+        // if(sortResult){
+        //     sortResult.addEventListener('click', function() {
+        //         if(switching){
+        //             Array.from(product).sort(function(a, b){
+        //                 return +b.dataset[sortOptions.value] - +a.dataset[sortOptions.value];
+        //             })
+        //             .forEach(el => el.parentNode.appendChild(el));
+        //             console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
+        //             switching = false;
+        //             sortResult.innerHTML = "Sort Descending";
+        //         } else {
+        //             Array.from(product).sort(function(a, b){
+        //                 return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+        //             })
+        //             .forEach(el => el.parentNode.appendChild(el));
+        //             console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
+        //             switching = true;
+        //             sortResult.innerHTML = "Sort &nbsp;Ascending";
+        //         }
+        //     });
+        // }
+        if(sortOptions){
+            sortOptions.addEventListener('change', function() {
+                if(switching){
+                    Array.from(product).sort(function(a, b){
+                        return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+                    })
+                    .forEach(el => el.parentNode.appendChild(el));
+                    console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
+                    switching = false;
+                } else {
+                    Array.from(product).sort(function(a, b){
+                        return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+                    })
+                    .forEach(el => el.parentNode.appendChild(el));
+                    console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
+                    switching = true;
+                }
+            });
+        }
     </script>
 
 </body>

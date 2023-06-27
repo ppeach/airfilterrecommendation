@@ -276,43 +276,51 @@ function getHepa($country)
 }
 
 // Calculate filter replacement cost schedule
-function calculateFRC($devices, $filtercost, $months){
-    // Device longevity (default 4 years or 48 months)
-    $device_life = 48;
+function calculateFRC($filtercost, $devices, $months, $lifetime){
+    // Device lifetime (default 4 years or 48 months)
+    $lifetime = $lifetime * 12;
+
+    // Replacement schedule will be minus 1 because the device come with filter installed
+    $schedule = ($lifetime / $months) - 1;
 
     // Calculate FRC
-    // ((Device longevity / every 6 or 12 or 24 month) - 1) x (number of devices x filter cost)
-    $frc = (($device_life / $months) - 1) * ($devices * $filtercost);
+    // Filter cost x No. of devices x Replacement schedule
+    $frc = $filtercost * $devices * $schedule;
 
     return $frc;
 }
 
 // Calculate electricity cost
-function calculateEC($kwhprice, $watts, $devices, $type=null)
+function calculateEC($tariff, $watts, $devices)
 {
     // Constant use 24hrs per day, 7 days per week and 365 days per year (8760 hrs per year)
     // Office hours usually use 8 hrs per day, 52 weeks or 260 work days (2080 hrs per year)
     // School hours based on 8 hrs per day, 5 days per week and 39 weeks per year (1560 hrs per year)
     $hours = 8760;
-    if($type == 'school'){
-        $hours = 1560;
-    } elseif($type == 'office'){
-        $hours = 2080;
-    }
+    $schoolhours = 1560;
+    $officehours = 2080;
 
     //kwH = (watts x hours) / 1000
     // watts is user defined input
-    $kwH = (($watts * $hours) / 1000) * $kwhprice * $devices;
+    $normal = (($watts * $hours) / 1000) * $tariff * $devices;
+    $school = (($watts * $schoolhours) / 1000) * $tariff * $devices;
+    $office = (($watts * $officehours) / 1000) * $tariff * $devices;
 
-    return $kwH;
+    $energyCost = array(
+        'normal' => $normal,
+        'school' => $school,
+        'office' => $office
+    );
+
+    return $energyCost;
 }
 
-// Calculate yearly total cost
-function calculateYTC($uc, $frc, $ec)
+// Calculate Total cost of ownership
+function calculateTCO($upfront_cost, $filter_replacement_cost, $total_energy_cost)
 {
-    // Yearly Total Cost = (upfront cost) + (cost of filter replacement schedule / 4) + (electricity cost)
-    $ytc = $uc + ($frc / 4) + $ec;
-    return $ytc;
+    // Total cost of ownership = Upfront cost + Total filter replacement cost + Total electricity cost
+    $tco = $upfront_cost + $filter_replacement_cost + $total_energy_cost;
+    return $tco;
 }
 
 // Calculate ACH and get Total Cost
