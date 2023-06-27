@@ -1,11 +1,11 @@
 <?php
+require_once(__DIR__.'/includes/init.php');
 
-if (!file_exists(__DIR__.'/data/config/refresh_token.json')) {
+if (!file_exists(CONFIG)) {
     header("Location: admin/login.php");
     die();
 }
 
-require_once(__DIR__.'/includes/init.php');
 
 // Set data for Countries dropdown
 $countries  = countries(config('sheet_id'));

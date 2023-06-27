@@ -141,13 +141,16 @@ function checktoken()
     return $message;
 }
 
-// Manage config.json
-function manage_config($key, $value)
+// Manage JSON files inside config folder
+function manageJson($key, $value, $file)
 {
-    $config = __DIR__."/../data/config/config.json";
-    $data = json_decode(file_get_contents($config), true);
+    $file = __DIR__."/../data/config/".$file;
+    $data = [];
+    if(file_exists($file)){
+        $data = json_decode(file_get_contents($file), true);
+    }
     $data[$key] = $value;
-    file_put_contents($config, json_encode($data));
+    file_put_contents($file, json_encode($data));
     return $data;
 }
 

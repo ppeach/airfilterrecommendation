@@ -3,4 +3,4 @@ src/data/db/*
 dev/*
 
 # don't ignore config.json file, as this will be used and managed from admin dashboard
-!src/data/config/config.json
+# !src/data/config/config.json

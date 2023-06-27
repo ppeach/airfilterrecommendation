@@ -31,9 +31,11 @@ $maxANoise  = array('30', '35', '40', '45', '50', '55', '60');
 // Define constants for OAuth2 authentication and Google Sheets API
 define('OAUTHURL', 'https://www.googleapis.com/oauth2/v4/token');
 define('SHEETSAPI', 'https://sheets.googleapis.com/v4/spreadsheets/');
-define('CLIENT_ID', 'YOUR_CLIENT_ID');
-define('CLIENT_SECRET', 'YOUR_CLIENT_SECRET');
-define('ADMIN_EMAIL', 'YOUR_ADMIN_EMAIL');
+define('CLIENT_ID', config('client_id'));
+define('CLIENT_SECRET', config('client_secret'));
+define('ADMIN_EMAIL', config('admin_email'));
 define('REDIRECT_URL', 'https://'.$_SERVER['SERVER_NAME'].'/admin');
+define('CONFIG', __DIR__.'/../data/config/config.json');
+define('UPDATE_KEY', config('update_key'));
 
 ?>
