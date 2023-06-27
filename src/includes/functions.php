@@ -275,6 +275,46 @@ function getHepa($country)
     return $data;
 }
 
+// Calculate filter replacement cost schedule
+function calculateFRC($devices, $filtercost, $months){
+    // Device longevity (default 4 years or 48 months)
+    $device_life = 48;
+
+    // Calculate FRC
+    // ((Device longevity / every 6 or 12 or 24 month) - 1) x (number of devices x filter cost)
+    $frc = (($device_life / $months) - 1) * ($devices * $filtercost);
+
+    return $frc;
+}
+
+// Calculate electricity cost
+function calculateEC($kwhprice, $watts, $devices, $type=null)
+{
+    // Constant use 24hrs per day, 7 days per week and 365 days per year (8760 hrs per year)
+    // Office hours usually use 8 hrs per day, 52 weeks or 260 work days (2080 hrs per year)
+    // School hours based on 8 hrs per day, 5 days per week and 39 weeks per year (1560 hrs per year)
+    $hours = 8760;
+    if($type == 'school'){
+        $hours = 1560;
+    } elseif($type == 'office'){
+        $hours = 2080;
+    }
+
+    //kwH = (watts x hours) / 1000
+    // watts is user defined input
+    $kwH = (($watts * $hours) / 1000) * $kwhprice * $devices;
+
+    return $kwH;
+}
+
+// Calculate yearly total cost
+function calculateYTC($uc, $frc, $ec)
+{
+    // Yearly Total Cost = (upfront cost) + (cost of filter replacement schedule / 4) + (electricity cost)
+    $ytc = $uc + ($frc / 4) + $ec;
+    return $ytc;
+}
+
 // Calculate ACH and get Total Cost
 function calculateACH($data, $ach, $max_units, $types=array(), $achs=array())
 {

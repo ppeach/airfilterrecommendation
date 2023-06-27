@@ -24,7 +24,7 @@ $prefltr = $VALUE_NO;
 $tariff = '0.22';
 $diy = 'No';
 $max_units = 5;
-$frs = 6;
+$frs = 12;
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -112,6 +112,16 @@ if(isset($_GET['submit'])){
         'no_off_occ'=> $no_of_occ
     );
     $hepa_result = calculateACH($filter_result, $ach, $max_units, $types, $achs);
+
+    // Filter items that doesn't have Watts and Filter cost value
+    $hepa_result = array_filter(
+        $hepa_result,
+        function($item){
+            if($item['Watts'] != '' && $item['Filter cost'] != ''){
+                return true;
+            }
+        }
+    );
 
     // Filter total dBA by max acceptable noise
     //$hepa_result = array_filter($hepa_result, function($item) use ($max_an){
@@ -418,34 +428,7 @@ if(isset($_GET['submit'])){
                     Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label
-                        for="tariff"
-                        class="form-label"
-                        data-bs-trigger="hover focus"
-                        data-bs-toggle="popover"
-                        title="Electricity Tariff"
-                        data-bs-content="Enter your per-kWh electricity tariff (eg 0.22) and an estimated annual electricity running cost will be calculated in your results"
-                        data-bs-html="true"
-                    >
-                        Electricity Tariff
-                        <i class="fa-solid fa-circle-info"></i>
-                    </label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        name="tariff"
-                        id="tariff"
-                        <?php
-                            if($submitted) {
-                                echo 'value="'.$tariff.'"';
-                            } else {
-                                echo 'value="0.22"';
-                            }
-                        ?>
-                    >
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label
                         for="max-units"
                         class="form-label"
@@ -474,6 +457,44 @@ if(isset($_GET['submit'])){
                         ?>
                     >
                 </div>
+                <div class="col-md-6">
+                    <label
+                        for="tariff"
+                        class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Electricity Tariff"
+                        data-bs-content="Enter your per-kWh electricity tariff (eg 0.22) and an estimated annual electricity running cost will be calculated in your results"
+                        data-bs-html="true"
+                    >
+                        Electricity Tariff
+                        <i class="fa-solid fa-circle-info"></i>
+                    </label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="tariff"
+                        id="tariff"
+                        <?php
+                            if($submitted) {
+                                echo 'value="'.$tariff.'"';
+                            } else {
+                                echo 'value="0.22"';
+                            }
+                        ?>
+                    >
+                </div>
+                <div class="col-md-6" id="frs">
+                    <label for="filter-rs" class="form-label">Filter replacement schedule</label>
+                    <select class="form-select" id="filter-rs" name="filter-rs">
+                        <?php foreach($FRS_OPTIONS as $key => $value) { ?>
+                        <option value="<?= $key ?>" <?php if($key == $frs) {echo 'selected';} ?> ><?= $value ?></option>
+                        <?php } ?>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select filter replacement schedule.
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <button class="w-100 btn btn-primary btn-lg" name="submit" type="submit" value="submit">Find Your Filters</button>
                 </div>
@@ -490,7 +511,16 @@ if(isset($_GET['submit'])){
         <div class="container mt-5 mb-5" id="result-page">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-primary">Result(s)</span>
-                <span class="badge bg-primary rounded-pill"><?php echo $total; ?></span>
+                <div class="d-flex align-items-center">
+                    <h6 class="mb-0"><span class="badge bg-primary rounded-pill"><?php echo $total; ?></span></h6>
+                    <div class="col-md ms-2">
+                        <select class="form-select form-select-sm" id="sort-options">
+                            <option value="tco">Total Cost of Ownership</option>
+                            <option value="upc">Upfront Cost</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm ms-2" id="sort-results">Sort Ascending</button>
+                </div>
             </h4>
             <ul class="list-inline">
                 <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.' dBA.</li>' : ''; ?>
@@ -516,9 +546,10 @@ if(isset($_GET['submit'])){
                         $filter_Cost = $value['currency_format'].$value[$filterCost];
                         $link_filter = ($value[$buyfilter] !== '') ? '<a href="'.$value[$buyfilter].'" target="_blank">'.$filter_Cost.'</a>' : $filter_Cost;
                         $totaldBA = $value['Total dBA'];
+                        $tco = round(calculateYTC($value['Total Cost'], calculateFRC($ach_needs, $value['Filter cost'], $frs)/4, calculateEC($tariff, $value['Watts'], $ach_needs)));
                 ?>
 
-                    <div class="row p-2 bg-white border rounded mt-2">
+                    <div class="row p-2 bg-white border rounded mt-2 product-item" data-tco="<?=$tco;?>" data-upc="<?=$value['Total Cost'];?>">
                         <div class="col-md-3 mt-2">
                             <div class="d-flex position-relative">
                             <?php if(!empty($value['EnergyStar']) || !empty($value['AHAM'])){ ?>
@@ -600,23 +631,36 @@ if(isset($_GET['submit'])){
                             <?php } else { ?>
                                 <h6 class="text-danger">Filter cost unknown</h6>
                             <?php } ?>
+
+                            <h6 class="text-success">Total Cost of Ownership</h6>
+                            <div class="d-flex flex-row align-items-center">
+                                <h5 class="mr-1"><?=$value['currency_format'].$tco;?>
+                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly total cost of ownership for 24/7 operation" data-bs-content="24 hrs per day, 7 days per week, 365 days per year" data-bs-html="true"><?=$SVG_INFO;?>
+                                    </a>
+                                </h5>&nbsp;
+                                <h5 class="mr-1"><?=$value['currency_format'].round(calculateYTC($value['Total Cost'], calculateFRC($ach_needs, $value['Filter cost'], $frs)/4, calculateEC($tariff, $value['Watts'], $ach_needs, 'office')));?>
+                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly total cost of ownership for Office" data-bs-content="8 hrs per day, 52 weeks per year or 260 work days per year" data-bs-html="true"><?=$SVG_INFO;?>
+                                    </a>
+                                </h5>
+                            </div>
+
                             <?php if(!!$value[$watts]) { ?>
                                 <a href="#electricity-<?php echo $key; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="electricity-<?php echo $key; ?>"><small><i>See electricity costs</i></small></a>
 								<div class="card card-body mt-3 collapse" id="electricity-<?php echo $key; ?>">
                                     <h6 class="text-success">Yearly electricity cost</h6>
                                     <div class="d-flex flex-row align-items-center">
-                                        <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 24 * 365 * $tariff )) ; ?></h4>
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round(calculateEC($tariff, $value['Watts'], $ach_needs)) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
                                     <h6>(24/7 operation)</h6>
                                     <div class="d-flex flex-row align-items-center">
-                                        <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 195 * $tariff )) ; ?></h4>
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round(calculateEC($tariff, $value['Watts'], $ach_needs, 'school')) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
                                     <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="School use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 39 weeks per year." data-bs-html="true"><?=$SVG_INFO;?>
                                         </a></h6>
                                     <div class="d-flex flex-row align-items-center">
-                                        <h4 class="mr-1"><?php echo $value['currency_format'].round((($ach_needs * $value[$watts] / 1000)  * 8 * 260 * $tariff )) ; ?></h4>
+                                        <h4 class="mr-1"><?php echo $value['currency_format'].round(calculateEC($tariff, $value['Watts'], $ach_needs, 'office')) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
                                     <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true">
@@ -686,7 +730,6 @@ if(isset($_GET['submit'])){
             if (typeof fn !== 'function') {
                 throw new Error('Argument passed to ready should be a function');
             }
-
             if (document.readyState != 'loading') {
                 fn();
             } else if (document.addEventListener) {
@@ -703,11 +746,9 @@ if(isset($_GET['submit'])){
 
         ready(function() {
             const achSelector = window.document.querySelector('#ach');
-
             achSelector.addEventListener('change', function(event) {
                 showHideRoomSizeOccupants(event.target.options[event.target.selectedIndex].dataset.mode);
             });
-
             showHideRoomSizeOccupants(achSelector.options[achSelector.selectedIndex].dataset.mode);
         });
         
@@ -719,6 +760,31 @@ if(isset($_GET['submit'])){
 
         // Scroll to result page
         <?php echo (isset($scroll)) ? $scroll : null; ?>
+
+        // Sort result by selected options
+        const sortResult = document.getElementById('sort-results');
+        const product = document.querySelectorAll('.product-item');
+        const sortOptions = document.getElementById('sort-options');
+        let switching = true;
+        sortResult.addEventListener('click', function() {
+            if(switching){
+                Array.from(product).sort(function(a, b){
+                    return +b.dataset[sortOptions.value] - +a.dataset[sortOptions.value];
+                })
+                .forEach(el => el.parentNode.appendChild(el));
+                console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
+                switching = false;
+                sortResult.innerHTML = "Sort Descending";
+            } else {
+                Array.from(product).sort(function(a, b){
+                    return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+                })
+                .forEach(el => el.parentNode.appendChild(el));
+                console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
+                switching = true;
+                sortResult.innerHTML = "Sort &nbsp;Ascending";
+            }
+        });
     </script>
 
 </body>
