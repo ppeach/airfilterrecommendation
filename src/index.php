@@ -201,7 +201,16 @@ if(isset($_GET['submit'])){
         }
         }
     </style>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-PJE4FN2C9M"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
 
+		  gtag('config', 'G-PJE4FN2C9M');
+		</script>
+		  
 </head>
 <body class="bg-light">
     
@@ -351,7 +360,6 @@ if(isset($_GET['submit'])){
                         Please select m3 or cubic feet.
                     </div>
                 </div>
-				<hr class="horizontal-divider">
                 <div class="col-md-6" id="noc">
                     <label for="no-of-occ" class="form-label">Rated occupant capacity for the space.</label>
                     <input
@@ -366,6 +374,7 @@ if(isset($_GET['submit'])){
                     Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
+				<hr class="horizontal-divider">
                 <div class="col-md-4">
                     <label
                         for="max-units"
