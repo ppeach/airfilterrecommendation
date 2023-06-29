@@ -445,11 +445,12 @@ function getAnalytics(){
     foreach($files as $file){
         $country = basename($file, '.json');
         $data = json_decode(file_get_contents($file), true);
+        (isset($data['bydate'][date('Ymd')])) ? $today = $data['bydate'][date('Ymd')] : $today = 0;
         $analytic = array(
             'countries' => array(
                 'name' => $country,
                 'total' => $data['total'],
-                'today' => $data['bydate'][date('Ymd')]
+                'today' => $today
             )
         );
         $analytics[] = $analytic;
