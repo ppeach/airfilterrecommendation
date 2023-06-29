@@ -242,6 +242,9 @@ if(isset($_GET['submit'])){
 	    <p>
                 Please contact and follow <a rel="me" href="https://mas.to/@cleanairstars" target="_blank">Cleanairstars</a> for feedback and updates.
             </p>
+		<p>
+				Supported by a grant from the <a rel="me" href="https://balvi.io" target="_blank">Balvi Foundation</a> 
+			</p>
             <p>&nbsp;</p>
 		</div>
 
