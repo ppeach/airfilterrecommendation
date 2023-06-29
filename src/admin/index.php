@@ -8,15 +8,6 @@ if (!isset($_SESSION['user_email'])) {
     header("Location: login.php");
 }
 
-// Check if refresh_token already exists
-$token = checkRefreshToken();
-$disabled = false;
-if($token['status'] == 'ok'){
-    $_SESSION['refresh_token'] = $token['refresh_token'];
-    $_SESSION['scope'] = $token['scope'];
-    $disabled = true;
-}
-
 // Countries table
 $countries = __DIR__."/../data/config/countries.json";
 $hide = true;
@@ -29,24 +20,11 @@ if(file_exists($countries)){
 ?>
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard | Clean Air Stars</title>
-
-    <!-- Bootstrap CSS v5.3.0 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-
-</head>
+<?php include_once(__DIR__.'/views/header.php'); ?>
 <body class="bg-light">
     <div class="container">
+        <?php include_once(__DIR__.'/views/navbar.php'); ?>
         <main>
-            
-            <div class="py-5 text-center">
-                <h2>Admin Dashboard</h2>
-                <p class="lead">Below you can configure the application auth (<a href="https://developers.google.com/identity/authorization" target="_blank">Google Identity Services</a>) and database (<a href="https://sheets.google.com" target="_blank">Google Sheets</a>)</p>
-                <p class="small">To configure Google Client ID and Secret, please go to <a href="https://console.developers.google.com" target="_blank">Google Console</a> and change the variable CLIENT_ID and CLIENT_SECRET in includes/config.php file</p>
-            </div>
 
             <div class="row g-3">
                 <div class="col-md-3">
@@ -54,54 +32,29 @@ if(file_exists($countries)){
                         <img class="rounded-circle" width="150px" src="<?=$_SESSION['user_picture'];?>" alt="<?=$_SESSION['user_name'];?>">
                         <span class="fw-bold mt-2"><?=$_SESSION['user_name'];?></span>
                         <span class="fw-light mb-2"><?=$_SESSION['user_email'];?></span>
-                        <button class="btn btn-danger btn-sm" name="signout" id="signOut">Sign Out</button>
+                        <!-- <button class="btn btn-danger btn-sm" name="signout" id="signOut">Sign Out</button> -->
                     </div>
                 </div>
                 <div class="col-md-9">
                     <div class="row">
-                        <h4 class="mb-3">Google Identity Services config</h4>
-                        <div class="col-md-12">
-                            <label for="clientID" class="form-label">Client ID</label>
-                            <input type="text" class="form-control" id="clientID" name="clientID" placeholder="Client ID" value="<?=$_SESSION['client_id'];?>" disabled>
-                        </div>
-        
-                        <div class="col-md-12">
-                            <label for="clientSecret" class="form-label">Client Secret</label>
-                            <input type="text" class="form-control" id="clientSecret" name="clientSecret" placeholder="Client Secret" value="<?=CLIENT_SECRET;?>" disabled>
-                        </div>
-        
-                        <div class="col-md-8">
-                            <label for="refreshToken" class="form-label">Refresh Token</label>
-                            <input type="text" class="form-control" id="refreshToken" name="refreshToken" placeholder="Not configured, click on authorize button to generate" value="<?=isset($_SESSION['refresh_token'])?$_SESSION['refresh_token']:'';?>" disabled>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button class="w-100 btn btn-primary" name="authorize" onclick="client.requestCode();" <?=$disabled?'disabled':null;?>>Authorize with Google</button>
+                        <h4 class="mb-3">Google Sheets config</h4>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label for="sheetID" class="form-label">Spreadsheet ID / URL</label>
+                                <input type="text" class="form-control" id="sheetID" name="sheetID" placeholder="17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk" value="<?=config('sheet_id');?>" required>
+                            </div>
+
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button class="w-100 btn btn-primary" name="saveSheetID" id="saveSheetID">Save Sheets ID</button>
+                            </div>
                         </div>
 
-                        <div class="col-md-12">
-                            <label for="scope" class="form-label">Scope</label>
-                            <input type="text" class="form-control" id="scope" name="scope" placeholder="Scope" value="<?=isset($_SESSION['scope'])?$_SESSION['scope']:'';?>" disabled>
-                        </div>
+                        <hr class="my-4">
 
+                        <button class="w-100 btn btn-success" name="generateDB" id="generateDB"><?=$btn_data;?></button>
                     </div>
                 </div>
             </div>
-            <hr class="my-4">
-
-            <h4 class="mb-3">Google Sheets config</h4>
-            <div class="row g-3">
-                <div class="col-md-8">
-                    <label for="sheetID" class="form-label">Spreadsheet ID / URL</label>
-                    <input type="text" class="form-control" id="sheetID" name="sheetID" placeholder="17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk" value="<?=config('sheet_id');?>" required>
-                </div>
-
-                <div class="col-md-4 d-flex align-items-end">
-                    <button class="w-100 btn btn-primary" name="saveSheetID" id="saveSheetID">Save Sheets ID</button>
-                </div>
-            </div>
-            <hr class="my-4">
-
-            <button class="w-100 btn btn-success" name="generateDB" id="generateDB"><?=$btn_data;?></button>
 
             <hr class="my-4">
 
@@ -137,25 +90,8 @@ if(file_exists($countries)){
         </footer>
     </div>
 
-    <!-- Bootstrap JS v5.3.0 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <?php include_once(__DIR__.'/views/footer_js.php'); ?>
 
-    <!-- Sweetalert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <?php if($disabled == false){?>
-    <!-- Google Identity authentication JS -->
-    <script src="https://accounts.google.com/gsi/client" onload="console.log('TODO: add onload function')"></script>
-    <script>
-        // Google Identity Authorization
-        const client = google.accounts.oauth2.initCodeClient({
-            client_id: '<?php echo $_SESSION['client_id']; ?>',
-            scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets.readonly',
-            ux_mode: 'redirect',
-            redirect_uri: "<?=REDIRECT_URL.'/auth.php';?>"
-        });
-    </script>
-    <?php } ?>
     <script>
         // Spinner
         const spinner = "<div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>";
@@ -250,13 +186,6 @@ if(file_exists($countries)){
             title: '<?=$_SESSION['signin_message']?>'
         })
     <?php unset($_SESSION['signin_message']);} ?>
-    <?php if(isset($_SESSION['auth_message'])){ ?>
-        // Toast authorize with google
-        Toast.fire({
-            icon: 'success',
-            title: '<?=$_SESSION['auth_message']?>'
-        })
-    <?php unset($_SESSION['auth_message']);} ?>
     <?php } ?>
     </script>
 </body>

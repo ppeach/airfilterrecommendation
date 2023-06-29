@@ -1,5 +1,6 @@
 src/data/config/*
 src/data/db/*
+src/data/analytics/*
 dev/*
 
 # don't ignore config.json file, as this will be used and managed from admin dashboard

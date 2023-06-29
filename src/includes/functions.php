@@ -144,7 +144,7 @@ function checktoken()
 // Manage JSON files inside config folder
 function manageJson($key, $value, $file)
 {
-    $file = __DIR__."/../data/config/".$file;
+    $file = __DIR__."/../data/".$file;
     $data = [];
     if(file_exists($file)){
         $data = json_decode(file_get_contents($file), true);
@@ -436,4 +436,42 @@ function updateData()
     }
 
     return $results;
+}
+
+// Analytics for Buy now button
+function getAnalytics(){
+    $analytics = [];
+    $files = glob(__DIR__.'/../data/analytics/*.{json}', GLOB_BRACE);
+    foreach($files as $file){
+        $country = basename($file, '.json');
+        $data = json_decode(file_get_contents($file), true);
+        $analytic = array(
+            'countries' => array(
+                'name' => $country,
+                'total' => $data['total'],
+                'today' => $data['bydate'][date('Ymd')]
+            )
+        );
+        $analytics[] = $analytic;
+    }
+
+    return $analytics;
+}
+
+function getAnalyticCountry($country){
+    $file = __DIR__.'/../data/analytics/'.$country.'.json';
+    $data = json_decode(file_get_contents($file), true);
+    $products = [];
+    foreach($data as $key => $product){
+        if($key === 'total' || $key === 'bydate'){
+            continue;
+        }
+        $products[] = array(
+            'product' => $key,
+            'link' => $product['link'],
+            'view' => $product['view']
+        );
+    }
+
+    return $products;
 }

@@ -676,7 +676,7 @@ if(isset($_GET['submit'])){
                             <?php } ?>
                             <div class="d-flex flex-column mt-4">
                                 <?php echo (isset($value[$details])) ? '<a class="btn btn-outline-primary btn-sm" href="'.$value[$details].'" target="_blank">Details</a>' : ''; ?>
-                                <?php echo (isset($value[$buy])) ? '<a class="btn btn-primary btn-sm mt-2" href="'.$value[$buy].'" target="_blank">Buy Now</a>' : ''; ?>
+                                <?php echo (isset($value[$buy])) ? '<a data-country="'.$country.'" data-product="'.$value[$model].'" data-link="'.$value[$buy].'" class="btn btn-primary btn-sm mt-2" href="'.$value[$buy].'" target="_blank" onclick="sendClick(this);">Buy Now</a>' : ''; ?>
                             </div>
                         </div>
                     </div>
@@ -822,6 +822,30 @@ if(isset($_GET['submit'])){
                 }
             });
         }
+
+        // Send click event to analytics json
+        async function sendClick(d){
+            const myHeaders = new Headers();
+            myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+
+            const data = new URLSearchParams();
+            data.append('click', 'true');
+            data.append('country', d.dataset.country);
+            data.append('product', d.dataset.product);
+            data.append('link', d.dataset.link);
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: data,
+                redirect: 'follow'
+            };
+
+            fetch('admin/analytics.php', requestOptions)
+            .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+        }        
     </script>
 
 </body>
