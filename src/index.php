@@ -188,6 +188,12 @@ if(isset($_GET['submit'])){
         -moz-user-select: none;
         user-select: none;
         }
+		
+		.horizontal-divider {
+		  border: none; /* Remove default hr border */
+		  border-top: 1px solid grey; /* Add a 1px solid border at the top */
+		  margin: 40px 0px 0px 0px; /* Optional: Add spacing above and below the hr */
+		}
 
         @media (min-width: 768px) {
         .bd-placeholder-img-lg {
@@ -244,7 +250,7 @@ if(isset($_GET['submit'])){
         <form action="." method="get" class="needs-validation" novalidate>
             <div class="row g-5">
                 <!-- HEPA Form -->
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="country" class="form-label">Country</label>
                     <select class="form-select" id="country" name="country" required>
                         <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
@@ -261,17 +267,17 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label for="max-an" class="form-label">Acceptable Noise Level</label>
-					<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. Some devices may have less tolerable noise characteristics even at low dBA. <ul class='list-group list-group-flush'>
+                    <label for="max-an" class="form-label">Acceptable Noise Level <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. Some devices may have less tolerable noise characteristics even at low dBA. <ul class='list-group list-group-flush'>
                                                     <li class='list-group-item'>30-40dBA Sleep</li>
                                                     <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
                                                     <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
                                                     <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
                                                     <li class='list-group-item'>>60dBA - Acceptable for loud environments </li>
                                                     </ul>" data-bs-html="true">
-                            <p>Noise limit guide <?=$SVG_INFO;?></p>
+                            <?=$SVG_INFO;?>
                         </a>
+					</label>
+					<div>
 					</div>
                     <select class="form-select" id="max-an" name="max-an" required>
                         <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
@@ -287,56 +293,11 @@ if(isset($_GET['submit'])){
                         Please select Max Acceptable Noise.
                     </div>
                 </div>
-                <?php /*
                 <div class="col-md-6">
-                    <label for="wifi" class="form-label">Wifi Requirement</label>
-					<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
-                            <p>Do I need the filter to have Wifi? <?=$SVG_INFO;?></p>
-                        </a>
-					</div>
-                    <select class="form-select" id="wifi" name="wifi" required>
-                        <option value="<?= $VALUE_NO ?>" <?php if($wifi == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_WIFI_NO ?></option>
-                        <option value="Yes" <?php if($wifi == $VALUE_YES) {echo 'selected';} ?> >Yes</option>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please select a Wifi Requirement.
-                    </div>
-                </div>
-                */ ?>
-		        <div class="col-md-6">
-                    <label for="schedule" class="form-label">Scheduling ability</label>
-					<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
-                            <p>Do I need to be able to schedule the device? <?=$SVG_INFO;?></p>
-                        </a>
-					</div>
-                    <select class="form-select" id="schedule" name="schedule" required>
-                        <option value="<?= $VALUE_NO ?>" <?php if($schedule == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_SCHEDULE_NO ?></option>
-                        <option value="<?= $VALUE_YES ?>" <?php if($schedule == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_SCHEDULE_YES ?></option>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please select a scheduling requirement.
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label for="diy" class="form-label">Include DIY devices?</label>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is a DIY device?" data-bs-content="Do it yourself air filters are alternatives to commercially available devices that, when properly constructed, can be an economical and effective alternative. Clean air delivery rates (CADR) for these devices in a way that can be compared directly to AHAM CADR Smoke tested devices are currently estimated only." data-bs-html="true">
-                            <?=$SVG_INFO;?>
-                        </a>
-                    <select class="form-select" id="diy" name="diy" required>
-                        <option value="<?= $VALUE_NO ?>" <?php if($diy == $VALUE_NO || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_DIY_NO ?></option>
-                        <option value="<?= $VALUE_YES ?>" <?php if($diy == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_DIY_YES ?></option>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please select a DIY filters.
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH)</label>
+                    <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH) target</label>
 					<div>
                         <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target." data-bs-html="true">
-                            <p>What is L/p/s and ACH? <?=$SVG_INFO;?></p>
+                            <p>What are L/p/s and ACH? <?=$SVG_INFO;?></p>
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
@@ -359,32 +320,11 @@ if(isset($_GET['submit'])){
                         Select L/person/second or 6 Air Changes per Hour (ACH)
                     </div>
                 </div>
-                <?php
-                /*
-		        <div class="col-md-6">
-                    <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
-					<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
-                            <p>When do I need a washable/vacuumable prefilter? <?=$SVG_INFO;?></p>
-                        </a>
-					</div>
-                    <select class="form-select" id="prefilter" name="prefilter" required>
-                        <option value="<?= $VALUE_NO ?>"><?= $DISPLAY_PREFILTER_NO ?>/option>
-                        <option value="<?= $VALUE_YES ?>"><?= $DISPLAY_PREFILTER_YES ?></option>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please select a Prefilter Requirement.
-                    </div>
-		        </div>
-                */
-                ?>
                 <div class="col-md-4" id="rms">
-                    <label for="room-size" class="form-label">Room Volume (Width x Length x Height) in m or feet</label>
-			    <div>
-                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Consider using a standard ceiling height" data-bs-content="For spaces with very high ceilings it may be appropriate to use a standard ceiling height of 2.5m or 9ft" data-bs-html="true">
-                        <p>High ceilings? <?=$SVG_INFO;?></p>
+                    <label for="room-size" class="form-label">Room Volume (Width x Length x Height) in m or feet <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Consider using a standard ceiling height" data-bs-content="For spaces with very high ceilings it may be appropriate to use a standard ceiling height of 2.5m or 9ft" data-bs-html="true">
+                        <?=$SVG_INFO;?>
                     </a>
-			    </div>
+				</label>
                     <input
                         type="number"
                         class="form-control"
@@ -408,6 +348,7 @@ if(isset($_GET['submit'])){
                         Please select m3 or cubic feet.
                     </div>
                 </div>
+				<hr class="horizontal-divider">
                 <div class="col-md-6" id="noc">
                     <label for="no-of-occ" class="form-label">Rated occupant capacity for the space.</label>
                     <input
@@ -422,7 +363,7 @@ if(isset($_GET['submit'])){
                     Please enter the rated occupant capacity for the space.
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label
                         for="max-units"
                         class="form-label"
@@ -445,6 +386,68 @@ if(isset($_GET['submit'])){
                         <?= ($submitted) ? 'value="'.$max_units.'"' : 'value="5"'; ?>
                     >
                 </div>
+                <?php /*
+                <div class="col-md-6">
+                    <label for="wifi" class="form-label">Wifi Requirement</label>
+					<div>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need the filter to have Wifi?" data-bs-content="If you need to be able to control your filter remotely or schedule the filter you will usually require Wifi connectivity. Some filters that turn on and resume at their previous setting if turned on at the power plug can simply be connected to a power plug timer if they don't have Wifi." data-bs-html="true">
+                            <p>Do I need the filter to have Wifi? <?=$SVG_INFO;?></p>
+                        </a>
+					</div>
+                    <select class="form-select" id="wifi" name="wifi" required>
+                        <option value="<?= $VALUE_NO ?>" <?php if($wifi == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_WIFI_NO ?></option>
+                        <option value="Yes" <?php if($wifi == $VALUE_YES) {echo 'selected';} ?> >Yes</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Wifi Requirement.
+                    </div>
+                </div>
+                */ ?>
+		        <div class="col-md-4">
+                    <label for="schedule" class="form-label">Scheduling ability <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Do I need to be able to schedule the device?" data-bs-content="If you need to be able to schedule the portable filter (so you don't forget to turn it on or off) you will usually either require Wifi connectivity, or use portable filters that turn on and resume at their previous setting if turned on at the power plug (a smart power plug or plug timer will be required to do this). Devices that meet these criteria will be included." data-bs-html="true">
+                            <?=$SVG_INFO;?>
+                        </a>
+					</label>
+                    <select class="form-select" id="schedule" name="schedule" required>
+                        <option value="<?= $VALUE_NO ?>" <?php if($schedule == $VALUE_NO || !$submitted) {echo 'selected';} ?>><?= $DISPLAY_SCHEDULE_NO ?></option>
+                        <option value="<?= $VALUE_YES ?>" <?php if($schedule == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_SCHEDULE_YES ?></option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a scheduling requirement.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="diy" class="form-label">Include DIY devices?</label>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is a DIY device?" data-bs-content="Do it yourself air filters are alternatives to commercially available devices that, when properly constructed, can be an economical and effective alternative. Clean air delivery rates (CADR) for these devices in a way that can be compared directly to AHAM CADR Smoke tested devices are currently estimated only." data-bs-html="true">
+                            <?=$SVG_INFO;?>
+                        </a>
+                    <select class="form-select" id="diy" name="diy" required>
+                        <option value="<?= $VALUE_NO ?>" <?php if($diy == $VALUE_NO || !$submitted) {echo 'selected';} ?> ><?= $DISPLAY_DIY_NO ?></option>
+                        <option value="<?= $VALUE_YES ?>" <?php if($diy == $VALUE_YES) {echo 'selected';} ?> ><?= $DISPLAY_DIY_YES ?></option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a DIY filters.
+                    </div>
+                </div>
+                <?php
+                /*
+		        <div class="col-md-6">
+                    <label for="prefilter" class="form-label">Vacuumable/Washable Prefilter</label>
+					<div>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="When do I need a washable/vacuumable prefilter?" data-bs-content="Prefilters are a thin filter in front of the main filter that captures large dust and particles. It is useful in dusty environments with partial natural ventilation where the dust can be kept off the main filter and vacuumed/washed regularly, prolonging the life and airflow of the main filter." data-bs-html="true">
+                            <p>When do I need a washable/vacuumable prefilter? <?=$SVG_INFO;?></p>
+                        </a>
+					</div>
+                    <select class="form-select" id="prefilter" name="prefilter" required>
+                        <option value="<?= $VALUE_NO ?>"><?= $DISPLAY_PREFILTER_NO ?>/option>
+                        <option value="<?= $VALUE_YES ?>"><?= $DISPLAY_PREFILTER_YES ?></option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Prefilter Requirement.
+                    </div>
+		        </div>
+                */
+                ?>
                 <div class="col-md-4">
                     <label
                         for="tariff"
@@ -468,17 +471,17 @@ if(isset($_GET['submit'])){
                 </div>
                 <div class="col-md-4" id="frs">
                     <label 
-			for="filter-rs" 
-			class="form-label"
+						for="filter-rs" 
+						class="form-label"
                         data-bs-trigger="hover focus"
                         data-bs-toggle="popover"
                         title="Filter replacement schedule"
                         data-bs-content="The frequency of filter replacement will depend on how many hours per week and under what the conditions the filter are used in."
                         data-bs-html="true"
-		    >
-			Filter replacement schedule
-			<i class="fa-solid fa-circle-info"></i>
-		    </label>
+					>
+						Filter replacement schedule
+						<i class="fa-solid fa-circle-info"></i>
+					</label>
                     <select class="form-select" id="filter-rs" name="filter-rs">
                         <?php foreach($FRS_OPTIONS as $key => $value) { ?>
                         <option value="<?= $key ?>" <?php if($key == $frs) {echo 'selected';} ?> ><?= $value ?></option>
@@ -489,18 +492,18 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-4" id="frs">
-		    <label 
-			for="lifetime" 
-			class="form-label"
+                    <label 
+						for="lifetime" 
+						class="form-label"
                         data-bs-trigger="hover focus"
                         data-bs-toggle="popover"
                         title="Assumed device lifetime"
                         data-bs-content="How long a device is expected to last before replacement is required."
                         data-bs-html="true"
-		    >
-			Assumed device lifetime
-			<i class="fa-solid fa-circle-info"></i>
-		    </label>
+					>
+						Assumed device lifetime
+						<i class="fa-solid fa-circle-info"></i>
+					</label>
                     <select class="form-select" id="lifetime" name="lifetime">
                         <?php foreach($AFL_OPTIONS as $key => $value) { ?>
                         <option value="<?= $key ?>" <?php if($key == $lifetime) {echo 'selected';} ?> ><?= $value ?></option>
@@ -537,17 +540,17 @@ if(isset($_GET['submit'])){
                     <!-- <button class="btn btn-primary btn-sm ms-2" id="sort-results">Sort Ascending</button> -->
                 </div>
             </h4>
-            <ul class="list-inline">
+            <!--ul class="list-inline">
                 <?php echo (isset($max_an)) ? '<li class="list-inline-item">Max Acceptable Noise: '.$max_an.' dBA.</li>' : ''; ?>
-                <!--?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?-->
+                <?php echo (isset($wifi)) ? '<li class="list-inline-item">Wifi: '.$wifi.'.</li>' : ''; ?>
 		        <?php echo (isset($schedule)) ? '<li class="list-inline-item">Schedulable: '.$schedule.'.</li>' : ''; ?>
                 <?php echo (isset($ach)) ? '<li class="list-inline-item">Type: '.$type_ach.'.</li>' : ''; ?>
                 <?php echo (array_key_exists($ach, $ACH_OPTIONS)) ? '<li class="list-inline-item">Room Size: '.$room_size.'.</li>' : ''; ?>
                 <?php echo (array_key_exists($ach, $ACH_OPTIONS)) ? '<li class="list-inline-item">Room Type: '.$rms_type.'.</li>' : ''; ?>
                 <?php echo (!array_key_exists($ach, $ACH_OPTIONS)) ? '<li class="list-inline-item">No. Occupants: '.$no_of_occ.'.</li>' : ''; ?>
-                <!--?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?-->
+                <?php echo (isset($prefltr)) ? '<li class="list-inline-item">Prefilter: '.$prefltr.'.</li>' : ''; ?>
                 <?php echo (isset($diy)) ? '<li class="list-inline-item">DIY: '.$diy.'.</li>' : ''; ?>
-            </ul>
+            </ul-->
 
             <div class="d-flex justify-content-center row">
                 <div class="col-md-12">
