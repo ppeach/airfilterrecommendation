@@ -467,7 +467,18 @@ if(isset($_GET['submit'])){
                     >
                 </div>
                 <div class="col-md-4" id="frs">
-                    <label for="filter-rs" class="form-label">Filter replacement schedule</label>
+                    <label 
+			for="filter-rs" 
+			class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Filter replacement schedule"
+                        data-bs-content="The frequency of filter replacement will depend on how many hours per week and under what the conditions the filter are used in."
+                        data-bs-html="true"
+		    >
+			Filter replacement schedule
+			<i class="fa-solid fa-circle-info"></i>
+		    </label>
                     <select class="form-select" id="filter-rs" name="filter-rs">
                         <?php foreach($FRS_OPTIONS as $key => $value) { ?>
                         <option value="<?= $key ?>" <?php if($key == $frs) {echo 'selected';} ?> ><?= $value ?></option>
@@ -478,14 +489,25 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-4" id="frs">
-                    <label for="lifetime" class="form-label">Assumed filter lifetime</label>
+		    <label 
+			for="lifetime" 
+			class="form-label"
+                        data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
+                        title="Assumed device lifetime"
+                        data-bs-content="How long a device is expected to last before replacement is required."
+                        data-bs-html="true"
+		    >
+			Assumed device lifetime
+			<i class="fa-solid fa-circle-info"></i>
+		    </label>
                     <select class="form-select" id="lifetime" name="lifetime">
                         <?php foreach($AFL_OPTIONS as $key => $value) { ?>
                         <option value="<?= $key ?>" <?php if($key == $lifetime) {echo 'selected';} ?> ><?= $value ?></option>
                         <?php } ?>
                     </select>
                     <div class="invalid-feedback">
-                        Please select Assumed filter lifetime.
+                        Please select Assumed device lifetime.
                     </div>
                 </div>
                 <div class="col-md-12">
