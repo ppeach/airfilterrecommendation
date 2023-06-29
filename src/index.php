@@ -530,7 +530,8 @@ if(isset($_GET['submit'])){
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-primary">Result(s)</span>
                 <div class="d-flex align-items-center">
-                    <h6 class="mb-0"><span class="badge bg-primary rounded-pill"><?php echo $total; ?></span></h6>
+                    <!--h6 class="mb-0"><span class="badge bg-primary rounded-pill"><?php echo $total; ?></span></h6-->
+					<h5>  Sort by:</h5>
                     <div class="col-md ms-2">
                         <select class="form-select form-select-sm" id="sort-options">
                             <option value="upc">Upfront Cost</option>
@@ -657,27 +658,34 @@ if(isset($_GET['submit'])){
                                 <h6 class="text-danger">Filter cost unknown</h6>
                             <?php } ?>
 
-                            <?php if(!!$value[$watts] && !!$value[$filterCost]){ ?>
-                            <h6 class="text-success">Total Cost of Ownership</h6>
-                            <div class="d-flex flex-row align-items-center">
-                                <h5 class="mr-1"><?=$value['currency_format'].$tco_normal;?>
-                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for 24/7 operation" data-bs-content="24 hrs per day, 7 days per week, 365 days per year" data-bs-html="true"><?=$SVG_INFO;?>
-                                    </a>
-                                </h5>&nbsp;
-                                <h5 class="mr-1"><?=$value['currency_format'].$tco_school;?>
-                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for School" data-bs-content="8 hrs per day, 5 days per week and 39 weeks per year (1560 hrs per year)" data-bs-html="true"><?=$SVG_INFO;?>
-                                    </a>
-                                </h5>&nbsp;
-                                <h5 class="mr-1"><?=$value['currency_format'].$tco_office;?>
-                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for Office" data-bs-content="8 hrs per day, 52 weeks per year or 260 work days per year" data-bs-html="true"><?=$SVG_INFO;?>
-                                    </a>
-                                </h5>
-                            </div>
-                            <?php } ?>
+                            
 
                             <?php if(!!$value[$watts]) { ?>
-                                <a href="#electricity-<?php echo $key; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="electricity-<?php echo $key; ?>"><small><i>See electricity costs</i></small></a>
+                                <a href="#electricity-<?php echo $key; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="electricity-<?php echo $key; ?>"><small><i>See more costs</i></small></a>
 								<div class="card card-body mt-3 collapse" id="electricity-<?php echo $key; ?>">
+		                            <?php if(!!$value[$watts] && !!$value[$filterCost]){ ?>
+		                            <h6 class="text-success">Yearly Total Cost of Ownership</h6>
+		                            <div class="d-flex flex-row align-items-center">
+		                                <h5 class="mr-1"><?=$value['currency_format'].$tco_normal;?>
+		                                    <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for 24/7 operation" data-bs-content="24 hrs per day, 7 days per week, 365 days per year assuming <?php echo trim($frs);?> monthly filter replacement schedule and <?php echo trim($lifetime);?> year device lifetime." data-bs-html="true"><?=$SVG_INFO;?>
+		                                    </a>
+		                                </h5>
+									</div>
+									<h6>(24/7 operation)</h6>
+									<div class="d-flex flex-row align-items-center">
+		                                <h5 class="mr-1"><?=$value['currency_format'].$tco_school;?></h5>
+									</div>
+                                    <h6>(School) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Yearly TCO for School" data-bs-content="8 hrs per day, 5 days per week and 39 weeks per year (1560 hrs per year assuming <?php echo trim($frs);?> monthly filter replacement schedule and <?php echo trim($lifetime);?> year device lifetime." data-bs-html="true"><?=$SVG_INFO;?>
+		                                    </a>
+                                        </a></h6>
+									<div class="d-flex flex-row align-items-center">
+		                                <h5 class="mr-1"><?=$value['currency_format'].$tco_office;?>
+		                                </h5>
+		                            </div>
+                                    <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="8 hrs per day, 5 days per week, 52 weeks per year assuming <?php echo trim($frs);?> monthly filter replacement schedule and <?php echo trim($lifetime);?> year device lifetime." data-bs-html="true"><?=$SVG_INFO;?>
+                                        </a></h6>
+		                            <?php } ?>
+									<br>
                                     <h6 class="text-success">Yearly electricity cost</h6>
                                     <div class="d-flex flex-row align-items-center">
                                         <h4 class="mr-1"><?php echo $value['currency_format'].round($energyCost['normal']) ; ?></h4>
@@ -694,7 +702,7 @@ if(isset($_GET['submit'])){
                                         <h4 class="mr-1"><?php echo $value['currency_format'].round($energyCost['office']) ; ?></h4>
                                         <!--span>&nbsp;<?php echo $value['currency']; ?></span-->
                                     </div>
-                                    <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true">
+                                    <h6>(Office) <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Office use" data-bs-content="Assumes 8 hrs per day, 5 days per week, 52 weeks per year." data-bs-html="true"><?=$SVG_INFO;?>
                                         </a></h6>
                                     <small>Electricity cost based on your entered tariff of <?php echo $value['currency_format'].((($tariff))) ; ?> per kWh</small>
                                 </div>
