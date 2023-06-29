@@ -116,14 +116,14 @@ if(isset($_GET['submit'])){
     $hepa_result = calculateACH($filter_result, $ach, $max_units, $types, $achs);
 
     // Filter items that doesn't have Watts and Filter cost value
-    $hepa_result = array_filter(
-        $hepa_result,
-        function($item){
-            if($item['Watts'] != '' && $item['Filter cost'] != ''){
-                return true;
-            }
-        }
-    );
+    // $hepa_result = array_filter(
+    //     $hepa_result,
+    //     function($item){
+    //         if($item['Watts'] != '' && $item['Filter cost'] != ''){
+    //             return true;
+    //         }
+    //     }
+    // );
 
     // Filter total dBA by max acceptable noise
     //$hepa_result = array_filter($hepa_result, function($item) use ($max_an){
@@ -508,8 +508,8 @@ if(isset($_GET['submit'])){
                     <h6 class="mb-0"><span class="badge bg-primary rounded-pill"><?php echo $total; ?></span></h6>
                     <div class="col-md ms-2">
                         <select class="form-select form-select-sm" id="sort-options">
-                            <option value="tco">Total Cost of Ownership</option>
                             <option value="upc">Upfront Cost</option>
+                            <option value="tco">Total Cost of Ownership</option>
                         </select>
                     </div>
                     <!-- <button class="btn btn-primary btn-sm ms-2" id="sort-results">Sort Ascending</button> -->
@@ -539,11 +539,14 @@ if(isset($_GET['submit'])){
                         $filter_Cost = $value['currency_format'].$value[$filterCost];
                         $link_filter = ($value[$buyfilter] !== '') ? '<a href="'.$value[$buyfilter].'" target="_blank">'.$filter_Cost.'</a>' : $filter_Cost;
                         $totaldBA = $value['Total dBA'];
-                        $filter_replacement_cost = calculateFRC($value['Filter cost'], $ach_needs, $frs, $lifetime);
-                        $energyCost = calculateEC($tariff, $value['Watts'], $ach_needs);
-                        $tco_normal = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['normal'] * $lifetime) / $lifetime);
-                        $tco_school = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['school'] * $lifetime) / $lifetime);
-                        $tco_office = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['office'] * $lifetime) / $lifetime);
+                        $tco_normal = 0;
+                        if(!!$value[$watts] && !!$value[$filterCost]){
+                            $filter_replacement_cost = calculateFRC($value[$filterCost], $ach_needs, $frs, $lifetime);
+                            $energyCost = calculateEC($tariff, $value[$watts], $ach_needs);
+                            $tco_normal = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['normal'] * $lifetime) / $lifetime);
+                            $tco_school = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['school'] * $lifetime) / $lifetime);
+                            $tco_office = round(calculateTCO($value['Total Cost'], $filter_replacement_cost, $energyCost['office'] * $lifetime) / $lifetime);
+                        }
                 ?>
 
                     <div class="row p-2 bg-white border rounded mt-2 product-item" data-tco="<?=$tco_normal;?>" data-upc="<?=$value['Total Cost'];?>">
@@ -629,6 +632,7 @@ if(isset($_GET['submit'])){
                                 <h6 class="text-danger">Filter cost unknown</h6>
                             <?php } ?>
 
+                            <?php if(!!$value[$watts] && !!$value[$filterCost]){ ?>
                             <h6 class="text-success">Total Cost of Ownership</h6>
                             <div class="d-flex flex-row align-items-center">
                                 <h5 class="mr-1"><?=$value['currency_format'].$tco_normal;?>
@@ -644,6 +648,7 @@ if(isset($_GET['submit'])){
                                     </a>
                                 </h5>
                             </div>
+                            <?php } ?>
 
                             <?php if(!!$value[$watts]) { ?>
                                 <a href="#electricity-<?php echo $key; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="electricity-<?php echo $key; ?>"><small><i>See electricity costs</i></small></a>
@@ -794,14 +799,24 @@ if(isset($_GET['submit'])){
                     Array.from(product).sort(function(a, b){
                         return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
                     })
-                    .forEach(el => el.parentNode.appendChild(el));
+                    .forEach(el => {
+                        el.parentNode.appendChild(el);
+                        if(el.dataset.tco == 0){
+                            el.style.display = "none";
+                        }
+                    });
                     console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
                     switching = false;
                 } else {
                     Array.from(product).sort(function(a, b){
                         return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
                     })
-                    .forEach(el => el.parentNode.appendChild(el));
+                    .forEach(el => {
+                        el.parentNode.appendChild(el);
+                        if(el.dataset.tco == 0){
+                            el.removeAttribute('style');
+                        }
+                    });
                     console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
                     switching = true;
                 }
