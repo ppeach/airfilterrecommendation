@@ -1,0 +1,7 @@
+deny from all
+
+# for nginx use this in webserver configuration file
+# location ~ /data/.*\.(json)$ {
+#   deny all;
+#   return 403;
+#}
