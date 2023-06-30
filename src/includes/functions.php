@@ -240,12 +240,12 @@ function CFdata($data)
     });
     
     // Add currency data
+    global $CURRENCY_SYMBOLS;
     foreach ($data as $key => $value) {
         $data[$key]['Cost'] = $data[$key][$cost];
         unset($data[$key][$cost]);
         $data[$key]['currency'] = substr($cost,5);
-        $fmt = new NumberFormatter( 'en_US@currency='.$data[$key]['currency'], NumberFormatter::CURRENCY );
-        $data[$key]['currency_format'] = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+        $data[$key]['currency_format'] = $CURRENCY_SYMBOLS[$data[$key]['currency']];
     }
 
     sort($data);
