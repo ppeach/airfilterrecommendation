@@ -236,7 +236,7 @@ function CFdata($data)
 
     // Clean up null model
     $data = array_filter($data, function($item) use ($cost) {
-        return ($item['Model'] && $item[$cost] && $item['CADR (m3/hr)'] && $item['Noise (dBA)'] != "");
+        return ($item['Model'] && $item[$cost] && $item['CADR (m3/hr)'] && $item['Noise (dBA)'] && ($item['CADR (Litre/sec)'] || $item['CADR (Cubic feet/min)']) != "");
     });
     
     // Add currency data
