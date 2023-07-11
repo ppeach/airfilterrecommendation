@@ -236,16 +236,16 @@ function CFdata($data)
 
     // Clean up null model
     $data = array_filter($data, function($item) use ($cost) {
-        return ($item['Model'] && $item[$cost] && $item['CADR (m3/hr)'] && $item['Noise (dBA)'] != "");
+        return ($item['Model'] && $item[$cost] && $item['CADR (m3/hr)'] && $item['Noise (dBA)'] && ($item['CADR (Litre/sec)'] || $item['CADR (Cubic feet/min)']) != "");
     });
     
     // Add currency data
+    global $CURRENCY_SYMBOLS;
     foreach ($data as $key => $value) {
         $data[$key]['Cost'] = $data[$key][$cost];
         unset($data[$key][$cost]);
         $data[$key]['currency'] = substr($cost,5);
-        $fmt = new NumberFormatter( 'en_US@currency='.$data[$key]['currency'], NumberFormatter::CURRENCY );
-        $data[$key]['currency_format'] = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+        $data[$key]['currency_format'] = $CURRENCY_SYMBOLS[$data[$key]['currency']];
     }
 
     sort($data);
