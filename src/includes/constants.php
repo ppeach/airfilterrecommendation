@@ -11,18 +11,20 @@ $VALUE_NO = 'no';
 
 # Array ACH options and values
 $ACH_OPTIONS = array(
-    '2' => '2 Air Changes per Hour (ACH)',
     '4' => '4 Air Changes per Hour (ACH)',
     '6' => '6 Air Changes per Hour (ACH)',
     '9' => '9 Air Changes per Hour (ACH)',
-    '12' => '12 Air Changes per Hour (ACH)'
 );
 
 # Array L/p/s options and values
 $LPS_OPTIONS = array(
-    '10' => '10 L/person/second (Minimum, WHO recommendation)',
-    '20' => '20 L/person/second (Ideal, non-vigorous activity)',
-    '50' => '50 L/person/second (Ideal, vigorous activity eg Exercise, Singing)'
+    '10' => '10 L/p/s (Minimum, WHO recommendation)',
+	'15' => '15 L/p/s (Office)',
+    '20' => '20 L/p/s (Retail, Daycare, School, Healthcare exam room)',
+	'25' => '25 L/p/s (Residential common space, Lecture hall, Lobbies)',
+	'30' => '30 L/p/s (Restaurant, Convention)',
+	'40' => '40 L/p/s (Gym)',
+    '45' => '45 L/p/s (Healthcare waiting room)'
 );
 
 # Measurements
