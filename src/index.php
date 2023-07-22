@@ -23,7 +23,7 @@ $no_of_occ = 1;
 $prefltr = $VALUE_NO;
 $tariff = '0.22';
 $diy = 'No';
-$max_units = 5;
+$max_units = 10;
 $frs = 12;
 $lifetime = 4;
 
@@ -211,9 +211,24 @@ if(isset($_GET['submit'])){
 		  gtag('config', 'G-PJE4FN2C9M');
 		</script>
 		  
+	    <script type="text/javascript">
+	        function googleTranslateElementInit() {
+	            new google.translate.TranslateElement(
+	                {pageLanguage: 'en'},
+	                'google_translate_element'
+	            );
+	        }
+	    </script>
+ 
+	    <script type="text/javascript"
+	            src=
+	"https://translate.google.com/translate_a/element.js?
+	cb=googleTranslateElementInit">
+	    </script>
+		  
 </head>
 <body class="bg-light">
-    
+    <div id="google_translate_element"></div>
     <div class="container">
     <main>
         <div class="py-5 text-center">
@@ -308,8 +323,8 @@ if(isset($_GET['submit'])){
                 <div class="col-md-6">
                     <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH) target</label>
 					<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target." data-bs-html="true">
-                            <p>What are L/p/s and ACH? <?=$SVG_INFO;?></p>
+                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
+                            <p>What are L/p/s and ACH? <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d">more info</a></p>
                         </a>
 					</div>
                     <select name="ach" class="form-select" id="ach" required>
@@ -322,7 +337,7 @@ if(isset($_GET['submit'])){
                         <?php } ?>
                         <option disabled>
                             <!-- just a separator between ACH amd LPS for readability -->
-                            ---
+                            -WHO and ASHRAE recommendations--
                         </option>
                         <?php foreach($LPS_OPTIONS as $key => $value) { ?>
                         <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
@@ -376,7 +391,7 @@ if(isset($_GET['submit'])){
                 </div>
 
                 <details class="mt-5">
-                <summary class="text-primary fs-5">Show advanced form</summary>
+                <summary class="text-primary fs-5">Advanced</summary>
 
                 <div class="row g-5 pt-5">
                     <div class="col-md-4">
@@ -399,7 +414,7 @@ if(isset($_GET['submit'])){
                             class="form-control"
                             name="max_units"
                             id="max-units"
-                            <?= ($submitted) ? 'value="'.$max_units.'"' : 'value="5"'; ?>
+                            <?= ($submitted) ? 'value="'.$max_units.'"' : 'value="10"'; ?>
                         >
                     </div>
                     <?php /*
@@ -492,7 +507,7 @@ if(isset($_GET['submit'])){
                             data-bs-trigger="hover focus"
                             data-bs-toggle="popover"
                             title="Filter replacement schedule"
-                            data-bs-content="The frequency of filter replacement will depend on how many hours per week and under what the conditions the filter are used in."
+                            data-bs-content="The frequency of filter replacement will depend on how many hours per week and under what the conditions the filter are used in. This will impact the total cost of ownership calculations."
                             data-bs-html="true"
                         >
                             Filter replacement schedule
@@ -514,7 +529,7 @@ if(isset($_GET['submit'])){
                             data-bs-trigger="hover focus"
                             data-bs-toggle="popover"
                             title="Assumed device lifetime"
-                            data-bs-content="How long a device is expected to last before replacement is required."
+                            data-bs-content="How long a device is expected to last before replacement is required. This will impact the total cost of ownership calculations."
                             data-bs-html="true"
                         >
                             Assumed device lifetime
