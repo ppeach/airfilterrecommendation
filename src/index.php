@@ -320,33 +320,38 @@ if(isset($_GET['submit'])){
                         Please select Max Acceptable Noise.
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH) target</label>
-					<div>
-                        <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
-                            <p>What are L/p/s and ACH? <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d">more info</a></p>
-                        </a>
-					</div>
-                    <select name="ach" class="form-select" id="ach" required>
-                        <option disabled>
-                            <!-- disabled header for readability -->
-                            Choose...
-                        </option>
-                        <?php foreach($ACH_OPTIONS as $key => $value) { ?>
-                        <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
-                        <?php } ?>
-                        <option disabled>
-                            <!-- just a separator between ACH amd LPS for readability -->
-                            -WHO and ASHRAE recommendations--
-                        </option>
-                        <?php foreach($LPS_OPTIONS as $key => $value) { ?>
-                        <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
-                        <?php } ?>
-                    </select>
-                    <div class="invalid-feedback">
-                        Select L/person/second or 6 Air Changes per Hour (ACH)
-                    </div>
-                </div>
+		<div class="col-md-6">
+	        <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH) target</label>
+	        <div>
+	            <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
+	                <p>What are L/p/s and ACH? <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d">more info</a></p>
+	            </a>
+	        </div>
+	        <select name="ach" class="form-select" id="ach" required>
+	            <option disabled>
+	                <!-- disabled header for readability -->
+	                Choose...
+	            </option>
+	            <?php foreach($ACH_OPTIONS as $key => $value) { ?>
+	            <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
+	            <?php } ?>
+	            <option disabled>
+	                <!-- just a separator between ACH amd LPS for readability -->
+	                -WHO recommendation--
+	            </option>
+	            <option value="10" selected data-mode="lps">10 L/p/s (Minimum, WHO Recommendation)</option>
+	            <option disabled>
+	                -ASHRAE 241 recommendations--
+	            </option>
+	            <?php foreach($LPS_OPTIONS as $key => $value) { ?>
+	                <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
+	            <?php } ?>
+	        </select>
+	        <div class="invalid-feedback">
+	            Select L/person/second or 6 Air Changes per Hour (ACH)
+	        </div>
+	    </div>
+
                 <div class="col-md-4" id="rms">
                     <label for="room-size" class="form-label">Room Volume (Width x Length x Height) in m or feet <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Consider using a standard ceiling height" data-bs-content="For spaces with very high ceilings it may be appropriate to use a standard ceiling height of 2.5m or 9ft" data-bs-html="true">
                         <?=$SVG_INFO;?>
