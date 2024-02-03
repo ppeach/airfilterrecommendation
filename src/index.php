@@ -294,32 +294,33 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label for="max-an" class="form-label">Acceptable Noise Level <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. Some devices may have less tolerable noise characteristics even at low dBA. <ul class='list-group list-group-flush'>
-                                                    <li class='list-group-item'>30-40dBA Sleep</li>
-                                                    <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
-                                                    <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
-                                                    <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
-                                                    <li class='list-group-item'>>60dBA - Acceptable for loud environments </li>
-                                                    </ul>" data-bs-html="true">
-                            <?=$SVG_INFO;?>
-                        </a>
-					</label>
-					<div>
-					</div>
-                    <select class="form-select" id="max-an" name="max-an" required>
-                        <option <?php if(!$submitted) {echo 'selected';} ?> disabled value="">Choose...</option>
-                        <?php foreach ($maxANoise as $key => $value) {
-                            if ($max_an == $value) {
-                                echo '<option selected value="'.$value.'">'.$value.' dBA</option>';
-                            } else {
-                                echo '<option value="'.$value.'">'.$value.' dBA</option>';
-                            }
-                        } ?>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please select Max Acceptable Noise.
-                    </div>
-                </div>
+                	<label for="max-an" class="form-label">Acceptable Noise Level <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. Some devices may have less tolerable noise characteristics even at low dBA. <ul class='list-group list-group-flush'>
+                                                <li class='list-group-item'>30-40dBA Sleep</li>
+                                                <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
+                                                <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
+                                                <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
+                                                <li class='list-group-item'>>60dBA - Acceptable for loud environments </li>
+                                                </ul>" data-bs-html="true">
+                        <?=$SVG_INFO;?>
+                    </a>
+                	</label>
+    			<select class="form-select" id="max-an" name="max-an" required>
+        		<option disabled value="">Choose...</option>
+      			  <?php 
+        		// Set default selection to 45 if no value has been submitted
+      			  $max_an = $max_an ?? '45';  // Assuming $max_an is the submitted value variable
+
+    			    foreach ($maxANoise as $key => $value) {
+     		       // Check if the current loop value is equal to the submitted or default value
+       		     $selected = ($max_an == $value) ? 'selected' : '';
+      		      echo '<option ' . $selected . ' value="' . $value . '">' . $value . ' dBA</option>';
+   		     } ?>
+    			</select>
+   		  <div class="invalid-feedback">
+     		   Please select Max Acceptable Noise.
+  		  </div>
+		</div>
+
 		<div class="col-md-6">
 	        <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH) target</label>
 	        <div>
