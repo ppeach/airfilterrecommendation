@@ -349,7 +349,7 @@ function calculateACH($data, $ach, $max_units, $types=array(), $achs=array())
             $ach_value = (ceil($ach_unit) * $value[$types['cadrlitre']])/$achs['no_off_occ'];
             $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrlitre']])/$achs['no_off_occ'];
         }
-        $ach_needs = ($ach_unit < 0) ? 1 : ceil($ach_unit);
+        $ach_needs = ($ach_unit < 0) ? 1 : max(ceil($ach_unit), ceil(576 / $value[$types['cadrm3']]));
         $data[$key]['ACH unit'] = $ach_unit;
         $data[$key]['ACH'] = round($ach_value, 1);
         $data[$key]['ACH -1'] = round($ach_value_min, 1);
