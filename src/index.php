@@ -322,10 +322,12 @@ if(isset($_GET['submit'])){
 		</div>
 
 		<div class="col-md-6">
-	        <label for="ach" class="form-label">Litres/person/second or Air Changes per Hour (ACH) target</label>
+	        <label for="ach" class="form-label">L/p/s or ACH target <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
+	                <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d"> more info</a>
+	            </a></label>
 	        <div>
-	            <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
-	                <p>What are L/p/s and ACH? <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d">more info</a></p>
+	            <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Minumum Airflow" data-bs-content="The World Health Organisation recommends a minimum of 160 liters per second of clean air per infectious occupant. See link in more info" data-bs-html="true">
+	                <p><i>Minimum of 160L/sec will be recommended as per WHO <?=$SVG_INFO;?> </i> <a href="https://www.who.int/publications/i/item/WHO-2019-nCoV-IPC-guideline-2023.4">more info</a></p>
 	            </a>
 	        </div>
 	        <select name="ach" class="form-select" id="ach" required>
