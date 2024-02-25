@@ -329,25 +329,27 @@ if(isset($_GET['submit'])){
 	            </a>
 	        </div>
 	        <select name="ach" class="form-select" id="ach" required>
-	            <option disabled>
-	                <!-- disabled header for readability -->
-	                Choose...
-	            </option>
-	            <?php foreach($ACH_OPTIONS as $key => $value) { ?>
-	            <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
-	            <?php } ?>
-	            <option disabled>
-	                <!-- just a separator between ACH amd LPS for readability -->
-	                -WHO recommendation--
-	            </option>
-	            <option value="10" selected data-mode="lps">10 L/p/s (Minimum, WHO Recommendation)</option>
-	            <option disabled>
-	                -ASHRAE 241 recommendations--
-	            </option>
-	            <?php foreach($LPS_OPTIONS as $key => $value) { ?>
-	                <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
-	            <?php } ?>
-	        </select>
+    			<option disabled>
+        		<!-- disabled header for readability -->
+        		Choose...
+   			 </option>
+    			<?php foreach($ACH_OPTIONS as $key => $value) { ?>
+    			<option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
+    			<?php } ?>
+    			<option disabled>
+     			   <!-- just a separator between ACH amd LPS for readability -->
+        		-WHO recommendation--
+    			</option>
+    			<!-- Check if the form has been submitted by checking if $_GET['ach'] is set -->
+    			<option value="10" <?php if(!isset($_GET['ach'])) { echo 'selected'; } else if($_GET['ach'] == '10') { echo 'selected'; } ?> data-mode="lps">10 L/p/s (Minimum, WHO Recommendation)</option>
+    			<option disabled>
+        		-ASHRAE 241 recommendations--
+   			 </option>
+    			<?php foreach($LPS_OPTIONS as $key => $value) { ?>
+        		<option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
+    			<?php } ?>
+		</select>
+
 	        <div class="invalid-feedback">
 	            Select L/person/second or 6 Air Changes per Hour (ACH)
 	        </div>
