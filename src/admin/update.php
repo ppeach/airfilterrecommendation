@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sheetid = $_GET['sheetsid'];
     $id = $_GET['id'];
     if($id === 'sheet_id'){
-        $update = manageJson($id, $sheetid, 'config.json');
+        $update = manageJson($id, $sheetid, 'config/config.json');
         $message = array('status' => 'success', 'message' => 'Data updated successfully', 'data' => $sheetid);
     } else {
         $message = array('status' => 'error', 'message' => 'Invalid request', 'data' => 'There is something wrong with the request');
