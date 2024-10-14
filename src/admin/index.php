@@ -128,7 +128,10 @@ if(file_exists($countries)){
         generateDB.addEventListener("click", function() {
             generateDB.innerHTML = spinner;
             generateDB.disabled = true;
-            gsheetData.remove();
+            
+            if (gsheetData !== null){
+                gsheetData.remove();
+            }
             const data = "";
             const xhr = new XMLHttpRequest();
             xhr.addEventListener("readystatechange", function() {
