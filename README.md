@@ -7,18 +7,17 @@ Additional attributes in future may include the presence of a prefilter to allow
 
 The data is retrieved from a google spreadsheet with a sheet for data for each country.  See this as an example https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing
 
-You will need to enable google API for your google sheet.
-
-Extract the files to the root folder of your domain or sub domain or sub folder.
-
-Edit file config.json in the folder data/config
-
-Add client_id, client_secret, refresh_token, and update_key (your unique random string) and save
-
-Please make sure there are two folders (/config and /db), if db folder does not exist, create one
-
-After that visit your domain or sub domain or domain.com/sub-folder
-
-To update the data from google sheets you can use a URL update trigger
-
-After that visit this URL to update the data domain.com/update.php?key=randomgeneratedkey
+Steps to setup:
+- Extract the files to the root folder of your domain or sub domain or sub folder.
+- Create a new project in Google Cloud Console
+-   Enable the Google Sheets API
+-   Create OAuth Client credentials and set domain.com/admin/auth.php as a Authorised redirect URI.
+-   Copy the client ID and secret for use below.
+- Verify that /config and /db directories exists, and if not, create them and verify write permissions
+- Create a file config.json inside the data/config directory that looks like so:
+-   {"client_id":"xxxx.apps.googleusercontent.com","client_secret":"xxx123","sheet_id":"17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk","admin_email":"you@domain.com"}
+-   Enter the values from your project created above, the public sheet ID can stay the same, and your email address you wish to login with.
+- Visit your project domain.com/admin and login using Google Login
+-   Click Settings in top menu
+-   Click the Authorize with Google button next to the Refresh Token field.
+-   Visit the Dashboard and click Generate Database.
