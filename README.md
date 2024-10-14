@@ -9,11 +9,11 @@ The data is retrieved from a google spreadsheet with a sheet for data for each c
 
 Steps to setup:
 - Extract the files to the root folder of your domain or sub domain or sub folder.
+  - Verify that /config and /db directories exists, and if not, create them and verify write permissions
 - Create a new project in Google Cloud Console
   - Enable the Google Sheets API
   - Create OAuth Client credentials and set domain.com/admin/auth.php as a Authorised redirect URI.
   - Copy the client ID and secret for use below.
-- Verify that /config and /db directories exists, and if not, create them and verify write permissions
 - Create a file config.json inside the data/config directory that looks like so:
   - {"client_id":"xxxx.apps.googleusercontent.com","client_secret":"xxx123","sheet_id":"17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk","admin_email":"you@domain.com"}
   - Enter the values from your project created above, the public sheet ID can stay the same, and your email address you wish to login with.
