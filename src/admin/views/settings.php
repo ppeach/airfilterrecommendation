@@ -28,7 +28,7 @@ if($token['status'] == 'ok'){
 
             <div class="py-5 text-center">
                 <p class="lead">Below you can configure the application auth (<a href="https://developers.google.com/identity/authorization" target="_blank">Google Identity Services</a>) and database (<a href="https://sheets.google.com" target="_blank">Google Sheets</a>)</p>
-                <p class="small">To configure Google Client ID and Secret, please go to <a href="https://console.developers.google.com" target="_blank">Google Console</a> and change the variable CLIENT_ID and CLIENT_SECRET in includes/config.php file</p>
+                <p class="small">To configure Google Client ID and Secret, please go to <a href="https://console.developers.google.com" target="_blank">Google Console</a> and change the variable client_id and client_secret in data/config/config.json file</p>
             </div>
             <div class="row g-3">
                 <div class="col-md">
