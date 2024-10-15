@@ -322,36 +322,40 @@ if(isset($_GET['submit'])){
 		</div>
 
 		<div class="col-md-6">
-	        <label for="ach" class="form-label">L/p/s or ACH target <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
+	        <label for="ach" class="form-label">Clean air delivery target <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
 	                <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d"> more info</a>
 	            </a></label>
 	        <div>
-	            <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Minumum Airflow" data-bs-content="The World Health Organisation recommends a minimum of 160 liters per second of clean air per infectious occupant. See link in more info" data-bs-html="true">
-	                <p><i>Minimum of 160L/sec will be recommended as per WHO <?=$SVG_INFO;?> </i> <a href="https://www.who.int/publications/i/item/WHO-2019-nCoV-IPC-guideline-2023.4">more info</a></p>
+				<div class="btn-group" style="width: 100%;" role="group" aria-label="Target Selection">
+				    <button type="button" class="btn btn-outline-primary" id="occupancy-btn">Room occupancy</button>
+				    <button type="button" class="btn btn-outline-primary" id="room-size-btn">Room size</button>
+				</div>
+	            <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Minumum Airflow" data-bs-content="The World Health Organisation recommends a minimum of 160 liters per second of clean air per infectious occupant. See link to 'Infection prevention and control in the context of COVID-19: a guideline, 21 December 2023' in more info" data-bs-html="true">
+	                <div class="small-notice-box">Note: Minimum total of 160L/sec (576m3/hr) will be recommended as per WHO <?=$SVG_INFO;?> <a href="https://www.who.int/publications/i/item/WHO-2019-nCoV-IPC-guideline-2023.4">more info</a></div>
 	            </a>
 	        </div>
-	        <select name="ach" class="form-select" id="ach" required>
-    			<option disabled>
-        		<!-- disabled header for readability -->
-        		Choose...
-   			 </option>
-    			<?php foreach($ACH_OPTIONS as $key => $value) { ?>
-    			<option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
-    			<?php } ?>
-    			<option disabled>
-     			   <!-- just a separator between ACH amd LPS for readability -->
-        		-WHO recommendation--
-    			</option>
-    			<!-- Check if the form has been submitted by checking if $_GET['ach'] is set -->
-    			<option value="10" <?php if(!isset($_GET['ach'])) { echo 'selected'; } else if($_GET['ach'] == '10') { echo 'selected'; } ?> data-mode="lps">10 L/p/s (Minimum, WHO Recommendation)</option>
-    			<option disabled>
-        		-ASHRAE 241 recommendations--
-   			 </option>
-    			<?php foreach($LPS_OPTIONS as $key => $value) { ?>
-        		<option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
-    			<?php } ?>
-		</select>
-
+			<select name="ach" class="form-select" id="ach" required>
+			    <option disabled>
+			        <!-- disabled header for readability -->
+			        --Based on room size--
+			    </option>
+			    <?php foreach($ACH_OPTIONS as $key => $value) { ?>
+			    <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="ach"><?= $value ?></option>
+			    <?php } ?>
+			    <option disabled></option><option disabled>
+			        <!-- just a separator between ACH amd LPS for readability -->
+			        --Based on occupancy (WHO recommendation)--
+			    </option>
+			    <!-- Check if the form has been submitted by checking if $_GET['ach'] is set -->
+			    <option value="10" <?php if(!isset($_GET['ach'])) { echo 'selected'; } else if($_GET['ach'] == '10') { echo 'selected'; } ?> data-mode="lps">10 L/p/s (Minimum, WHO Recommendation)</option>
+			    <option disabled></option><option disabled>
+			        --Based on occupancy (US ASHRAE 241)--
+			    </option>
+			    <?php foreach($LPS_OPTIONS as $key => $value) { ?>
+			        <option value="<?= $key ?>" <?php if($key == $ach) {echo 'selected';} ?> data-mode="lps"><?= $value ?></option>
+			    <?php } ?>
+			</select>
+	        
 	        <div class="invalid-feedback">
 	            Select L/person/second or 6 Air Changes per Hour (ACH)
 	        </div>
