@@ -40,7 +40,7 @@ if(file_exists($countries)){
                         <h4 class="mb-3">Google Sheets config</h4>
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label for="sheetID" class="form-label">Spreadsheet ID / URL</label>
+                                <label for="sheetID" class="form-label">Spreadsheet ID</label>
                                 <input type="text" class="form-control" id="sheetID" name="sheetID" placeholder="17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk" value="<?=config('sheet_id');?>" required>
                             </div>
 
@@ -128,7 +128,10 @@ if(file_exists($countries)){
         generateDB.addEventListener("click", function() {
             generateDB.innerHTML = spinner;
             generateDB.disabled = true;
-            gsheetData.remove();
+            
+            if (gsheetData !== null){
+                gsheetData.remove();
+            }
             const data = "";
             const xhr = new XMLHttpRequest();
             xhr.addEventListener("readystatechange", function() {
