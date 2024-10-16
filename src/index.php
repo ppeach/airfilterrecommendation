@@ -149,7 +149,7 @@ if(isset($_GET['submit'])){
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Air Filter Recommendation Tool</title>
+    <title>Air Cleaner Recommendation Tool</title>
 
     <!-- favicon -->
     <link rel="icon" type="image/png" href="https://cleanairstars.com/wp-content/uploads/2021/11/cropped-wind.png" />
@@ -158,16 +158,16 @@ if(isset($_GET['submit'])){
     <meta name="robots" content="max-image-preview:large" />
     <link rel="canonical" href="<?php echo 'https://'.$_SERVER['SERVER_NAME'];?>" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:site_name" content="Air Filter Recommendation Tool" />
+    <meta property="og:site_name" content="Air Cleaner Recommendation Tool" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Air Filter Recommendation Tool" />
+    <meta property="og:title" content="Air Cleaner Recommendation Tool" />
     <meta property="og:description" content="This tool helps recommend how many of the available models of portable air filters at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2" />
     <meta property="og:url" content="<?php echo 'https://'.$_SERVER['SERVER_NAME'];?>" />
     <meta property="og:image" content="https://cleanairstars.com/wp-content/uploads/2021/11/cropped-wind.png" />
     <meta property="og:image:secure_url" content="https://cleanairstars.com/wp-content/uploads/2021/11/cropped-wind.png" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:domain" content="<?php echo 'https://'.$_SERVER['SERVER_NAME'];?>" />
-    <meta name="twitter:title" content="Air Filter Recommendation Tool" />
+    <meta name="twitter:title" content="Air Cleaner Recommendation Tool" />
     <meta name="twitter:description" content="This tool helps recommend how many of the available models of portable air filters at different fan speeds will be required to meet current recommendations to reduce the risk of transmission of respiratory viruses like SARS-CoV-2" />
     <meta name="twitter:image" content="https://cleanairstars.com/wp-content/uploads/2021/11/cropped-wind.png" />
 
@@ -178,6 +178,14 @@ if(isset($_GET['submit'])){
     <link rel="stylesheet" href="includes/share.css">
 
     <style>
+		
+		.intro {
+			margin-top:2em;
+		}
+		
+		h4 {
+			text-align:center;
+		}
         .fa-solid.fa-circle-info {
             color: blue;
         }
@@ -200,6 +208,30 @@ if(isset($_GET['submit'])){
             font-size: 3.5rem;
         }
         }
+		
+		.notice-box {
+		  border: 1px solid #ccc; /* Adjust color and thickness as desired */
+		  padding: 15px;          /* Add internal spacing */
+		  margin: 20px 0;         /* Add spacing above and below */
+		  border-radius: 5px;     /* Optionally add slightly rounded corners */
+		  background-color: #e3eefe; /* Subtle background color */
+		  text-align: center;
+		}
+		
+		.small-notice-box {
+		  border: 1px solid #ccc; /* Adjust color and thickness as desired */
+		  padding: 5px;          /* Add internal spacing */
+		  margin: 5px 5px 15px 5px;         /* Add spacing above and below */
+		  border-radius: 5px;     /* Optionally add slightly rounded corners */
+		  background-color: #ddffda; /* Subtle background color */
+		  text-align: center;
+		}
+		
+		.text-center h2 { /* Targets the h2 within your div */
+		  display: inline-block;  /* This is the key change */
+		  border-bottom: 1px solid black; 
+		  padding-bottom: 30px;  
+		}
     </style>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-PJE4FN2C9M"></script>
@@ -231,45 +263,40 @@ if(isset($_GET['submit'])){
     <div id="google_translate_element"></div>
     <div class="container">
     <main>
-        <div class="py-5 text-center">
-            <h2>Air Filter Recommendation tool</h2>
+        <div class="text-center">
+            <h2>Air Cleaner Recommendation Tool</h2>
         </div>
 	<div>
-	   <p>
-                This tool helps recommend <strong><i>how many</i></strong> of a particular model of portable air cleaner <strong><i>at what fan speed</strong></i> will be required to meet current recommendations for <strong><i>total airflow</strong></i> for a given room size or occupancy to reduce the risk of transmission of respiratory viruses like SARS-CoV-2 in poorly ventilated indoor spaces. 
-	   </p>
-	   <p>
-	      	<strong>This is a non-profit public service that receives no commission for sales of any goods or services</strong>
-	   </p>
-	   <p>
-		Choosing the right device(s) depends on the amount of noise that would be comfortably tolerated given the room's existing ambient noise level and space available to fit multiple devices. For example, in quiet rooms where additional noise is less tolerable, multiple devices operating at quieter, low speeds may be preferable to a single device running at a louder, high speed. Additionally, multiple devices spaced around a room will likely result in better distribution of filtration.
-           </p> 
-	   <p>
-                The database includes air cleaners using HEPA 13 filters. If reliable data or estimates on the clean air delivery rate
-                (CADR) for small particles (Smoke, 0.1-1 microns) is available for devices using filters below HEPA 13 efficiency, these
-                have been included. Devices that have electronic cleaning features such as ionisation, plasma, ultraviolet light, and photocatalytic
-                oxidisation have been excluded or their presence made apparent.
-           </p>
-	   <p>
-                No guarantees can be provide on the accuracy of manufacturer claims on features or performance, nor provide reliable estimates of annual filter costs that rely on characteristics on the filter and environment in which it will be used. Improving indoor air quality with better ventilation and filtration helps reduce the risk of transmission, but cannot eliminate risk completely. The use of well-fitted masks, distancing, and limiting exposure time in poorly ventilated environments are important components of risk reduction.
-           </p>
-	   <p>
-                Full dataset is available <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing" target="_blank">here</a>.
-				Github repository <a href="https://github.com/ppeach/airfilterrecommendation" target="_blank">here</a>.
-                Australian data source <a rel="me" href="https://mastodon.social/@pieterpeach">Pieter Peach</a>,
-                initial US data source <a href="https://twitter.com/marwa_zaatari" target="_blank">Marwa Zaatari</a>,
-                initial UK data source <a href="https://twitter.com/PlasticFull" target="_blank">Stefan Stojanovic</a>
-            </p>
+		<div class="intro">
+		<h4>Purpose of this Tool</h4>
+		<p>This tool helps you determine <strong><i>how many</strong></i> portable air cleaners you need and <strong><i>at what fan speed</strong></i> to run them, based on the size of your room or the number of people in it. The goal is to achieve the recommended cleaner airflow levels that can reduce the risk of spreading airborne microbes like SARS-CoV-2 in poorly ventilated indoor spaces.</p>
+
+		<div class="notice-box">This is a non-profit service provided for the public good, with no commissions or sales on products or services.</div>
+		</div>
+		<div class="intro">
+		<h4>Choosing the Right Air Cleaners</h4>
+
+		<p>Choosing the right air cleaner(s) depends on how much noise you can tolerate, given the existing noise levels in your room, and the space available to fit multiple units. For example, in quieter rooms where additional noise is less desirable, <strong><i>using multiple air cleaners running at lower, quieter speeds may be better than a single unit running at a higher, noisier speed</strong></i>. Having multiple units spaced around the room can also help distribute the filtered air more evenly.</p>
+
+		<p>The tool focuses on air cleaners using high-efficiency HEPA 13 filters, however, it may also include units with less efficient filters if reliable data on their clean air delivery rate (CADR Smoke) is available. Units with electronic features like ionization, plasma, UV light, or photocatalytic oxidation are generally excluded or clearly identified.</p>
+		
+		</div>
+		<div class="intro">
+		<h4>Limitations and Caveats</h4>
+
+		<p>While the tool aims to provide accurate recommendations, no guarantees can be made regarding the claims made by manufacturers about their products' features or performance. Additionally, reliable estimates of annual filter replacement costs may vary depending on the specific filter and the environment it's used in. It's important to note that improving indoor air quality through better ventilation and filtration can reduce the risk of virus transmission but cannot eliminate it entirely. Using well-fitted masks, maintaining hand hygiene and physical distance, and limiting time spent in poorly ventilated areas are also essential components of risk reduction.</p>
+
+ 	   <p>
+                 The full dataset can be accessed at <a href="https://docs.google.com/spreadsheets/d/17j6FZwvqHRFkGoH5996u5JdR7tk4_7fNuTxAK7kc4Fk/edit?usp=sharing" target="_blank">here</a>.
+ 				Github repository <a href="https://github.com/ppeach/airfilterrecommendation" target="_blank">here</a>.
 	    <p>
-                Direct link to the tool is <a href="https://filters.cleanairstars.com" target="_blank">filters.cleanairstars.com</a>
+                Direct link to the tool (allowing results to be shared) is <a href="https://filters.cleanairstars.com" target="_blank">filters.cleanairstars.com</a>
             </p>
 	    <p>
                 Contact and follow <a rel="me" href="https://mas.to/@cleanairstars" target="_blank">Cleanairstars</a> for feedback and updates.
             </p>
-	    <p>
-		Supported by a grant from the <a rel="me" href="https://balvi.io" target="_blank">Balvi Foundation</a> 
-	     </p>
             <p>&nbsp;</p>
+		</div>
 	</div>
 
         <div class="row g-5">
@@ -293,34 +320,70 @@ if(isset($_GET['submit'])){
                         Please select a Country.
                     </div>
                 </div>
-                <div class="col-md-6">
-                	<label for="max-an" class="form-label">Acceptable Noise Level <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. Some devices may have less tolerable noise characteristics even at low dBA. <ul class='list-group list-group-flush'>
-                                                <li class='list-group-item'>30-40dBA Sleep</li>
-                                                <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
-                                                <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
-                                                <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
-                                                <li class='list-group-item'>>60dBA - Acceptable for loud environments </li>
-                                                </ul>" data-bs-html="true">
-                        <?=$SVG_INFO;?>
-                    </a>
-                	</label>
-    			<select class="form-select" id="max-an" name="max-an" required>
-        		<option disabled value="">Choose...</option>
-      			  <?php 
-        		// Set default selection to 45 if no value has been submitted
-      			  $max_an = $max_an ?? '45';  // Assuming $max_an is the submitted value variable
+				<div class="col-md-6">
+				                    <label for="max-an" class="form-label">Acceptable Noise Level <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Decibel (dBA) limit guide" data-bs-content="Tolerability of noise from air filters depends greatly on existing ambient noise levels. The below recommendations are a guide only. Some devices may have less tolerable noise characteristics even at low dBA. <ul class='list-group list-group-flush'>
+				                                                    <li class='list-group-item'>30-35dBA Sleep</li>
+				                                                    <li class='list-group-item'>40-45dBA Classroom, Quiet Restaurant & Office</li>
+				                                                    <li class='list-group-item'>40-50dBA Loud Office & Childcare</li>
+				                                                    <li class='list-group-item'><60dBA Loud Restaurant, Gym</li>
+				                                                    <li class='list-group-item'>>60dBA - Acceptable for loud environments </li>
+				                                                    </ul>" data-bs-html="true">
+				                            <?=$SVG_INFO;?>
+				                        </a>
+									</label>
+									<div>
+									</div>
+									<select class="form-select" id="max-an" name="max-an" required>
+									    <option disabled value="">Choose...</option>
+									    <?php
+									    foreach ($maxANoise as $key => $value) {
+									        // Determine if this option should be selected
+									        if (!$submitted && $value == '45') {  // If the form hasn't been submitted, '45 dBA' is the default
+									            $selected = 'selected';
+									        } elseif ($submitted && $max_an == $value) {  // If the form was submitted, use the submitted value
+									            $selected = 'selected';
+									        } else {
+									            $selected = '';
+									        }
 
-    			    foreach ($maxANoise as $key => $value) {
-     		       // Check if the current loop value is equal to the submitted or default value
-       		     $selected = ($max_an == $value) ? 'selected' : '';
-      		      echo '<option ' . $selected . ' value="' . $value . '">' . $value . ' dBA</option>';
-   		     } ?>
-    			</select>
-   		  <div class="invalid-feedback">
-     		   Please select Max Acceptable Noise.
-  		  </div>
-		</div>
+									        // Assign additional text based on the value
+									        switch ($value) {
+									            case '30':
+									                $additionalText = ' (sensitive sleeper)';
+									                break;
+												case '35':
+									                $additionalText = ' (sleep, quiet classroom/living room)';
+									                break;
+									            case '40':
+									                $additionalText = ' (average classroom, quiet office/restaurant)';
+									                break;
+												case '45':
+									                $additionalText = ' (noisy office/childcare/classroom)';
+									                break;
+												case '50':
+									                $additionalText = ' (loud restaurant/childcare/gym)';
+									                break;
+												case '55':
+									                $additionalText = ' (loud restaurant/bar/gym)';
+									                break;
+												case '60':
+									                $additionalText = ' (very loud bar/pub)';
+									                break;
+													
+									            // Add more cases for other values as needed
+									            default:
+									                $additionalText = '';
+									        }
 
+									        echo '<option ' . $selected . ' value="' . $value . '">' . $value . ' dBA' . $additionalText . '</option>';
+									    }
+									    ?>
+									</select>
+									<div class="invalid-feedback">
+									    Please select Max Acceptable Noise.
+									</div>
+				                    
+				                </div>
 		<div class="col-md-6">
 	        <label for="ach" class="form-label">Clean air delivery target <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="What is L/p/s and ACH?" data-bs-content="The number of times the air in a space is exchanged per hour is the Air Changes per Hour (ACH). The World Health Organisation recommends a minimum of 6 ACH. This may not be appropriate for larger spaces where WHO's recommendation of minimum 10 L/person/second (NOTE: use the rated people capacity for the space) may be a more appropriate an realistic target. See https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d for further information" data-bs-html="true">
 	                <?=$SVG_INFO;?>  <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d"> more info</a>
@@ -390,13 +453,14 @@ if(isset($_GET['submit'])){
                     </div>
                 </div>
                 <div class="col-md-6" id="noc">
-                    <label for="no-of-occ" class="form-label">Rated occupant capacity for the space.</label>
+                    <label for="no-of-occ" class="form-label">Number of occupants <a href="https://itsairborne.com/ashrae-241-control-of-infectious-aerosols-part-2-equivalent-clean-airflow-rates-76a511769d4d">(see examples)</a></label>
                     <input
                         type="text"
                         class="form-control"
                         id="no-of-occ"
                         name="no-of-occ"
                         placeholder="Number of occupants"
+					 
                         <?= ($submitted) ? 'value="'.$no_of_occ.'"': ''; ?>
                     >
                     <div class="invalid-feedback">
@@ -645,11 +709,11 @@ if(isset($_GET['submit'])){
                                 <small class="text-muted">
                                     <ul class="list-group list-group-flush">
                                     <?php if(array_key_exists($ach, $ACH_OPTIONS)){ ?>
-                                        <li class="list-group-item"><i><strong><?php echo $ach_needs; ?> units at above fan setting </strong> required for approximately <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
+                                        <li class="list-group-item"><i><strong><?php echo $ach_needs; ?> units at above fan setting </strong> required for a minimum of <?= preg_replace('~\D~', '', $ach) ?> air changes per hr</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> ACH (<?php echo(round($ach_needs*$value[$cadr_m3],0)); ?>m3/hr total) for <?php echo $ach_needs; ?> devices</i></li>
                                         <!--?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' ACH for '.$ach_needs_minone.' devices for total <b>'.$value['currency_format'].$ach_needs_minone * $value[$cost].'</b></i></li>' : ''; ?-->
                                     <?php } else { ?>
-                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for approximately <?php echo trim($ach, '_lps');?>L/p/s</i></li>
+                                        <li class="list-group-item"><i><?php echo $ach_needs; ?> devices required for a minimum of <?php echo trim($ach, '_lps');?>L/p/s</i></li>
                                         <li class="list-group-item"><i><?php echo $value['ACH']; ?> L/p/s for <?php echo $ach_needs; ?> devices</i></li>
                                         <!--?php echo ($ach_needs >= 2) ? '<li class="list-group-item"><i>'.$value['ACH -1'].' L/p/s for '.$ach_needs_minone.' devices</i></li>' : ''; ?-->
                                     <?php } ?>
@@ -794,141 +858,172 @@ if(isset($_GET['submit'])){
     <!-- Fontawesome JS -->
     <script src="https://kit.fontawesome.com/53b8e4bb73.js" crossorigin="anonymous"></script>
 
-    <script>
-        const showHideRoomSizeOccupants = function(mode) {
-            if (mode === 'ach') {
-                    $('#rms').show();
-                    $('#room-size').prop('required', true);
-                    $("#rms").attr('required', '');
-                    $('#rms-type').show();
-                    $('#noc').hide();
-                    $('#no-of-occ').prop('required', false);
-                } else {
-                    $('#rms').hide();
-                    $('#room-size').prop('required', false);
-                    $('#rms-type').hide();
-                    $('#noc').show();
-                    $('#no-of-occ').prop('required', true);
-                }
-        }
+	<script>
+	        const showHideRoomSizeOccupants = function(mode) {
+	            if (mode === 'ach') {
+	                    $('#rms').show();
+	                    $('#room-size').prop('required', true);
+	                    $("#rms").attr('required', '');
+	                    $('#rms-type').show();
+	                    $('#noc').hide();
+	                    $('#no-of-occ').prop('required', false);
+	                } else {
+	                    $('#rms').hide();
+	                    $('#room-size').prop('required', false);
+	                    $('#rms-type').hide();
+	                    $('#noc').show();
+	                    $('#no-of-occ').prop('required', true);
+	                }
+	        }
 
-        const ready = function (fn) {
-            // wrapper that takes a function to execute once page loaded
-            // replacement for $(document).ready() without needing jQuery
-            if (typeof fn !== 'function') {
-                throw new Error('Argument passed to ready should be a function');
-            }
-            if (document.readyState != 'loading') {
-                fn();
-            } else if (document.addEventListener) {
-                document.addEventListener('DOMContentLoaded', fn, {
-                once: true // A boolean value indicating that the listener should be invoked at most once after being added. If true, the listener would be automatically removed when invoked.
-                });
-            } else {
-                document.attachEvent('onreadystatechange', function() {
-                if (document.readyState != 'loading')
-                    fn();
-                });
-            }
-        }
+	        const ready = function (fn) {
+	            // wrapper that takes a function to execute once page loaded
+	            // replacement for $(document).ready() without needing jQuery
+	            if (typeof fn !== 'function') {
+	                throw new Error('Argument passed to ready should be a function');
+	            }
+	            if (document.readyState != 'loading') {
+	                fn();
+	            } else if (document.addEventListener) {
+	                document.addEventListener('DOMContentLoaded', fn, {
+	                once: true // A boolean value indicating that the listener should be invoked at most once after being added. If true, the listener would be automatically removed when invoked.
+	                });
+	            } else {
+	                document.attachEvent('onreadystatechange', function() {
+	                if (document.readyState != 'loading')
+	                    fn();
+	                });
+	            }
+	        }
 
-        ready(function() {
-            const achSelector = window.document.querySelector('#ach');
-            achSelector.addEventListener('change', function(event) {
-                showHideRoomSizeOccupants(event.target.options[event.target.selectedIndex].dataset.mode);
-            });
-            showHideRoomSizeOccupants(achSelector.options[achSelector.selectedIndex].dataset.mode);
-        });
+	        ready(function() {
+	            const achSelector = window.document.querySelector('#ach');
+	            const occupancyBtn = document.getElementById('occupancy-btn');
+	            const roomSizeBtn = document.getElementById('room-size-btn');
+
+	            // Function to set the active button based on the selected ACH mode
+	            function setActiveButton(mode) {
+	                if (mode === 'lps') {
+	                    occupancyBtn.classList.add('active');
+	                    roomSizeBtn.classList.remove('active');
+	                } else { // mode === 'ach'
+	                    roomSizeBtn.classList.add('active');
+	                    occupancyBtn.classList.remove('active');
+	                }
+	            }
+
+	            // Event listeners for buttons
+	            occupancyBtn.addEventListener('click', function() {
+	                achSelector.value = '10';
+	                showHideRoomSizeOccupants('lps');
+	                setActiveButton('lps'); // Highlight occupancy button
+	            });
+
+	            roomSizeBtn.addEventListener('click', function() {
+	                achSelector.value = '6';
+	                showHideRoomSizeOccupants('ach');
+	                setActiveButton('ach'); // Highlight room size button
+	            });
+
+	            achSelector.addEventListener('change', function(event) {
+	                showHideRoomSizeOccupants(event.target.options[event.target.selectedIndex].dataset.mode);
+	            });
+	            showHideRoomSizeOccupants(achSelector.options[achSelector.selectedIndex].dataset.mode);
+
+	            // Set active button on initial load based on the selected ACH option
+	            const initialMode = achSelector.options[achSelector.selectedIndex].dataset.mode;
+	            setActiveButton(initialMode); 
+	        });
         
-		// Popover
-		const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-		const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-		    return new bootstrap.Popover(popoverTriggerEl)
-		});
+			// Popover
+			const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+			const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+			    return new bootstrap.Popover(popoverTriggerEl)
+			});
 
-        // Scroll to result page
-        <?php echo (isset($scroll)) ? $scroll : null; ?>
+	        // Scroll to result page
+	        <?php echo (isset($scroll)) ? $scroll : null; ?>
 
-        // Sort result by selected options
-        // const sortResult = document.getElementById('sort-results');
-        const product = document.querySelectorAll('.product-item');
-        const sortOptions = document.getElementById('sort-options');
-        let switching = true;
-        // if(sortResult){
-        //     sortResult.addEventListener('click', function() {
-        //         if(switching){
-        //             Array.from(product).sort(function(a, b){
-        //                 return +b.dataset[sortOptions.value] - +a.dataset[sortOptions.value];
-        //             })
-        //             .forEach(el => el.parentNode.appendChild(el));
-        //             console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
-        //             switching = false;
-        //             sortResult.innerHTML = "Sort Descending";
-        //         } else {
-        //             Array.from(product).sort(function(a, b){
-        //                 return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
-        //             })
-        //             .forEach(el => el.parentNode.appendChild(el));
-        //             console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
-        //             switching = true;
-        //             sortResult.innerHTML = "Sort &nbsp;Ascending";
-        //         }
-        //     });
-        // }
-        if(sortOptions){
-            sortOptions.addEventListener('change', function() {
-                if(switching){
-                    Array.from(product).sort(function(a, b){
-                        return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
-                    })
-                    .forEach(el => {
-                        el.parentNode.appendChild(el);
-                        if(el.dataset.tco == 0){
-                            el.style.display = "none";
-                        }
-                    });
-                    console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
-                    switching = false;
-                } else {
-                    Array.from(product).sort(function(a, b){
-                        return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
-                    })
-                    .forEach(el => {
-                        el.parentNode.appendChild(el);
-                        if(el.dataset.tco == 0){
-                            el.removeAttribute('style');
-                        }
-                    });
-                    console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
-                    switching = true;
-                }
-            });
-        }
+	        // Sort result by selected options
+	        // const sortResult = document.getElementById('sort-results');
+	        const product = document.querySelectorAll('.product-item');
+	        const sortOptions = document.getElementById('sort-options');
+	        let switching = true;
+	        // if(sortResult){
+	        //     sortResult.addEventListener('click', function() {
+	        //         if(switching){
+	        //             Array.from(product).sort(function(a, b){
+	        //                 return +b.dataset[sortOptions.value] - +a.dataset[sortOptions.value];
+	        //             })
+	        //             .forEach(el => el.parentNode.appendChild(el));
+	        //             console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
+	        //             switching = false;
+	        //             sortResult.innerHTML = "Sort Descending";
+	        //         } else {
+	        //             Array.from(product).sort(function(a, b){
+	        //                 return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+	        //             })
+	        //             .forEach(el => el.parentNode.appendChild(el));
+	        //             console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
+	        //             switching = true;
+	        //             sortResult.innerHTML = "Sort &nbsp;Ascending";
+	        //         }
+	        //     });
+	        // }
+	        if(sortOptions){
+	            sortOptions.addEventListener('change', function() {
+	                if(switching){
+	                    Array.from(product).sort(function(a, b){
+	                        return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+	                    })
+	                    .forEach(el => {
+	                        el.parentNode.appendChild(el);
+	                        if(el.dataset.tco == 0){
+	                            el.style.display = "none";
+	                        }
+	                    });
+	                    console.log(`Sorted ascending by ${sortOptions.options[sortOptions.selectedIndex].text}`);
+	                    switching = false;
+	                } else {
+	                    Array.from(product).sort(function(a, b){
+	                        return +a.dataset[sortOptions.value] - +b.dataset[sortOptions.value];
+	                    })
+	                    .forEach(el => {
+	                        el.parentNode.appendChild(el);
+	                        if(el.dataset.tco == 0){
+	                            el.removeAttribute('style');
+	                        }
+	                    });
+	                    console.log(`Sorted descendingby ${sortOptions.options[sortOptions.selectedIndex].text}`);
+	                    switching = true;
+	                }
+	            });
+	        }
 
-        // Send click event to analytics json
-        async function sendClick(d){
-            const myHeaders = new Headers();
-            myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+	        // Send click event to analytics json
+	        async function sendClick(d){
+	            const myHeaders = new Headers();
+	            myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
 
-            const data = new URLSearchParams();
-            data.append('click', 'true');
-            data.append('country', d.dataset.country);
-            data.append('product', d.dataset.product);
-            data.append('link', d.dataset.link);
+	            const data = new URLSearchParams();
+	            data.append('click', 'true');
+	            data.append('country', d.dataset.country);
+	            data.append('product', d.dataset.product);
+	            data.append('link', d.dataset.link);
 
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: data,
-                redirect: 'follow'
-            };
+	            var requestOptions = {
+	                method: 'POST',
+	                headers: myHeaders,
+	                body: data,
+	                redirect: 'follow'
+	            };
 
-            fetch('admin/analytics.php', requestOptions)
-            .then(response => response.json())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
-        }        
-    </script>
+	            fetch('admin/analytics.php', requestOptions)
+	            .then(response => response.json())
+	            .then(result => console.log(result))
+	            .catch(error => console.log('error', error));
+	        }        
+	    </script>
 
 </body>
 </html>
