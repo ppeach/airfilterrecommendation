@@ -26,6 +26,7 @@ $diy = 'No';
 $max_units = 10;
 $frs = 12;
 $lifetime = 4;
+$min_cadr = 576;  // Default to WHO minimum
 
 // If form is submitted
 if(isset($_GET['submit'])){
@@ -47,6 +48,7 @@ if(isset($_GET['submit'])){
     $max_units =  $_GET['max_units'] ?? $max_units;
     $frs =  $_GET['filter-rs'] ?? $frs;
     $lifetime =  $_GET['lifetime'] ?? $lifetime;
+	$min_cadr = isset($_GET['min_cadr']) ? intval($_GET['min_cadr']) : 576;
 
     // Get data from google sheets or json file
     $data = getHepa($country);
@@ -113,7 +115,8 @@ if(isset($_GET['submit'])){
         'room_type' => $rms_type,
         'no_off_occ'=> $no_of_occ
     );
-    $hepa_result = calculateACH($filter_result, $ach, $max_units, $types, $achs);
+	$min_cadr = isset($_GET['min_cadr']) ? intval($_GET['min_cadr']) : 576;
+	$hepa_result = calculateACH($filter_result, $ach, $max_units, $min_cadr, $types, $achs);
 
     // Filter items that doesn't have Watts and Filter cost value
     // $hepa_result = array_filter(
@@ -394,7 +397,7 @@ if(isset($_GET['submit'])){
 				    <button type="button" class="btn btn-outline-primary" id="room-size-btn">Room size</button>
 				</div>
 	            <a data-bs-trigger="hover focus" data-bs-toggle="popover" title="Minumum Airflow" data-bs-content="The World Health Organisation recommends a minimum of 160 liters per second of clean air per infectious occupant. See link to 'Infection prevention and control in the context of COVID-19: a guideline, 21 December 2023' in more info" data-bs-html="true">
-	                <div class="small-notice-box">Note: Minimum total of 160L/sec (576m3/hr) will be recommended as per WHO <?=$SVG_INFO;?> <a href="https://www.who.int/publications/i/item/WHO-2019-nCoV-IPC-guideline-2023.4">more info</a></div>
+	                <div class="small-notice-box">Note: Minimum total of 160L/sec (576m3/hr) will be recommended as per WHO. Can be disabled in advanced options below <?=$SVG_INFO;?> <a href="https://www.who.int/publications/i/item/WHO-2019-nCoV-IPC-guideline-2023.4">more info</a></div>
 	            </a>
 	        </div>
 			<select name="ach" class="form-select" id="ach" required>
@@ -472,6 +475,13 @@ if(isset($_GET['submit'])){
                 <summary class="text-primary fs-5">Advanced</summary>
 
                 <div class="row g-5 pt-5">
+					<div class="col-md-4">
+					    <label for="min-cadr" class="form-label">WHO Minimum Total Clean Air Delivery Rate</label>
+					    <select class="form-select" id="min-cadr" name="min_cadr">
+					        <option value="576" <?php echo $min_cadr == 576 ? 'selected' : ''; ?>>160L/s or 576 m3/hr</option>
+					        <option value="0" <?php echo $min_cadr === 0 ? 'selected' : ''; ?>>No minimum</option>
+					    </select>
+					</div>
                     <div class="col-md-4">
                         <label
                             for="max-units"
