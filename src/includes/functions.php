@@ -327,7 +327,7 @@ function calculateTCO($upfront_cost, $filter_replacement_cost, $total_energy_cos
 }
 
 // Calculate ACH and get Total Cost
-function calculateACH($data, $ach, $max_units, $types=array(), $achs=array())
+function calculateACH($data, $ach, $max_units, $min_cadr, $types=array(), $achs=array())
 {
     global $ACH_OPTIONS, $MEASUREMENT_OPTIONS;
     // Calculate ACH and Total Cost
@@ -349,7 +349,7 @@ function calculateACH($data, $ach, $max_units, $types=array(), $achs=array())
             $ach_value = (ceil($ach_unit) * $value[$types['cadrlitre']])/$achs['no_off_occ'];
             $ach_value_min = ((ceil($ach_unit) - 1) * $value[$types['cadrlitre']])/$achs['no_off_occ'];
         }
-        $ach_needs = ($ach_unit < 0) ? 1 : max(ceil($ach_unit), ceil(576 / $value[$types['cadrm3']]));
+        $ach_needs = ($ach_unit < 0) ? 1 : max(ceil($ach_unit), ceil($min_cadr / $value[$types['cadrm3']]));
         $data[$key]['ACH unit'] = $ach_unit;
         $data[$key]['ACH'] = round($ach_value, 1);
         $data[$key]['ACH -1'] = round($ach_value_min, 1);
